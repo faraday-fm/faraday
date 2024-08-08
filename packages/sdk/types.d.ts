@@ -1,11 +1,16 @@
+export type Theme = {
+  fontFamily: string;
+  colors: Record<string, string>;
+};
+
 export interface FaradayEvents {
-  on(event: 'themechange', callback: (theme: string) => void);
-  off(event: 'themechange', callback: (theme: string) => void);
+  on(event: "themechange", callback: (theme: Theme) => void);
+  off(event: "themechange", callback: (theme: Theme) => void);
 }
 
 export declare global {
   const faraday: {
-    theme: string;
+    theme: Theme;
     events: FaradayEvents;
     fs: {
       readFile(filename: string): Promise<string>;

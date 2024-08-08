@@ -6,6 +6,9 @@
   "exports": {
     "./index.html": {
       "import": "./dist/index.html"
+    },
+    "./types": {
+      "types": "./src/types.ts"
     }
   },
   "scripts": {
@@ -15,6 +18,7 @@
   },
   "dependencies": {
     "@frdy/sdk": "workspace:*",
+    "comlink": "^4.4.1",
     "eventemitter3": "^5.0.1"
   },
   "devDependencies": {

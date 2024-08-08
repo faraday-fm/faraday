@@ -1,7 +1,11 @@
 import quickViewHtml from "@frdy/webview-host/index.html";
-import { type ForwardedRef, forwardRef, useEffect, useImperativeHandle, useRef, useState } from "react";
+import type { WebViewActions, WebViewEvents } from "@frdy/webview-host/types";
+import * as Comlink from "comlink";
+import { type ForwardedRef, forwardRef, useEffect, useImperativeHandle, useMemo, useRef, useState } from "react";
 import { css } from "../../features/styles";
 import { useTheme } from "../../features/themes";
+import { useComlinkExpose } from "../../hooks/useComlinkExpose";
+import { useComlinkRemote } from "../../hooks/useComlinkRemote";
 
 export interface QuickViewFrameActions {
   setContent({ content, path }: { content?: Uint8Array; path?: string }): Promise<void>;
@@ -12,8 +16,8 @@ const quickViewHtmlBase64 = btoa(quickViewHtml);
 
 export const QuickViewFrame = forwardRef(function QuickViewFrame({ script }: { script: string }, ref: ForwardedRef<QuickViewFrameActions>) {
   const [initialScript] = useState(script);
-  const loadedPromise = useRef(Promise.withResolvers<Window>());
-  const themeSetPromise = useRef(Promise.withResolvers<Window>());
+  const [wnd, setWnd] = useState<Window>();
+  const themeSetPromise = useRef(Promise.withResolvers<void>());
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const theme = useTheme();
 
@@ -21,25 +25,29 @@ export const QuickViewFrame = forwardRef(function QuickViewFrame({ script }: { s
     throw new Error("'script' should not be changed.");
   }
 
-  useEffect(() => {
-    const listener = (e: MessageEvent) => {
-      if (e.source === iframeRef.current?.contentWindow) {
-        if (e.data === "focus") {
-          iframeRef.current.focus();
-        }
-      }
-    };
-    window.addEventListener("message", listener);
-    return () => window.removeEventListener("message", listener);
-  }, []);
+  const remoteRef = useComlinkRemote<WebViewActions>(wnd);
+  useComlinkExpose(
+    wnd,
+    useMemo(
+      () =>
+        ({
+          onFocus() {
+            iframeRef.current?.focus();
+          },
+        }) as WebViewEvents,
+      [],
+    ),
+  );
 
   useImperativeHandle(
     ref,
     () => ({
       async setContent({ content, path }) {
-        if (iframeRef.current) {
-          const iframeWindow = await themeSetPromise.current.promise;
-          iframeWindow.postMessage({ type: "content", content, path }, "*", content?.buffer ? [content.buffer] : undefined);
+        await themeSetPromise.current.promise;
+        if (content?.buffer) {
+          remoteRef.current?.setContent(Comlink.transfer({ content, path }, [content.buffer]));
+        } else {
+          remoteRef.current?.setContent({ content, path });
         }
       },
       async setVisibility(show) {
@@ -48,33 +56,27 @@ export const QuickViewFrame = forwardRef(function QuickViewFrame({ script }: { s
             iframeRef.current.style.removeProperty("display");
           } else if (iframeRef.current.style.display !== "none") {
             iframeRef.current.style.display = "none";
-            const iframeWindow = await themeSetPromise.current.promise;
-            iframeWindow.postMessage({ type: "content" }, "*");
+            await themeSetPromise.current.promise;
+            remoteRef.current?.setContent({});
           }
         }
       },
     }),
-    [],
+    [remoteRef],
   );
 
   useEffect(() => {
-    if (iframeRef.current) {
-      const iframe = iframeRef.current;
-      iframe.onload = () => {
-        const iframeWindow = iframe.contentWindow!;
-        iframeWindow.postMessage({ type: "init", js: initialScript }, "*");
-        loadedPromise.current.resolve(iframeWindow);
-      };
+    if (wnd) {
+      remoteRef.current?.setScript(initialScript);
     }
-  }, [initialScript]);
+  }, [wnd, remoteRef, initialScript]);
 
   useEffect(() => {
-    (async () => {
-      const iframeWindow = await loadedPromise.current.promise;
-      iframeWindow.postMessage({ type: "theme", theme }, "*");
-      themeSetPromise.current.resolve(iframeWindow);
-    })();
-  }, [theme]);
+    if (wnd) {
+      remoteRef.current?.setTheme(theme);
+      themeSetPromise.current.resolve();
+    }
+  }, [wnd, remoteRef, theme]);
 
   return (
     <iframe
@@ -84,6 +86,7 @@ export const QuickViewFrame = forwardRef(function QuickViewFrame({ script }: { s
       tabIndex={0}
       title="quick view"
       src={`data:text/html;base64,${quickViewHtmlBase64}`}
+      onLoad={(e) => setWnd(e.currentTarget.contentWindow ?? undefined)}
     />
   );
 });
