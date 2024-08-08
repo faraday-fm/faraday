@@ -1,6 +1,6 @@
 {
   "name": "@frdy/memory-fs",
-  "version": "1.33.0",
+  "version": "1.33.1",
   "description": "",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
@@ -14,7 +14,9 @@
   "keywords": [],
   "author": "Mikhail Isupov",
   "license": "ISC",
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "dependencies": {
     "@frdy/web-ui": "workspace:*",
     "synchronous-promise": "~2.0.17"

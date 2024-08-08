@@ -1,7 +1,7 @@
 {
   "name": "faraday-fm.github.io",
   "private": true,
-  "version": "1.33.0",
+  "version": "1.33.1",
   "type": "module",
   "scripts": {
     "start": "vite",
