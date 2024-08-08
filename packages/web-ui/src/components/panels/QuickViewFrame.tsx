@@ -1,5 +1,5 @@
+import quickViewHtml from "@frdy/webview-host/index.html";
 import { type ForwardedRef, forwardRef, useEffect, useImperativeHandle, useRef, useState } from "react";
-import quickViewHtml from "../../assets/quick-view.html";
 import { css } from "../../features/styles";
 import { useTheme } from "../../features/themes";
 

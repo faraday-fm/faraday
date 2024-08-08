@@ -5,10 +5,8 @@
   "main": "dist/index.js",
   "module": "dist/index.mjs",
   "scripts": {
-    "start": "tsup -w",
+    "dev": "tsup --watch",
     "build": "tsup",
-    "_phase:start": "tsup -w",
-    "_phase:build": "tsup",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
