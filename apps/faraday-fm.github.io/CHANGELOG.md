@@ -1,5 +1,11 @@
 # faraday-fm.github.io
 
+## 1.34.0
+
+### Minor Changes
+
+- dd614a2: test
+
 ## 1.33.1
 
 ### Patch Changes
