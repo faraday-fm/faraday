@@ -1,6 +1,6 @@
 {
   "name": "@frdy/memory-fs",
-  "version": "1.33.4",
+  "version": "1.33.5",
   "description": "",
   "main": "dist/index.js",
   "module": "dist/index.mjs",

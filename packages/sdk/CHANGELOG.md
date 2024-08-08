@@ -1,5 +1,11 @@
 # @frdy/sdk
 
+## 1.2.0
+
+### Minor Changes
+
+- da28cf5: Added fs support in extensions
+
 ## 1.1.0
 
 ### Minor Changes

@@ -1,5 +1,13 @@
 # @frdy/memory-fs
 
+## 1.33.5
+
+### Patch Changes
+
+- Updated dependencies [da28cf5]
+  - @frdy/sdk@1.2.0
+  - @frdy/web-ui@1.35.1
+
 ## 1.33.4
 
 ### Patch Changes
