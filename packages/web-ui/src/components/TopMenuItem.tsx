@@ -11,7 +11,7 @@ export function TopMenuItem({ header }: TopMenuItemProps) {
       <AutoHotKeyLabel text={header} />
       {/* <HotKey>{(k) => <Highlight text={header} highlight={k} />}</HotKey> */}
       <div className={css("top-menu-label")}>
-        <AutoHotKeyLabel text="123456" />
+        <AutoHotKeyLabel text="1234567" />
       </div>
     </div>
   );
