@@ -1,5 +1,13 @@
 # @frdy/web-ui
 
+## 1.34.2
+
+### Patch Changes
+
+- 2a0c39a: WebView host
+- Updated dependencies [2a0c39a]
+  - @frdy/webview-host@0.1.0
+
 ## 1.34.1
 
 ### Patch Changes

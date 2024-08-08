@@ -1,5 +1,14 @@
 # faraday-fm.github.io
 
+## 1.34.2
+
+### Patch Changes
+
+- 2a0c39a: WebView host
+- Updated dependencies [2a0c39a]
+  - @frdy/memory-fs@1.33.3
+  - @frdy/web-ui@1.34.2
+
 ## 1.34.1
 
 ### Patch Changes
