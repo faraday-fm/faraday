@@ -1,10 +1,10 @@
 import { memo } from "react";
 import { useGlyphSize } from "../../../contexts/glyphSizeContext";
-import { type Dirent, FileType } from "../../../features/fs/types";
 import { isDir } from "../../../features/fs/utils";
 import { css } from "../../../features/styles";
 import { formatDateTime } from "../../../utils/date";
 import { bytesToSize } from "../../../utils/number";
+import { type Dirent, FileType } from "@frdy/sdk";
 
 interface FileInfoFooterProps {
   file?: Dirent;

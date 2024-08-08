@@ -1,4 +1,4 @@
-import type { Dirent } from "../../../features/fs/types";
+import type { Dirent } from "@frdy/sdk";
 
 export interface ColumnDef {
   name: string;

@@ -1,20 +1,19 @@
-import { SynchronousPromise } from "synchronous-promise";
 import {
-  AttribBits,
-  FileType,
-  Flags,
   type AceMask,
   type AttrFlags,
+  AttribBits,
   type Attrs,
-  type Dirent,
   type DirList,
+  type Dirent,
   type FileHandle,
   type FileSystemProvider,
+  FileType,
+  Flags,
   type RealPathControlByte,
   type RenameFlags,
-  FileSystemError,
-  isDir,
-} from "@frdy/web-ui";
+} from "@frdy/sdk";
+import { FileSystemError, isDir } from "@frdy/web-ui";
+import { SynchronousPromise } from "synchronous-promise";
 
 type FsEntry = Dirent & {
   content?: Uint8Array;
@@ -112,19 +111,11 @@ export class MemoryFsProvider implements FileSystemProvider {
     return handle;
   }
 
-  open(
-    filename: string,
-    desiredAccess: AceMask,
-    flags: Flags,
-    attrs: Attrs
-  ): Promise<FileHandle> {
+  open(filename: string, desiredAccess: AceMask, flags: Flags, attrs: Attrs): Promise<FileHandle> {
     filename = realpath("/", filename);
     const accessDisposition = flags & Flags.ACCESS_DISPOSITION;
 
-    if (
-      accessDisposition === Flags.OPEN_EXISTING ||
-      accessDisposition === Flags.TRUNCATE_EXISTING
-    ) {
+    if (accessDisposition === Flags.OPEN_EXISTING || accessDisposition === Flags.TRUNCATE_EXISTING) {
       const entry = this.#findEntry(filename);
       if (isDir(entry)) {
         throw new FileSystemError();
@@ -186,18 +177,12 @@ export class MemoryFsProvider implements FileSystemProvider {
     return SynchronousPromise.resolve();
   }
 
-  read(
-    handle: FileHandle,
-    offset: number,
-    length: number
-  ): Promise<Uint8Array> {
+  read(handle: FileHandle, offset: number, length: number): Promise<Uint8Array> {
     const entry = this.#findHandle(handle);
     if (isDir(entry)) {
       throw new FileSystemError();
     }
-    return SynchronousPromise.resolve(
-      entry.content?.slice(offset, offset + length) ?? new Uint8Array()
-    );
+    return SynchronousPromise.resolve(entry.content?.slice(offset, offset + length) ?? new Uint8Array());
   }
 
   readDir(handle: FileHandle): Promise<DirList> {
@@ -245,11 +230,7 @@ export class MemoryFsProvider implements FileSystemProvider {
     throw new Error("Method not implemented.");
   }
 
-  async rename(
-    oldpath: string,
-    newpath: string,
-    flags: RenameFlags
-  ): Promise<void> {
+  async rename(oldpath: string, newpath: string, flags: RenameFlags): Promise<void> {
     throw new Error("Method not implemented.");
   }
 
@@ -308,20 +289,11 @@ export class MemoryFsProvider implements FileSystemProvider {
     throw new Error("Method not implemented.");
   }
 
-  link(
-    newLinkPath: string,
-    existingPath: string,
-    symLink: boolean
-  ): Promise<void> {
+  link(newLinkPath: string, existingPath: string, symLink: boolean): Promise<void> {
     throw new Error("Method not implemented.");
   }
 
-  block(
-    handle: FileHandle,
-    offset: number,
-    length: number,
-    uLockMask: Flags
-  ): Promise<void> {
+  block(handle: FileHandle, offset: number, length: number, uLockMask: Flags): Promise<void> {
     throw new Error("Method not implemented.");
   }
 
@@ -329,11 +301,7 @@ export class MemoryFsProvider implements FileSystemProvider {
     throw new Error("Method not implemented.");
   }
 
-  realpath(
-    originalPath: string,
-    controlByte?: RealPathControlByte,
-    composePath?: string[]
-  ): Promise<DirList> {
+  realpath(originalPath: string, controlByte?: RealPathControlByte, composePath?: string[]): Promise<DirList> {
     return SynchronousPromise.resolve({
       files: [
         {

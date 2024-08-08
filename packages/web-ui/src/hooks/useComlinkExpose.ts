@@ -1,12 +1,13 @@
 import * as Comlink from "comlink";
 import { useMemo } from "react";
 
-export function useComlinkExpose<T>(w: Window | null | undefined, obj: T) {
+export function useComlinkExpose<T>(w: Window | MessagePort | null | undefined, obj: T) {
   return useMemo(() => {
     if (!w) {
-      return undefined;
+      return false;
     }
-    const ep = Comlink.windowEndpoint(w, self, "*");
-    return Comlink.expose(obj, ep);
+    const ep = w instanceof MessagePort ? w : Comlink.windowEndpoint(w);
+    Comlink.expose(obj, ep);
+    return true;
   }, [w, obj]);
 }

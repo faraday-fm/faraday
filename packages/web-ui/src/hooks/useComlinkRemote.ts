@@ -1,13 +1,14 @@
 import * as Comlink from "comlink";
-import { useEffect, useMemo, useRef } from "react";
+import { useEffect, useRef } from "react";
 
-export function useComlinkRemote<T>(w: Window | null | undefined) {
+export function useComlinkRemote<T>(w: Window | MessagePort | null | undefined) {
   const remoteRef = useRef<T>();
   useEffect(() => {
     if (!w) {
       return undefined;
     }
-    remoteRef.current = Comlink.wrap<T>(Comlink.windowEndpoint(w, self, "*")) as T;
+    const ep = w instanceof MessagePort ? w : Comlink.windowEndpoint(w);
+    remoteRef.current = Comlink.wrap<T>(ep) as T;
   }, [w]);
   return remoteRef;
 }

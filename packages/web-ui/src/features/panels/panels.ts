@@ -5,9 +5,9 @@ import type { FilePanelLayout, PanelLayout, PanelsLayout } from "../../types";
 import { type List, createList } from "../../utils/immutableList";
 import { traverseLayout, traverseLayoutRows } from "../../utils/layout";
 import { combine, truncateLastDir } from "../../utils/path";
-import { type Dirent, FileType } from "../fs/types";
 import { isDir } from "../fs/utils";
 import type { CursorPosition, PanelState } from "./types";
+import type { Dirent } from "@frdy/sdk";
 
 const activePanelAtom = atom<PanelLayout>();
 const activeFilePanelAtom = atom<FilePanelLayout>();

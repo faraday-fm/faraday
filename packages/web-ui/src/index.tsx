@@ -15,7 +15,6 @@ import type { FaradayProps } from "./types";
 
 export { isDir } from "./features/fs/utils";
 export * from "./features/fs/FileSystemError";
-export * from "./features/fs/types";
 export type {
   FaradayConfig,
   FaradayHost,

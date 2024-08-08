@@ -1,8 +1,7 @@
-import { FileSystemProvider } from "@frdy/web-ui";
 import { unzip } from "unzipit";
 import faradayAppFs from "../assets/faraday.app?zip";
-import { AceMask, FileType, Flags } from "@frdy/web-ui";
 import { MemoryFsProvider } from "@frdy/memory-fs";
+import { AceMask, FileType, Flags, type FileSystemProvider } from "@frdy/sdk";
 
 async function dir(fs: FileSystemProvider, name: string, lastModDate: Date) {
   await fs.mkdir(name, {

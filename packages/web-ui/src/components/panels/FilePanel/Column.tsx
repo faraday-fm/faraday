@@ -1,6 +1,6 @@
+import type { Dirent } from "@frdy/sdk";
 import { useEffect, useRef, useState } from "react";
 import { useGlyphSize } from "../../../contexts/glyphSizeContext";
-import type { Dirent } from "../../../features/fs/types";
 import { css } from "../../../features/styles";
 import { useElementSize } from "../../../hooks/useElementSize";
 import type { List } from "../../../utils/immutableList";

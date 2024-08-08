@@ -3,10 +3,9 @@ import EventEmitter from "eventemitter3";
 import { setError } from "./error";
 import "./index.css";
 import type { WebViewActions } from "./types";
+import { getNamedPort } from "./getNamedPort";
 
-const EE = new EventEmitter();
-
-const comlinkEndpoint = Comlink.windowEndpoint(window.parent, self, "*");
+export const EE = new EventEmitter();
 
 const actions: WebViewActions = {
   async setTheme(theme) {
@@ -35,6 +34,9 @@ const actions: WebViewActions = {
     }
   },
 };
-Comlink.expose(actions, comlinkEndpoint);
+
+export async function startActionsListener() {
+  Comlink.expose(actions, await getNamedPort("actions"));
+}
 
 const { resolve: resolveModule, promise: modulePromise } = Promise.withResolvers();

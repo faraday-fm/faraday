@@ -67,6 +67,7 @@
     "typescript": "^5.5.4"
   },
   "dependencies": {
+    "@frdy/sdk": "workspace:*",
     "@frdy/webview-host": "workspace:*",
     "@xterm/addon-fit": "~0.10.0",
     "@xterm/addon-unicode11": "~0.8.0",

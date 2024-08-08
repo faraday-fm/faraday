@@ -1,11 +1,13 @@
 import quickViewHtml from "@frdy/webview-host/index.html";
-import type { WebViewActions, WebViewEvents } from "@frdy/webview-host/types";
+import type { WebViewActions, WebView, WebViewEvents } from "@frdy/webview-host/types";
 import * as Comlink from "comlink";
 import { type ForwardedRef, forwardRef, useEffect, useImperativeHandle, useMemo, useRef, useState } from "react";
 import { css } from "../../features/styles";
 import { useTheme } from "../../features/themes";
 import { useComlinkExpose } from "../../hooks/useComlinkExpose";
 import { useComlinkRemote } from "../../hooks/useComlinkRemote";
+import { useFs } from "../../features/fs/useFs";
+import { useNamedChannels } from "../../hooks/useNamedChannels";
 
 export interface QuickViewFrameActions {
   setContent({ content, path }: { content?: Uint8Array; path?: string }): Promise<void>;
@@ -20,24 +22,45 @@ export const QuickViewFrame = forwardRef(function QuickViewFrame({ script }: { s
   const themeSetPromise = useRef(Promise.withResolvers<void>());
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const theme = useTheme();
+  const fs = useFs();
+  const getNamedChannel = useNamedChannels();
 
   if (script !== initialScript) {
     throw new Error("'script' should not be changed.");
   }
 
-  const remoteRef = useComlinkRemote<WebViewActions>(wnd);
-  useComlinkExpose(
+  const portExposed = useComlinkExpose(
     wnd,
     useMemo(
       () =>
         ({
-          onFocus() {
+          getNamedPort: (name) => {
+            const p = getNamedChannel(name).port2;
+            return Comlink.transfer(p, [p]);
+          },
+        }) satisfies WebView,
+      [getNamedChannel],
+    ),
+  );
+
+  useComlinkExpose(getNamedChannel("fs").port1, fs);
+
+  const actionsRef = useComlinkRemote<WebViewActions>(getNamedChannel("actions").port1);
+
+  useComlinkExpose(
+    getNamedChannel("events").port1,
+    useMemo(
+      () =>
+        ({
+          async onFocus() {
             iframeRef.current?.focus();
           },
-        }) as WebViewEvents,
+        }) satisfies WebViewEvents,
       [],
     ),
   );
+
+  // useComlinkExpose(wnd, fs);
 
   useImperativeHandle(
     ref,
@@ -45,9 +68,9 @@ export const QuickViewFrame = forwardRef(function QuickViewFrame({ script }: { s
       async setContent({ content, path }) {
         await themeSetPromise.current.promise;
         if (content?.buffer) {
-          remoteRef.current?.setContent(Comlink.transfer({ content, path }, [content.buffer]));
+          actionsRef.current?.setContent(Comlink.transfer({ content, path }, [content.buffer]));
         } else {
-          remoteRef.current?.setContent({ content, path });
+          actionsRef.current?.setContent({ content, path });
         }
       },
       async setVisibility(show) {
@@ -57,26 +80,26 @@ export const QuickViewFrame = forwardRef(function QuickViewFrame({ script }: { s
           } else if (iframeRef.current.style.display !== "none") {
             iframeRef.current.style.display = "none";
             await themeSetPromise.current.promise;
-            remoteRef.current?.setContent({});
+            actionsRef.current?.setContent({});
           }
         }
       },
     }),
-    [remoteRef],
+    [actionsRef],
   );
 
   useEffect(() => {
-    if (wnd) {
-      remoteRef.current?.setScript(initialScript);
+    if (portExposed) {
+      actionsRef.current?.setScript(initialScript);
     }
-  }, [wnd, remoteRef, initialScript]);
+  }, [portExposed, actionsRef, initialScript]);
 
   useEffect(() => {
-    if (wnd) {
-      remoteRef.current?.setTheme(theme);
+    if (portExposed) {
+      actionsRef.current?.setTheme(theme);
       themeSetPromise.current.resolve();
     }
-  }, [wnd, remoteRef, theme]);
+  }, [portExposed, actionsRef, theme]);
 
   return (
     <iframe

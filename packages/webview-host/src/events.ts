@@ -1,9 +1,11 @@
 import * as Comlink from "comlink";
+import { getNamedPort } from "./getNamedPort";
 import type { WebViewEvents } from "./types";
 
-const comlinkEndpoint = Comlink.windowEndpoint(window.parent, self);
-const events = Comlink.wrap<WebViewEvents>(comlinkEndpoint);
+const eventsPort = await getNamedPort("events");
 
-export function onFocus() {
-  return events.onFocus();
+const events = Comlink.wrap<WebViewEvents>(eventsPort);
+
+export async function onFocus() {
+  await events.onFocus();
 }

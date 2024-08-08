@@ -1,8 +1,8 @@
+import { AttribBits, type Dirent } from "@frdy/sdk";
 import isPromise from "is-promise";
 import { memo, useEffect, useMemo, useState } from "react";
 import { useFileIconResolver } from "../../../contexts/fileIconsContext";
 import { useGlyphSize } from "../../../contexts/glyphSizeContext";
-import { AttribBits, type Dirent } from "../../../features/fs/types";
 import { isDir } from "../../../features/fs/utils";
 import { css } from "../../../features/styles";
 import { CellText } from "./CellText";

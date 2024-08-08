@@ -1,13 +1,12 @@
+import type { Dirent } from "@frdy/sdk";
 import { memo, useCallback, useEffect, useLayoutEffect, useRef } from "react";
 import { FilePanel, type FilePanelActions } from "../components/panels/FilePanel/FilePanel";
-import { ContextVariablesProvider, DebugContextVariables, useCommandBindings } from "../features/commands";
+import { ContextVariablesProvider, DebugContextVariables } from "../features/commands";
 import { useDirListing } from "../features/fs/hooks";
-import type { Dirent } from "../features/fs/types";
 import { isDir } from "../features/fs/utils";
 import { useGlobalContext } from "../features/globalContext";
 import { type CursorPosition, usePanelState, usePanels } from "../features/panels";
 import { css } from "../features/styles";
-import { useFocused } from "../hooks/useFocused";
 import type { FilePanelLayout } from "../types";
 import { createList, empty } from "../utils/immutableList";
 import { combine } from "../utils/path";

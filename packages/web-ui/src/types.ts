@@ -1,4 +1,4 @@
-import type { Dirent, FileSystemProvider } from "./features/fs/types";
+import type { Dirent, FileSystemProvider } from "@frdy/sdk";
 
 export interface RowLayout {
   id: string;

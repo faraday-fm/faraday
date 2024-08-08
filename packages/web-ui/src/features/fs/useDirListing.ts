@@ -1,8 +1,8 @@
 import { useEffect } from "react";
 import { type List, createList } from "../../utils/immutableList";
 import { iterateDir } from "./iterateDir";
-import type { Dirent } from "./types";
 import { useFs } from "./useFs";
+import type { Dirent } from "@frdy/sdk";
 
 export function useDirListing(path: string | undefined, onListUpdated: (path: string, files: List<Dirent>) => void) {
   const fs = useFs();

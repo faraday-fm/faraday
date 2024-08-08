@@ -1,8 +1,8 @@
+import type { Dirent } from "@frdy/sdk";
 import equal from "fast-deep-equal";
 import { forwardRef, memo, useCallback, useImperativeHandle, useMemo, useRef, useState } from "react";
 import { GlyphSizeProvider } from "../../../contexts/glyphSizeContext";
 import { useCommandBindings, useExecuteCommand, useSetContextVariables } from "../../../features/commands";
-import type { Dirent } from "../../../features/fs/types";
 import { isDir } from "../../../features/fs/utils";
 import type { CursorPosition } from "../../../features/panels";
 import { css } from "../../../features/styles";

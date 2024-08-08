@@ -1,4 +1,4 @@
-import type { FileSystemProvider } from "./types";
+import type { FileSystemProvider } from "@frdy/sdk";
 
 export async function* iterateDir(fs: FileSystemProvider, path: string, signal?: AbortSignal) {
   const handle = await fs.openDir(path, { signal });

@@ -26,6 +26,9 @@ importers:
       '@frdy/memory-fs':
         specifier: workspace:*
         version: link:../../packages/memory-fs
+      '@frdy/sdk':
+        specifier: workspace:*
+        version: link:../../packages/sdk
       '@frdy/web-ui':
         specifier: workspace:*
         version: link:../../packages/web-ui
@@ -73,30 +76,11 @@ importers:
         specifier: ~5.4.0
         version: 5.4.0(@types/node@22.1.0)(terser@5.31.5)
 
-  packages/file-viewer:
+  packages/memory-fs:
     dependencies:
       '@frdy/sdk':
         specifier: workspace:*
         version: link:../sdk
-      eventemitter3:
-        specifier: ^5.0.1
-        version: 5.0.1
-    devDependencies:
-      typescript:
-        specifier: ^5.5.3
-        version: 5.5.4
-      vite:
-        specifier: ^5.4.0
-        version: 5.4.0(@types/node@22.1.0)(terser@5.31.5)
-      vite-plugin-html:
-        specifier: ^3.2.2
-        version: 3.2.2(vite@5.4.0(@types/node@22.1.0)(terser@5.31.5))
-      vite-plugin-singlefile:
-        specifier: ^2.0.2
-        version: 2.0.2(rollup@4.20.0)(vite@5.4.0(@types/node@22.1.0)(terser@5.31.5))
-
-  packages/memory-fs:
-    dependencies:
       '@frdy/web-ui':
         specifier: workspace:*
         version: link:../web-ui
@@ -108,12 +92,19 @@ importers:
         specifier: ~8.2.4
         version: 8.2.4(postcss@8.4.41)(typescript@5.5.4)
 
-  packages/sdk: {}
+  packages/sdk:
+    devDependencies:
+      tsup:
+        specifier: ~8.2.4
+        version: 8.2.4(postcss@8.4.41)(typescript@5.5.4)
 
   packages/typescript-config: {}
 
   packages/web-ui:
     dependencies:
+      '@frdy/sdk':
+        specifier: workspace:*
+        version: link:../sdk
       '@frdy/webview-host':
         specifier: workspace:*
         version: link:../webview-host
