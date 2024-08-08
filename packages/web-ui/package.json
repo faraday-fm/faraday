@@ -1,7 +1,7 @@
 {
   "name": "@frdy/web-ui",
   "private": false,
-  "version": "1.35.0",
+  "version": "1.35.1",
   "description": "Web front-end for Faraday file manager",
   "source": "src/index.tsx",
   "main": "dist/index.cjs.js",

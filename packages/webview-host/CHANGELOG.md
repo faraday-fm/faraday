@@ -1,5 +1,12 @@
 # @frdy/webview-host
 
+## 0.2.1
+
+### Patch Changes
+
+- Updated dependencies [da28cf5]
+  - @frdy/sdk@1.2.0
+
 ## 0.2.0
 
 ### Minor Changes
