@@ -8,10 +8,8 @@
   "module": "dist/index.esm.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "start": "rollup -c -w",
+    "dev": "rollup -c -w",
     "build": "rollup -c --silent",
-    "_phase:start": "rollup -c -w",
-    "_phase:build": "rollup -c --silent",
     "test": "echo \"Error: no test specified\" && exit 0",
     "lint": "biome check"
   },
@@ -69,6 +67,7 @@
     "typescript": "^5.5.4"
   },
   "dependencies": {
+    "@frdy/webview-host": "workspace:*",
     "@xterm/addon-fit": "~0.10.0",
     "@xterm/addon-unicode11": "~0.8.0",
     "@xterm/addon-web-links": "~0.11.0",

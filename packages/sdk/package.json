@@ -1,0 +1,12 @@
+{
+  "name": "@frdy/sdk",
+  "version": "1.0.0",
+  "description": "Faraday SDK for extension developers",
+  "types": "types.d.ts",
+  "scripts": {
+    "build": ""
+  },
+  "keywords": [],
+  "author": "Mikhail Isupov",
+  "license": "ISC"
+}
