@@ -4,9 +4,9 @@ import { useFileIconResolver } from "../../../contexts/fileIconsContext";
 import { useGlyphSize } from "../../../contexts/glyphSizeContext";
 import { AttribBits, type Dirent } from "../../../features/fs/types";
 import { isDir } from "../../../features/fs/utils";
+import { css } from "../../../features/styles";
 import { CellText } from "./CellText";
 import type { CursorStyle } from "./types";
-import { css } from "../../../features/styles";
 
 interface FullFileNameProps {
   cursorStyle: CursorStyle;

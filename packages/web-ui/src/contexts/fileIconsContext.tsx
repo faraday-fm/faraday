@@ -1,13 +1,13 @@
 import isPromise from "is-promise";
 import { type PropsWithChildren, type ReactNode, createContext, useCallback, useContext, useMemo } from "react";
 import { useIconThemes } from "../features/extensions/hooks";
+import { filestream } from "../features/fs/filestream";
 import { useFs } from "../features/fs/hooks";
+import { streamToUint8Array } from "../features/fs/streamToUint8Array";
 import { useSettings } from "../features/settings/settings";
 import { css } from "../features/styles";
 import { type IconTheme, isSvgIcon } from "../schemas/iconTheme";
 import { combine, filename } from "../utils/path";
-import { filestream } from "../features/fs/filestream";
-import { streamToUint8Array } from "../features/fs/streamToUint8Array";
 
 export type IconResolver = (path: string, isDir: boolean, isOpen: boolean) => ReactNode | PromiseLike<ReactNode>;
 

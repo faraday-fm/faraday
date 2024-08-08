@@ -270,9 +270,7 @@ export const FilePanel = memo(
                   <FileInfoFooter file={items.get(adjustedCursor.activeIndex)} />
                 </Border>
               </div>
-              <div className={css("panel-footer")}>
-                {`${bytesCount.toLocaleString()} bytes in ${filesCount.toLocaleString()} files`}
-              </div>
+              <div className={css("panel-footer")}>{`${bytesCount.toLocaleString()} bytes in ${filesCount.toLocaleString()} files`}</div>
             </div>
           </Border>
         </GlyphSizeProvider>

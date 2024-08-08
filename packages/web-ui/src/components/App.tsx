@@ -2,7 +2,6 @@ import JSON5 from "json5";
 import { useEffect, useRef, useState } from "react";
 import defaultLayout from "../assets/layout.json5";
 import { ActionsBar } from "../components/ActionsBar";
-import CopyDialog from "./CopyDialog";
 import { LayoutContainer } from "../components/LayoutContainer";
 import { useFaradayHost } from "../contexts/faradayHostContext";
 import { useGlyphSize } from "../contexts/glyphSizeContext";
@@ -12,6 +11,7 @@ import { useInert } from "../features/inert/hooks";
 import { usePanels } from "../features/panels";
 import { css } from "../features/styles";
 import type { PanelsLayout } from "../types";
+import CopyDialog from "./CopyDialog";
 import DeleteDialog from "./DeleteDialog";
 
 // const Terminal = lazy(() => import("@components/Terminal/Terminal"));

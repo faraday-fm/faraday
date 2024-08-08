@@ -1,4 +1,4 @@
-import { AceMask, Flags, type FileSystemProvider } from "./types";
+import { AceMask, type FileSystemProvider, Flags } from "./types";
 
 const BATCH_SIZE = 1024 * 1024;
 

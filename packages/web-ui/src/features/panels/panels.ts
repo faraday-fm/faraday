@@ -2,12 +2,12 @@ import { produce } from "immer";
 import { atom, useAtom } from "jotai";
 import { useCallback } from "react";
 import type { FilePanelLayout, PanelLayout, PanelsLayout } from "../../types";
-import { createList, type List } from "../../utils/immutableList";
+import { type List, createList } from "../../utils/immutableList";
 import { traverseLayout, traverseLayoutRows } from "../../utils/layout";
 import { combine, truncateLastDir } from "../../utils/path";
 import { type Dirent, FileType } from "../fs/types";
-import type { CursorPosition, PanelState } from "./types";
 import { isDir } from "../fs/utils";
+import type { CursorPosition, PanelState } from "./types";
 
 const activePanelAtom = atom<PanelLayout>();
 const activeFilePanelAtom = atom<FilePanelLayout>();

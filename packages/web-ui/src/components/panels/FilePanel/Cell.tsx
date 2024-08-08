@@ -1,7 +1,7 @@
 import type { JSX, PropsWithChildren } from "react";
 import { css } from "../../../features/styles";
-import type { CursorStyle } from "./types";
 import { useMediaQuery } from "../../../hooks/useMediaQuery";
+import type { CursorStyle } from "./types";
 
 interface CellProps {
   cursorStyle: CursorStyle;

@@ -7,10 +7,10 @@ import { isDir } from "../features/fs/utils";
 import { useGlobalContext } from "../features/globalContext";
 import { type CursorPosition, usePanelState, usePanels } from "../features/panels";
 import { css } from "../features/styles";
+import { useFocused } from "../hooks/useFocused";
 import type { FilePanelLayout } from "../types";
 import { createList, empty } from "../utils/immutableList";
 import { combine } from "../utils/path";
-import { useFocused } from "../hooks/useFocused";
 
 interface ReduxFilePanelProps {
   layout: FilePanelLayout & { id: string };

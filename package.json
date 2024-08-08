@@ -9,6 +9,7 @@
     "prepublishOnly": "changeset publish"
   },
   "devDependencies": {
+    "@biomejs/biome": "^1.8.3",
     "@changesets/cli": "^2.27.7",
     "turbo": "^2.0.12",
     "typescript": "^5.5.4"

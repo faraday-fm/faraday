@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { filestream } from "./filestream";
-import { useFs } from "./useFs";
 import { streamToUint8Array } from "./streamToUint8Array";
+import { useFs } from "./useFs";
 
 interface FileContent {
   done: boolean;

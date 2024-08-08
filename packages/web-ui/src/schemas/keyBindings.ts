@@ -1,4 +1,4 @@
-import { type InferOutput, array, object, optional, string, any } from "valibot";
+import { type InferOutput, any, array, object, optional, string } from "valibot";
 
 export const KeyBindingSchema = object({
   key: string(),

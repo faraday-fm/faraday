@@ -1,11 +1,11 @@
 import { memo, useCallback, useRef } from "react";
 import { useGlyphSize } from "../../../../contexts/glyphSizeContext";
+import type { Dirent } from "../../../../features/fs/types";
 import type { List } from "../../../../utils/immutableList";
 import { Cell } from "../Cell";
 import { ColumnsScroller, type ColumnsScrollerProps } from "../ColumnsScroller";
 import { FullFileName } from "../FullFileName";
 import type { CursorStyle } from "../types";
-import type { Dirent } from "../../../../features/fs/types";
 
 interface CondensedViewProps {
   items: List<Dirent>;
