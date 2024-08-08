@@ -1,0 +1,88 @@
+{
+  "name": "@frdy/web-ui",
+  "private": false,
+  "version": "1.33.0",
+  "description": "Web front-end for Faraday file manager",
+  "source": "src/index.tsx",
+  "main": "dist/index.cjs.js",
+  "module": "dist/index.esm.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "start": "rollup -c -w",
+    "build": "rollup -c --silent",
+    "_phase:start": "rollup -c -w",
+    "_phase:build": "rollup -c --silent",
+    "test": "echo \"Error: no test specified\" && exit 0",
+    "lint": "biome check"
+  },
+  "files": [
+    "dist",
+    "package.json",
+    "README.md"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/faraday-fm/web-ui.git"
+  },
+  "keywords": [
+    "faraday",
+    "web",
+    "ui",
+    "frontend",
+    "file-manager"
+  ],
+  "author": "Mikhail Isupov",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/faraday-fm/web-ui/issues"
+  },
+  "homepage": "https://github.com/faraday-fm/web-ui#readme",
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "peerDependencies": {
+    "react": ">=18"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^1.8.3",
+    "@rollup/plugin-alias": "^5.0.1",
+    "@rollup/plugin-commonjs": "^26.0.1",
+    "@rollup/plugin-json": "^6.0.1",
+    "@rollup/plugin-node-resolve": "^15.2.3",
+    "@rollup/plugin-terser": "^0.4.4",
+    "@rollup/plugin-typescript": "^11.1.6",
+    "@rollup/pluginutils": "^5.1.0",
+    "@types/parsimmon": "^1.10.8",
+    "@types/react": "^18.3.3",
+    "react": "^18.3.1",
+    "rollup": "^4.20.0",
+    "rollup-plugin-delete": "^2.0.0",
+    "rollup-plugin-dts": "^6.1.0",
+    "rollup-plugin-peer-deps-external": "^2.2.4",
+    "rollup-plugin-string": "^3.0.0",
+    "rollup-plugin-typescript2": "^0.36.0",
+    "typescript": "^5.5.4"
+  },
+  "dependencies": {
+    "@xterm/addon-fit": "~0.10.0",
+    "@xterm/addon-unicode11": "~0.8.0",
+    "@xterm/addon-web-links": "~0.11.0",
+    "@xterm/addon-webgl": "~0.18.0",
+    "@xterm/xterm": "~5.5.0",
+    "ansi-colors": "^4.1.3",
+    "deepmerge": "^4.3.1",
+    "fast-deep-equal": "^3.1.3",
+    "immer": "^10.0.3",
+    "is-promise": "^4.0.0",
+    "jotai": "^2.9.1",
+    "json5": "^2.2.3",
+    "list": "^2.0.19",
+    "parsimmon": "^1.18.1",
+    "valibot": "^0.37.0"
+  }
+}
