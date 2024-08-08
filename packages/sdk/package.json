@@ -1,6 +1,6 @@
 {
   "name": "@frdy/sdk",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Faraday SDK for extension developers",
   "types": "types.d.ts",
   "scripts": {
