@@ -1,5 +1,16 @@
 # @frdy/web-ui
 
+## 1.35.0
+
+### Minor Changes
+
+- bfffae8: Added comlink support
+
+### Patch Changes
+
+- Updated dependencies [bfffae8]
+  - @frdy/webview-host@0.2.0
+
 ## 1.34.2
 
 ### Patch Changes
