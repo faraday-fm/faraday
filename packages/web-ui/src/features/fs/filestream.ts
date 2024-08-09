@@ -1,4 +1,4 @@
-import { AceMask, Flags, type FileSystemProvider } from "@frdy/sdk";
+import { AceMask, type FileSystemProvider, Flags } from "@frdy/sdk";
 
 const BATCH_SIZE = 1024 * 1024;
 

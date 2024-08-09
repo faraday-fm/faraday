@@ -1,3 +1,4 @@
+import type { Dirent } from "@frdy/sdk";
 import { produce } from "immer";
 import { atom, useAtom } from "jotai";
 import { useCallback } from "react";
@@ -7,7 +8,6 @@ import { traverseLayout, traverseLayoutRows } from "../../utils/layout";
 import { combine, truncateLastDir } from "../../utils/path";
 import { isDir } from "../fs/utils";
 import type { CursorPosition, PanelState } from "./types";
-import type { Dirent } from "@frdy/sdk";
 
 const activePanelAtom = atom<PanelLayout>();
 const activeFilePanelAtom = atom<FilePanelLayout>();

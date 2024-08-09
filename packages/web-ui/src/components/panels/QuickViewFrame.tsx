@@ -1,12 +1,12 @@
 import quickViewHtml from "@frdy/webview-host/index.html";
-import type { WebViewActions, WebView, WebViewEvents } from "@frdy/webview-host/types";
+import type { WebView, WebViewActions, WebViewEvents } from "@frdy/webview-host/types";
 import * as Comlink from "comlink";
 import { type ForwardedRef, forwardRef, useEffect, useImperativeHandle, useMemo, useRef, useState } from "react";
+import { useFs } from "../../features/fs/useFs";
 import { css } from "../../features/styles";
 import { useTheme } from "../../features/themes";
 import { useComlinkExpose } from "../../hooks/useComlinkExpose";
 import { useComlinkRemote } from "../../hooks/useComlinkRemote";
-import { useFs } from "../../features/fs/useFs";
 import { useNamedChannels } from "../../hooks/useNamedChannels";
 
 export interface QuickViewFrameActions {
