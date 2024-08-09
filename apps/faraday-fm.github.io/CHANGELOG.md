@@ -1,5 +1,18 @@
 # faraday-fm.github.io
 
+## 1.35.0
+
+### Minor Changes
+
+- fe89057: Simple text-viewer extension
+
+### Patch Changes
+
+- Updated dependencies [fe89057]
+  - @frdy/web-ui@1.36.0
+  - @frdy/sdk@1.3.0
+  - @frdy/memory-fs@1.33.6
+
 ## 1.34.4
 
 ### Patch Changes

@@ -1,5 +1,17 @@
 # @frdy/web-ui
 
+## 1.36.0
+
+### Minor Changes
+
+- fe89057: Simple text-viewer extension
+
+### Patch Changes
+
+- Updated dependencies [fe89057]
+  - @frdy/webview-host@0.3.0
+  - @frdy/sdk@1.3.0
+
 ## 1.35.1
 
 ### Patch Changes
