@@ -8,17 +8,16 @@ export function useQuickViewsByFileName() {
     const result: Record<FileName, FullyQualifiedQuickView[]> = {};
     const quickViewsByExtension = Object.entries(quickViews);
     quickViewsByExtension.forEach(([qvId, qv]) => {
-      if (!qv.definition || !qv.isActive || !qv.script) {
+      if (!qv.definition || !qv.isActive) {
         return;
       }
       const quickView = qv.definition;
-      const script = qv.script;
       if (qv.definition.filenames) {
         qv.definition.filenames.forEach((fileName) => {
           (result[fileName] ??= []).push({
             extId: qvId,
-            quickView: quickView,
-            script,
+            quickView,
+            extensionPath: qv.extensionPath,
           });
         });
       }

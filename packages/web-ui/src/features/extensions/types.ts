@@ -6,6 +6,6 @@ export type FileExtension = string;
 
 export interface FullyQualifiedQuickView {
   extId: string;
+  extensionPath: string;
   quickView: QuickViewDefinition;
-  script: string;
 }

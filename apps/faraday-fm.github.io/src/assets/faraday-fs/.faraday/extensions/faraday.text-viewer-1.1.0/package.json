@@ -1,0 +1,34 @@
+{
+  "name": "text-viewer",
+  "displayName": "Text Viewer",
+  "publisher": "faraday",
+  "description": "Simple text viewer",
+  "author": "Mikhail Isupov",
+  "version": "1.1.0",
+  "license": "MIT",
+  "private": true,
+  "categories": [
+    "QuickView"
+  ],
+  "keywords": [
+    "quickview",
+    "text"
+  ],
+  "contributes": {
+    "quickViews": [
+      {
+        "id": "text",
+        "extensions": [
+          ".txt",
+          ".map"
+        ],
+        "filenames": [
+          "LICENSE.md",
+          "README.md",
+          "CHANGELOG.md"
+        ],
+        "path": "./dist/index.mjs"
+      }
+    ]
+  }
+}

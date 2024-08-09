@@ -4,8 +4,29 @@ import { setError } from "./error";
 import "./index.css";
 import type { WebViewActions } from "./types";
 import { getNamedPort } from "./getNamedPort";
+import "systemjs";
+import { readFile, RealPathControlByte } from "@frdy/sdk";
 
 export const EE = new EventEmitter();
+
+const systemJSPrototype = System.constructor.prototype;
+
+systemJSPrototype.resolve = (id: string, parentUrl: string) => {
+  if (!parentUrl) {
+    return id;
+  }
+  const segments = parentUrl.split('/');
+  segments.length = segments.length - 1;
+  return `${segments.join('/')}/${id}`;
+};
+
+systemJSPrototype.shouldFetch = () => true;
+
+systemJSPrototype.fetch = async (url: string) => {
+  const result = await readFile(url);
+  const blob = new Blob([result]);
+  return new Response(blob, {headers: {"Content-Type": "text/javascript"}});
+};
 
 const actions: WebViewActions = {
   async setTheme(theme) {
@@ -14,28 +35,22 @@ const actions: WebViewActions = {
     style.innerHTML = `body{font-family:${theme.fontFamily};background-color:${theme.colors["panel.background"]};color:${theme.colors.foreground}}a{color:${theme.colors["textLink.foreground"]}}`;
     EE.emit("themechange", theme);
   },
-  async setScript(script) {
+  async setScriptPath(pwdPath, scriptPath) {
     try {
-      const m = await import(`data:text/javascript;base64,${btoa(script)}`);
-      m.init?.();
-      resolveModule(m);
-    } catch (err) {
-      console.error(err)
-      setError(err);
-    }
-  },
-  async setContent({ content, path }) {
-    setError(undefined);
-    try {
+      console.error("!@#", pwdPath, scriptPath);
+      const rp = await faraday.fs.realpath(pwdPath, RealPathControlByte.NO_CHECK, [scriptPath]);
+      console.error("RP", rp.files[0].path);
+      const m = await System.import(rp.files[0].path);
+      console.error("!!");
       // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-      const module: any = await modulePromise;
-      module.updateContent?.({ content, path });
+      (m as any).init?.();
     } catch (err) {
-      console.error(err)
+      console.error(err);
       setError(err);
     }
   },
   async setActiveFilepath(filepath) {
+    faraday.activefile = filepath;
     EE.emit("activefilechange", filepath);
   },
 };
@@ -43,5 +58,3 @@ const actions: WebViewActions = {
 export async function startActionsListener() {
   Comlink.expose(actions, await getNamedPort("actions"));
 }
-
-const { resolve: resolveModule, promise: modulePromise } = Promise.withResolvers();

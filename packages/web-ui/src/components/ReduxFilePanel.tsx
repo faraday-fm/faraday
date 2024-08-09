@@ -4,7 +4,7 @@ import { FilePanel, type FilePanelActions } from "../components/panels/FilePanel
 import { ContextVariablesProvider, DebugContextVariables } from "../features/commands";
 import { useDirListing } from "../features/fs/hooks";
 import { isDir } from "../features/fs/utils";
-import { useGlobalContext } from "../features/globalContext";
+import { useUpdateGlobalContext } from "../features/globalContext";
 import { type CursorPosition, usePanelState, usePanels } from "../features/panels";
 import { css } from "../features/styles";
 import type { FilePanelLayout } from "../types";
@@ -32,7 +32,7 @@ export const ReduxFilePanel = memo(function ReduxFilePanel({ layout }: ReduxFile
   const panelRef = useRef<FilePanelActions>(null);
   const { activeFilePanel, initPanelState, setPanelItems, setPanelSelectedItems, setPanelCursorPos, setActivePanelId } = usePanels();
   const state = usePanelState(id);
-  const { updateState } = useGlobalContext();
+  const updateState = useUpdateGlobalContext();
   const isActive = activeFilePanel?.id === id;
 
   const items = state?.items ?? createList();

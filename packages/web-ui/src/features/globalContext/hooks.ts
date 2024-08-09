@@ -1,19 +1,21 @@
-import { atom, useAtom } from "jotai";
+import { atom, useAtomValue, useSetAtom } from "jotai";
 import { useCallback } from "react";
 
-interface State {
+export interface GlobalContext {
   "filePanel.activeName"?: string;
   "filePanel.path"?: string;
   "filePanel.isFileActive"?: boolean;
   "filePanel.isDirectoryActive"?: boolean;
 }
 
-const globalContextAtom = atom<State>({});
+const globalContextAtom = atom<GlobalContext>({});
 
 export function useGlobalContext() {
-  const [globalContext, setGlobalContext] = useAtom(globalContextAtom);
+  return useAtomValue(globalContextAtom);
+}
 
-  const updateState = useCallback((newState: Partial<State>) => setGlobalContext((ctx) => ({ ...ctx, ...newState })), [setGlobalContext]);
+export function useUpdateGlobalContext() {
+  const setGlobalContext = useSetAtom(globalContextAtom);
 
-  return { globalContext, updateState };
+  return useCallback((newState: Partial<GlobalContext>) => setGlobalContext((ctx) => ({ ...ctx, ...newState })), [setGlobalContext]);
 }

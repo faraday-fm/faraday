@@ -2,8 +2,7 @@ import type { FileSystemProvider, Theme } from "@frdy/sdk";
 
 export interface WebViewActions {
   setTheme(theme: Theme): Promise<void>;
-  setScript(script: string): Promise<void>;
-  setContent(params: { content?: Uint8Array; path?: string }): Promise<void>;
+  setScriptPath(pwdPath: string, scriptPath: string): Promise<void>;
   setActiveFilepath(filepath: string | undefined): Promise<void>;
 }
 

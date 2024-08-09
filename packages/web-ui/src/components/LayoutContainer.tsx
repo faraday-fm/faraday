@@ -5,7 +5,7 @@ import { css } from "../features/styles";
 import type { PanelsLayout, RowLayout } from "../types";
 import { ReduxFilePanel } from "./ReduxFilePanel";
 import { RenderWhen } from "./RenderWhen";
-import { QuickViewPanel } from "./panels/QuickView";
+import { QuickViewPanel } from "./panels/QuickView/QuickView";
 
 interface LayoutContainerProps {
   layout: PanelsLayout;
