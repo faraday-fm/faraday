@@ -1,5 +1,16 @@
 # @frdy/webview-host
 
+## 0.3.0
+
+### Minor Changes
+
+- fe89057: Simple text-viewer extension
+
+### Patch Changes
+
+- Updated dependencies [fe89057]
+  - @frdy/sdk@1.3.0
+
 ## 0.2.1
 
 ### Patch Changes

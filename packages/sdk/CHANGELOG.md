@@ -1,5 +1,11 @@
 # @frdy/sdk
 
+## 1.3.0
+
+### Minor Changes
+
+- fe89057: Simple text-viewer extension
+
 ## 1.2.0
 
 ### Minor Changes
