@@ -67,6 +67,7 @@ export const QuickViewFrame = forwardRef(function QuickViewFrame({ script }: { s
     () => ({
       async setContent({ content, path }) {
         await themeSetPromise.current.promise;
+        actionsRef.current?.setActiveFilepath(path);
         if (content?.buffer) {
           actionsRef.current?.setContent(Comlink.transfer({ content, path }, [content.buffer]));
         } else {

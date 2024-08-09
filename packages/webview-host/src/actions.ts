@@ -20,6 +20,7 @@ const actions: WebViewActions = {
       m.init?.();
       resolveModule(m);
     } catch (err) {
+      console.error(err)
       setError(err);
     }
   },
@@ -30,8 +31,12 @@ const actions: WebViewActions = {
       const module: any = await modulePromise;
       module.updateContent?.({ content, path });
     } catch (err) {
+      console.error(err)
       setError(err);
     }
+  },
+  async setActiveFilepath(filepath) {
+    EE.emit("activefilechange", filepath);
   },
 };
 

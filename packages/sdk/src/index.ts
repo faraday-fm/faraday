@@ -6,9 +6,14 @@ export type Theme = {
   colors: Record<string, string>;
 };
 
+type EventsMap = {
+  themechange: (theme: Theme) => void;
+  activefilechange: (filepath: string) => void;
+}
+
 export interface FaradayEvents {
-  on(event: "themechange", callback: (theme: Theme) => void): void;
-  off(event: "themechange", callback: (theme: Theme) => void): void;
+  on<E extends keyof EventsMap>(event: E, callback: EventsMap[E]): void;
+  off<E extends keyof EventsMap>(event: E, callback: EventsMap[E]): void;
 }
 
 declare global {
