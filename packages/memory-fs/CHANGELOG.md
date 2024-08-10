@@ -1,5 +1,17 @@
 # @frdy/memory-fs
 
+## 1.34.0
+
+### Minor Changes
+
+- 3ccfdb8: Redesigned Extensions API
+
+### Patch Changes
+
+- Updated dependencies [3ccfdb8]
+  - @frdy/web-ui@1.37.0
+  - @frdy/sdk@1.4.0
+
 ## 1.33.6
 
 ### Patch Changes
