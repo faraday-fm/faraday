@@ -1,5 +1,11 @@
 # @frdy/webview-host
 
+## 0.6.0
+
+### Minor Changes
+
+- 70f2d2c: Fixed Extensions API
+
 ## 0.5.0
 
 ### Minor Changes

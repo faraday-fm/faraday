@@ -1,5 +1,11 @@
 # code-viewer
 
+## 1.2.0
+
+### Minor Changes
+
+- 70f2d2c: Fixed Extensions API
+
 ## 1.1.0
 
 ### Minor Changes
