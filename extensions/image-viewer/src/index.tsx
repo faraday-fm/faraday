@@ -54,6 +54,7 @@ const load = async (path: string) => {
   url = URL.createObjectURL(new Blob([content.buffer], { type: resolveMimetype(path) }));
 
   img.src = url;
+
   img.onload = () => {
     root.innerHTML = "";
     root.appendChild(img);

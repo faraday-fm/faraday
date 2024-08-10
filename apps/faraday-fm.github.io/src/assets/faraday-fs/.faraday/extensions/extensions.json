@@ -3,25 +3,19 @@
     "identifier": {
       "uuid": "b006fa99ed64"
     },
-    "relativeLocation": "faraday.image-viewer-1.0.0"
+    "relativeLocation": "faraday.image-viewer"
   },
-  // {
-  //   "identifier": {
-  //     "uuid": "e79fd22821"
-  //   },
-  //   "relativeLocation": "faraday.markdown-viewer-0.0.1"
-  // },
   {
     "identifier": {
       "uuid": "diasfjhgsiadjf"
     },
-    "relativeLocation": "faraday.code-viewer-1.0.0"
+    "relativeLocation": "faraday.code-viewer"
   },
   {
     "identifier": {
       "uuid": "diaafdsadjf"
     },
-    "relativeLocation": "faraday.text-viewer-1.1.0"
+    "relativeLocation": "faraday.text-viewer"
   },
   {
     "identifier": {
