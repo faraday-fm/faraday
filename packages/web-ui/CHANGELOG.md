@@ -1,5 +1,12 @@
 # @frdy/web-ui
 
+## 1.37.1
+
+### Patch Changes
+
+- Updated dependencies [3c518e5]
+  - @frdy/webview-host@0.5.0
+
 ## 1.37.0
 
 ### Minor Changes
