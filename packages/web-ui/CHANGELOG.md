@@ -1,5 +1,17 @@
 # @frdy/web-ui
 
+## 1.37.0
+
+### Minor Changes
+
+- 3ccfdb8: Redesigned Extensions API
+
+### Patch Changes
+
+- Updated dependencies [3ccfdb8]
+  - @frdy/webview-host@0.4.0
+  - @frdy/sdk@1.4.0
+
 ## 1.36.0
 
 ### Minor Changes
