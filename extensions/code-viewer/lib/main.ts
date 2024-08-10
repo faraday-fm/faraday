@@ -32,8 +32,25 @@ function detectLang(path: string) {
 
 const root = document.getElementById("root")!;
 
+const defaultThemeOption = EditorView.theme({
+  "&": {
+    backgroundColor: faraday.theme.colors["panel.background"],
+    color: faraday.theme.colors["panel.foreground"],
+    width: "100%",
+    height: "100%",
+    overflow: "hidden",
+  },
+  "& .cm-gutters": {
+    backgroundColor: `color-mix(in srgb, ${faraday.theme.colors["panel.background"]}, ${faraday.theme.colors["panel.foreground"]} 5%)`,
+    color: faraday.theme.colors["panel.foreground"],
+  },
+  "& .cm-scroller": {
+    height: "100% !important",
+  },
+});
+
 const view: EditorView = new EditorView({
-  extensions: [basicSetup, cobalt, languageConf.of(javascript()), EditorState.readOnly.of(true)],
+  extensions: [basicSetup, defaultThemeOption, cobalt, languageConf.of(javascript()), EditorState.readOnly.of(true)],
   parent: root,
 });
 

@@ -4,6 +4,7 @@ export interface WebViewActions {
   setIsActive(isActive: boolean): void;
   setTheme(theme: Theme): void;
   setActiveFilepath(filepath: string | undefined): void;
+  loadScript(): void;
 }
 
 export interface WebView {
@@ -14,10 +15,8 @@ export interface WebView {
 export interface WebViewHost {
   onFocus(): void;
   getSettings(): {
-    theme: Theme;
     pwd: string;
     scriptPath: string;
-    activeFilepath: string;
   };
 }
 
