@@ -1,5 +1,11 @@
 # code-viewer
 
+## 1.2.1
+
+### Patch Changes
+
+- 93dc4f4: Code formats
+
 ## 1.2.0
 
 ### Minor Changes
