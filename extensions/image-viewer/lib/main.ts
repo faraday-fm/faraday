@@ -45,6 +45,11 @@ const load = async (path: string) => {
   img.style.top = "50%";
   img.style.left = "50%";
   img.style.transform = "translate(-50%, -50%)";
+  const checkerColor = `color-mix(in srgb, transparent, ${faraday.theme.colors["panel.foreground"]} 5%)`;
+  img.style.backgroundImage =
+   `linear-gradient(45deg, ${checkerColor} 25%, transparent 25%), linear-gradient(-45deg, ${checkerColor} 25%, transparent 25%), linear-gradient(45deg, transparent 75%, ${checkerColor} 75%), linear-gradient(-45deg, transparent 75%, ${checkerColor} 75%)`;
+  img.style.backgroundSize = "20px 20px";
+  img.style.backgroundPosition = "0 0, 0 10px, 10px -10px, -10px 0px";
 
   url = URL.createObjectURL(new Blob([content.buffer], { type: resolveMimetype(path) }));
 
