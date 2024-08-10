@@ -1,5 +1,16 @@
 # @frdy/web-ui
 
+## 1.38.0
+
+### Minor Changes
+
+- 70f2d2c: Fixed Extensions API
+
+### Patch Changes
+
+- Updated dependencies [70f2d2c]
+  - @frdy/webview-host@0.6.0
+
 ## 1.37.1
 
 ### Patch Changes
