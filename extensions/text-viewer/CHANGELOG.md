@@ -1,5 +1,11 @@
 # text-viewer
 
+## 1.2.1
+
+### Patch Changes
+
+- 4b61201: Symlinks
+
 ## 1.2.0
 
 ### Minor Changes

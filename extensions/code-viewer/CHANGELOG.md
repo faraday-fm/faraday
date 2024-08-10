@@ -1,5 +1,11 @@
 # code-viewer
 
+## 1.2.2
+
+### Patch Changes
+
+- 4b61201: Symlinks
+
 ## 1.2.1
 
 ### Patch Changes

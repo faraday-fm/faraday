@@ -1,5 +1,11 @@
 # faraday-fm.github.io
 
+## 1.35.5
+
+### Patch Changes
+
+- 4b61201: Symlinks
+
 ## 1.35.4
 
 ### Patch Changes
