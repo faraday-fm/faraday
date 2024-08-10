@@ -1,5 +1,11 @@
 # code-viewer
 
+## 1.4.0
+
+### Minor Changes
+
+- 97e12b0: Minor improvements
+
 ## 1.3.0
 
 ### Minor Changes

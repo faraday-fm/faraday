@@ -1,5 +1,11 @@
 # @frdy/web-ui
 
+## 1.38.1
+
+### Patch Changes
+
+- 97e12b0: Minor improvements
+
 ## 1.38.0
 
 ### Minor Changes

@@ -1,5 +1,13 @@
 # faraday-fm.github.io
 
+## 1.35.6
+
+### Patch Changes
+
+- Updated dependencies [97e12b0]
+  - @frdy/web-ui@1.38.1
+  - @frdy/memory-fs@1.34.3
+
 ## 1.35.5
 
 ### Patch Changes
