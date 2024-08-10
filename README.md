@@ -2,7 +2,7 @@
 
 <h1 align="center">
   <br>
-    <img src="https://raw.githubusercontent.com/faraday-fm/faraday/main/images/Faraday.png" alt="Faraday" width="400">
+    <img src="https://github.com/faraday-fm/faraday/blob/main/images/Faraday.png?raw=true" alt="Faraday" width="400">
   <br><br>
   Faraday File Manager
   <br>
