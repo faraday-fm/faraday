@@ -10,7 +10,7 @@
 </h1>
 
 
-**Faraday** is a powerful, terminal-based file manager designed for efficiency and ease of use. With its intuitive dual-pane interface, Faraday offers a seamless experience for navigating and managing files and directories.
+**Faraday** is a powerful, web-based file manager designed for efficiency and ease of use. With its intuitive dual-pane interface, Faraday offers a seamless experience for navigating and managing files and directories.
 
 ## Features
 
