@@ -1,5 +1,11 @@
 # @frdy/webview-host
 
+## 0.5.0
+
+### Minor Changes
+
+- 3c518e5: Publish fix
+
 ## 0.4.0
 
 ### Minor Changes

@@ -1,5 +1,11 @@
 # @frdy/memory-fs
 
+## 1.34.1
+
+### Patch Changes
+
+- @frdy/web-ui@1.37.1
+
 ## 1.34.0
 
 ### Minor Changes
