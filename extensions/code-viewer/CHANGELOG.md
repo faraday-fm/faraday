@@ -1,5 +1,12 @@
 # code-viewer
 
+## 1.3.0
+
+### Minor Changes
+
+- d783c16: Code Viewer fix
+- 3cd801c: Code Viewer fix
+
 ## 1.2.2
 
 ### Patch Changes
