@@ -6,6 +6,16 @@ html, body, #root {
   margin: 0;
 }
 
+body {
+  grid-template-rows: auto 1fr;
+}
+
+#error {
+  background: red;
+  color: white;
+  visibility: collapse;
+}
+
 img {
   max-width: 100%;
 }

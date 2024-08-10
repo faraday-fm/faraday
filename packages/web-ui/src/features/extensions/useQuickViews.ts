@@ -5,62 +5,55 @@ import type { QuickViewDefinition } from "../../schemas/manifest";
 
 type QuickViewId = string;
 
-export interface QuickViewState {
+export interface QuickView {
   isActive: boolean;
   definition?: QuickViewDefinition;
-  path?: string;
-  script?: string;
+  extensionPath: string;
 }
 
-export const quickViewStatesAtom = atom<Record<QuickViewId, QuickViewState>>({});
+export const quickViewsAtom = atom<Record<QuickViewId, QuickView>>({});
 
 export function useQuickViews() {
-  const [quickViewStates, setQuickViewStates] = useAtom(quickViewStatesAtom);
+  const [quickViews, setQuickViews] = useAtom(quickViewsAtom);
 
   const activateQuickView = useCallback(
     (id: QuickViewId) =>
-      setQuickViewStates(
+      setQuickViews(
         produce((state) => {
-          (state[id] ??= { isActive: true }).isActive = true;
+          if (state[id]) {
+            state[id].isActive = true;
+          }
         }),
       ),
-    [setQuickViewStates],
+    [setQuickViews],
   );
   const deactivateQuickView = useCallback(
     (id: QuickViewId) =>
-      setQuickViewStates(
+      setQuickViews(
         produce((state) => {
-          (state[id] ??= { isActive: false }).isActive = false;
+          if (state[id]) {
+            state[id].isActive = false;
+          }
         }),
       ),
-    [setQuickViewStates],
+    [setQuickViews],
   );
   const setQuickViewDefinition = useCallback(
-    (id: QuickViewId, definition?: QuickViewDefinition) =>
-      setQuickViewStates(
+    (id: QuickViewId, extensionPath: string, definition?: QuickViewDefinition) =>
+      setQuickViews(
         produce((state) => {
-          (state[id] ??= { isActive: false }).definition = definition;
+          const qv = (state[id] ??= { isActive: false, extensionPath });
+          qv.extensionPath = extensionPath;
+          qv.definition = definition;
         }),
       ),
-    [setQuickViewStates],
-  );
-  const setQuickViewScript = useCallback(
-    (id: QuickViewId, path?: string, script?: string) =>
-      setQuickViewStates(
-        produce((state) => {
-          const qv = (state[id] ??= { isActive: false });
-          qv.path = path;
-          qv.script = script;
-        }),
-      ),
-    [setQuickViewStates],
+    [setQuickViews],
   );
 
   return {
-    quickViews: quickViewStates,
+    quickViews,
     activateQuickView,
     deactivateQuickView,
     setQuickViewDefinition,
-    setQuickViewScript,
   };
 }

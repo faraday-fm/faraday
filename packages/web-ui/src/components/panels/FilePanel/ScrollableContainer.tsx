@@ -61,7 +61,6 @@ const ScrollableContainer: React.FC<ScrollableContainerProps> = ({
 
     const handleWheel = (event: WheelEvent) => {
       updateScrollTop(event.deltaY);
-      event.preventDefault();
     };
 
     const handlePointerDown = (event: PointerEvent) => {
@@ -115,7 +114,7 @@ const ScrollableContainer: React.FC<ScrollableContainerProps> = ({
       }
     };
 
-    innerContainer.addEventListener("wheel", handleWheel);
+    innerContainer.addEventListener("wheel", handleWheel, { passive: true });
     if (isTouchscreen) {
       innerContainer.addEventListener("pointerdown", handlePointerDown);
       innerContainer.addEventListener("pointermove", handlePointerMove);

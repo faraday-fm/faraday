@@ -3,7 +3,7 @@ import { filestream } from "./filestream";
 import { streamToUint8Array } from "./streamToUint8Array";
 
 export function TextViewer() {
-  const [filepath, setFilepath] = useState("");
+  const [filepath, setFilepath] = useState(faraday.activefile);
   const [content, setContent] = useState("");
 
   useEffect(() => {

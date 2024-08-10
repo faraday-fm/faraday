@@ -8,17 +8,16 @@ export function useQuickViewsByMimetype() {
     const result: Record<Mimetype, FullyQualifiedQuickView[]> = {};
     const quickViewsByExtension = Object.entries(quickViews);
     quickViewsByExtension.forEach(([qvId, qv]) => {
-      if (!qv.definition || !qv.isActive || !qv.script) {
+      if (!qv.definition || !qv.isActive) {
         return;
       }
       const quickView = qv.definition;
-      const script = qv.script;
       if (qv.definition.mimetypes) {
         qv.definition.mimetypes.forEach((type) => {
           (result[type] ??= []).push({
             extId: qvId,
             quickView: quickView,
-            script,
+            extensionPath: qv.extensionPath,
           });
         });
       }

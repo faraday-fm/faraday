@@ -66,8 +66,12 @@ function realpathArray(home: string, path: string) {
   return pathParts;
 }
 
-function realpath(root: string, path: string) {
-  return `/${realpathArray(root, path).join("/")}`;
+function realpath(root: string, ...segments: string[]) {
+  let rp = root;
+  segments.forEach((s) => {
+    rp = realpathArray(rp, s).join("/");
+  });
+  return `/${rp}`;
 }
 
 export class MemoryFsProvider implements FileSystemProvider {
@@ -84,15 +88,15 @@ export class MemoryFsProvider implements FileSystemProvider {
     let e: FsEntry | undefined = this.#root;
     for (const p of pathArray) {
       if (!e) {
-        throw new FileSystemError();
+        throw new FileSystemError(`File not found: ${path}`);
       }
       if (!isDir(e) || !e.children) {
-        throw new FileSystemError();
+        throw new FileSystemError("!!!");
       }
       e = e.children.find((c) => c.filename === p);
     }
     if (!e) {
-      throw new FileSystemError();
+      throw new FileSystemError(`File not found: ${path}`);
     }
     return e;
   }
@@ -302,11 +306,12 @@ export class MemoryFsProvider implements FileSystemProvider {
   }
 
   realpath(originalPath: string, controlByte?: RealPathControlByte, composePath?: string[]): Promise<DirList> {
+    const rp = realpath("/", originalPath, ...(composePath ?? []));
     return SynchronousPromise.resolve({
       files: [
         {
-          filename: realpath("/", originalPath),
-          path: realpath("/", originalPath),
+          filename: rp,
+          path: rp,
           attrs: { type: FileType.UNKNOWN },
         },
       ],
