@@ -1,5 +1,11 @@
 # image-viewer
 
+## 1.1.2
+
+### Patch Changes
+
+- 4b61201: Symlinks
+
 ## 1.1.1
 
 ### Patch Changes
