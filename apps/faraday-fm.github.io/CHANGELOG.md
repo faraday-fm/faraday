@@ -1,5 +1,11 @@
 # faraday-fm.github.io
 
+## 1.35.4
+
+### Patch Changes
+
+- 93dc4f4: Code formats
+
 ## 1.35.3
 
 ### Patch Changes
