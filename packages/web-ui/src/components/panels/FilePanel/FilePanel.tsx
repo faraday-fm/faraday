@@ -266,9 +266,7 @@ export const FilePanel = memo(
                 )}
               </div>
               <div className={css("file-info-panel")}>
-                <Border color={"panel-border"}>
-                  <FileInfoFooter file={items.get(adjustedCursor.activeIndex)} />
-                </Border>
+                <FileInfoFooter file={items.get(adjustedCursor.activeIndex)} />
               </div>
               <div className={css("panel-footer")}>{`${bytesCount.toLocaleString()} bytes in ${filesCount.toLocaleString()} files`}</div>
             </div>

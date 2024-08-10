@@ -17,7 +17,8 @@
   "type": "module",
   "scripts": {
     "dev": "tsup --watch",
-    "build": "tsup"
+    "build": "tsup",
+    "changeset": "cd ../.. && pnpm changeset"
   },
   "dependencies": {
     "@codemirror/lang-angular": "^0.1.3",
