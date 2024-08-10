@@ -1,7 +1,7 @@
-import { defineConfig } from "tsup";
-import { cp, mkdir, readFile, writeFile, rm } from "node:fs/promises";
+import { cp, mkdir, readFile, writeFile } from "node:fs/promises";
+import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { join, dirname } from "node:path";
+import { defineConfig } from "tsup";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -20,7 +20,7 @@ export default defineConfig({
     const packageJson = JSON.parse(await readFile(path("package.json"), { encoding: "utf-8" }));
     // const publishDir = join("publish", `${packageJson.publisher}.${packageJson.name}-${packageJson.version}`);
     const publishDir = "publish";
-    await rm(path(publishDir), { recursive: true, force: true });
+    // await rm(path(publishDir), { recursive: true, force: true });
     await mkdir(path(publishDir), { recursive: true });
     // biome-ignore lint/performance/noDelete: <explanation>
     delete packageJson.scripts;

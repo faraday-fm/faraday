@@ -87,7 +87,7 @@
           "text/jsx",
           "text/typescript-jsx"
         ],
-        "path": "./dist/code-viewer.js"
+        "path": "./index.js"
       }
     ]
   }
