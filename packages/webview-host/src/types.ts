@@ -1,17 +1,24 @@
 import type { FileSystemProvider, Theme } from "@frdy/sdk";
 
 export interface WebViewActions {
-  setTheme(theme: Theme): Promise<void>;
-  setScriptPath(pwdPath: string, scriptPath: string): Promise<void>;
-  setActiveFilepath(filepath: string | undefined): Promise<void>;
+  setIsActive(isActive: boolean): void;
+  setTheme(theme: Theme): void;
+  setActiveFilepath(filepath: string | undefined): void;
 }
 
 export interface WebView {
-  getNamedPort(name: string): MessagePort;
+  setPorts({ host, fs }: { host: MessagePort; fs: MessagePort }): void;
+  getPorts(): { actions: MessagePort };
 }
 
-export interface WebViewEvents {
-  onFocus(): Promise<void>;
+export interface WebViewHost {
+  onFocus(): void;
+  getSettings(): {
+    theme: Theme;
+    pwd: string;
+    scriptPath: string;
+    activeFilepath: string;
+  };
 }
 
 export type WebViewFs = FileSystemProvider;

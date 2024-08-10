@@ -1,9 +1,11 @@
-import type { Theme } from "@frdy/sdk";
+import { readFile, RealPathControlByte, type FileSystemProvider } from "@frdy/sdk";
 import "./actions";
 import { EE, startActionsListener } from "./actions";
+import { fs } from "./bootstrapChannels";
 import { onFocus } from "./events";
-import { fs } from "./fs";
 import "./index.css";
+import { settings } from "./settings";
+import { setError } from "./error";
 
 addEventListener("focus", onFocus);
 
@@ -14,9 +16,26 @@ const wnd = window as any;
 delete wnd.parent;
 
 wnd.faraday = {
-  theme: undefined as unknown as Theme,
+  theme: settings.theme,
+  activefile: settings.activeFilepath,
   events: EE,
-  fs
+  fs: fs as FileSystemProvider,
 } satisfies typeof faraday;
 
-await startActionsListener();
+async function importModule() {
+  const rp = await faraday.fs.realpath(settings.pwd, RealPathControlByte.NO_CHECK, [settings.scriptPath]);
+  const result = await readFile(rp.files[0].path);
+  const blob = new Blob([result], { type: 'text/javascript' });
+  const url = URL.createObjectURL(blob);
+  return await import(url);
+}
+
+try {
+  // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+  const module = await importModule() as any;
+  await startActionsListener(module);
+
+} catch (err) {
+  console.error(err);
+  setError(err);
+}

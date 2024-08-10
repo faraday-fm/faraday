@@ -1,33 +1,66 @@
-import * as monaco from "monaco-editor";
-import editorWorker from "monaco-editor/esm/vs/editor/editor.worker?worker";
-import jsonWorker from "monaco-editor/esm/vs/language/json/json.worker?worker";
-import cssWorker from "monaco-editor/esm/vs/language/css/css.worker?worker";
-import htmlWorker from "monaco-editor/esm/vs/language/html/html.worker?worker";
-import tsWorker from "monaco-editor/esm/vs/language/typescript/ts.worker?worker";
+import { html } from "@codemirror/lang-html";
+import { javascript } from "@codemirror/lang-javascript";
+import { json } from "@codemirror/lang-json";
+import { markdown } from "@codemirror/lang-markdown";
+import { language } from "@codemirror/language";
+import { Compartment, EditorState } from "@codemirror/state";
+import { readFile } from "@frdy/sdk";
+import { EditorView, basicSetup } from "codemirror";
+import { cobalt } from "thememirror";
 
-self.MonacoEnvironment = {
-  getWorker(_, label) {
-    if (label === "json") {
-      return new jsonWorker();
-    }
-    if (label === "css" || label === "scss" || label === "less") {
-      return new cssWorker();
-    }
-    if (label === "html" || label === "handlebars" || label === "razor") {
-      return new htmlWorker();
-    }
-    if (label === "typescript" || label === "javascript") {
-      return new tsWorker();
-    }
-    return new editorWorker();
-  },
-};
+const languageConf = new Compartment();
 
-const editor = monaco.editor.create(document.getElementById("root")!, {
-  value: "function hello() {\n\talert('Hello world!');\n}",
-  language: "javascript",
+function detectLang(path: string) {
+  const dotIdx = path.lastIndexOf(".");
+  if (dotIdx >= 0) {
+    const ext = path.substring(dotIdx + 1).toLowerCase();
+    switch (ext) {
+      case "json":
+        return json();
+      case "md":
+        return markdown();
+      case "html":
+        return html();
+      case "js":
+      case "json5":
+      case "mjs":
+        return javascript();
+    }
+  }
+  return json();
+}
+
+const root = document.getElementById("root")!;
+
+const view: EditorView = new EditorView({
+  extensions: [basicSetup, cobalt, languageConf.of(javascript()), EditorState.readOnly.of(true)],
+  parent: root,
 });
 
-export function init() {
-  console.error(editor);
+const load = async (path: string) => {
+  const newLangExt = detectLang(path);
+  const currLang = view.state.facet(language);
+  const arr = await readFile(path);
+  const text = new TextDecoder().decode(arr);
+  const transaction = view.state.update({
+    changes: { from: 0, to: view.state.doc.length, insert: text },
+    effects: newLangExt.language !== currLang ? languageConf.reconfigure(newLangExt) : undefined,
+  });
+  view.dispatch(transaction);
+  root.style.visibility = "visible";
+};
+
+export function activate() {
+  console.info("Activated");
+  faraday.events.on("activefilechange", load);
+  if (faraday.activefile) {
+    load(faraday.activefile);
+  }
+}
+
+export function deactivate() {
+  console.info("Deactivated");
+  root.style.visibility = "hidden";
+  faraday.events.off("activefilechange", load);
+  view.dispatch(view.state.update({ changes: { from: 0, to: view.state.doc.length, insert: "" } }));
 }

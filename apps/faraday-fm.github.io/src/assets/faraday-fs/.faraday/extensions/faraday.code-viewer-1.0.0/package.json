@@ -14,7 +14,6 @@
     "quickview",
     "text"
   ],
-
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -22,9 +21,17 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@codemirror/lang-html": "^6.4.9",
+    "@codemirror/lang-javascript": "^6.2.2",
+    "@codemirror/lang-json": "^6.0.1",
+    "@codemirror/lang-markdown": "^6.2.5",
+    "@codemirror/lang-python": "^6.1.6",
+    "@codemirror/language": "^6.10.2",
+    "@codemirror/state": "^6.4.1",
     "@frdy/sdk": "workspace:*",
-    "monaco-editor": "^0.50.0",
-    "preact": "^10.23.1"
+    "codemirror": "^6.0.1",
+    "preact": "^10.23.1",
+    "thememirror": "^2.0.1"
   },
   "devDependencies": {
     "@preact/preset-vite": "^2.9.0",
@@ -36,6 +43,7 @@
       {
         "id": "code",
         "extensions": [
+          ".md",
           ".js",
           ".jsx",
           ".ts",
@@ -46,7 +54,7 @@
           ".json",
           ".json5"
         ],
-        "path": "./dist/code-viewer.system.js"
+        "path": "./dist/code-viewer.js"
       }
     ]
   }

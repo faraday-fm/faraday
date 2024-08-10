@@ -22,11 +22,6 @@
           ".txt",
           ".map"
         ],
-        "filenames": [
-          "LICENSE.md",
-          "README.md",
-          "CHANGELOG.md"
-        ],
         "path": "./dist/index.mjs"
       }
     ]

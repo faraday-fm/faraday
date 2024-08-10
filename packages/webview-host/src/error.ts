@@ -1,10 +1,4 @@
-const errorMessage = document.createElement("div");
-errorMessage.style.position = "fixed";
-errorMessage.style.inset = "0";
-errorMessage.style.background = "#fffc";
-errorMessage.style.zIndex = "1";
-errorMessage.style.visibility = "collapse";
-document.body.appendChild(errorMessage);
+const errorMessage = document.getElementById('error')!;
 
 export function setError(err: unknown) {
   if (!err) {
