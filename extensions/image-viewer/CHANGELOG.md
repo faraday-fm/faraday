@@ -1,5 +1,11 @@
 # image-viewer
 
+## 1.1.1
+
+### Patch Changes
+
+- 93dc4f4: Code formats
+
 ## 1.1.0
 
 ### Minor Changes
