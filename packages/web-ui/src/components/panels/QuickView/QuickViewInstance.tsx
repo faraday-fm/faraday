@@ -1,21 +1,21 @@
 import webViewHtml from "@frdy/webview-host/index.html";
 import { forwardRef, memo, useImperativeHandle, useRef, useState } from "react";
+import type { FullyQualifiedQuickView } from "../../../features/extensions/types";
 import { css } from "../../../features/styles";
 import { useRemoteWebView } from "./remoteWebView";
+
+const webviewUrl = URL.createObjectURL(new Blob([webViewHtml], { type: "text/html" }));
 
 export interface QuickViewInstanceActions {
   setIsActive(isActive: boolean): void;
 }
 
-const webViewHtmlBase64 = window.btoa(webViewHtml);
-
-type QuickViewInstanceProps = {
-  pwdPath: string;
-  scriptPath: string;
+export type QuickViewInstanceProps = {
+  quickView: FullyQualifiedQuickView;
 };
 
 export const QuickViewInstance = memo(
-  forwardRef<QuickViewInstanceActions, QuickViewInstanceProps>(({ pwdPath, scriptPath }, ref) => {
+  forwardRef<QuickViewInstanceActions, QuickViewInstanceProps>(({ quickView }, ref) => {
     const isActiveRef = useRef(true);
     useImperativeHandle(
       ref,
@@ -31,15 +31,11 @@ export const QuickViewInstance = memo(
       [],
     );
 
+    const [extensionPath] = useState(quickView.extensionPath);
+    const [scriptPath] = useState(quickView.quickView.path);
     const [isVisible, setIsVisible] = useState(true);
-    const [initialPwdPath] = useState(pwdPath);
-    const [initialScriptPath] = useState(scriptPath);
     const [iframe, setIframe] = useState<HTMLIFrameElement>();
-    const webview = useRemoteWebView(iframe, initialPwdPath, initialScriptPath);
-
-    if (scriptPath !== initialScriptPath) {
-      throw new Error("'scriptPath' prop must not be changed.");
-    }
+    const webview = useRemoteWebView(iframe, extensionPath, scriptPath);
 
     return (
       <iframe
@@ -47,8 +43,8 @@ export const QuickViewInstance = memo(
         style={{ display: isVisible ? "block" : "none" }}
         sandbox="allow-scripts"
         tabIndex={0}
-        title="quick view"
-        src={`data:text/html;base64,${webViewHtmlBase64}`}
+        title="Quick View"
+        src={webviewUrl}
         onLoad={(e) => setIframe(e.currentTarget)}
       />
     );

@@ -1,4 +1,4 @@
-import { Faraday, FaradayHost } from "@frdy/web-ui";
+import { Faraday, type FaradayHost } from "@frdy/web-ui";
 import { buildFaradayFs } from "./services/fs";
 
 const faradayFs = await buildFaradayFs();

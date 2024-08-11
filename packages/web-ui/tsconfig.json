@@ -1,25 +1,8 @@
 {
+  "extends": "@frdy/typescript-config/react-library.json",
   "compilerOptions": {
-    "noEmit": true,
-    "target": "ESNext",
-    "module": "ESNext",
-    "moduleResolution": "Bundler",
-    "useDefineForClassFields": true,
-    "noImplicitAny": true,
-    "lib": ["DOM", "DOM.Iterable", "ESNext"],
-    "allowJs": true,
-    "skipLibCheck": true,
-    "esModuleInterop": false,
-    "allowSyntheticDefaultImports": true,
-    "strict": true,
-    "forceConsistentCasingInFileNames": true,
-    "resolveJsonModule": true,
-    "isolatedModules": true,
-    "sourceMap": true,
-    "declaration": true,
-    "stripInternal": true,
-    "declarationDir": "dist",
-    "jsx": "react-jsx"
+    "outDir": "dist"
   },
-  "include": ["src/**/*.ts", "src/**/*.tsx", "scripts", "rollup.config.mjs"]
+  "include": ["src", "scripts", "rollup.config.mjs"],
+  "exclude": ["node_modules", "dist"]
 }

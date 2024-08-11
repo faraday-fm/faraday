@@ -26,7 +26,11 @@ export type {
 export function Faraday({ host }: FaradayProps) {
   const dark = useMediaQuery("(prefers-color-scheme: dark)");
   const theme = dark ? darkTheme : lightTheme;
-  useStyles(theme);
+  const stylesApplied = useStyles(theme);
+  if (!stylesApplied) {
+    return null;
+  }
+
   return (
     <AppStoreProvider>
       <ContextVariablesProvider>

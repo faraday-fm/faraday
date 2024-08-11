@@ -39,7 +39,7 @@ export function QuickNavigationProvider({ children }: PropsWithChildren) {
             if (currIndex >= 0) {
               currIndex -= 1;
               if (currIndex < 0) currIndex = elementsArray.length - 1;
-              elementsArray[currIndex].focus();
+              elementsArray[currIndex]?.focus();
             }
           }
           break;
@@ -51,7 +51,7 @@ export function QuickNavigationProvider({ children }: PropsWithChildren) {
             if (currIndex >= 0) {
               currIndex += 1;
               if (currIndex >= elementsArray.length) currIndex = 0;
-              elementsArray[currIndex].focus();
+              elementsArray[currIndex]?.focus();
             }
           }
           break;

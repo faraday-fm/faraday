@@ -25,7 +25,7 @@ export function FullView({ items, cursor, cursorStyle, columnDefs, onMaxVisibleI
       <Column
         key={i}
         items={items}
-        columnDef={columnDefs[i]}
+        columnDef={columnDefs[i]!}
         selectedIndex={cursor.activeIndex}
         topmostIndex={cursor.topmostIndex}
         cursorStyle={cursorStyle}

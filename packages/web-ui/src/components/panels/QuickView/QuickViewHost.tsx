@@ -19,34 +19,33 @@ export default function QuickViewHost() {
   const key = quickView ? `${quickView.extId}.${quickView.quickView.id}` : undefined;
 
   useEffect(() => {
-    setInstances((frames) => {
-      const newFrames = { ...frames };
-      let frame: QVInstance | undefined;
+    setInstances((instances) => {
+      const newInstances = { ...instances };
+      let instance: QVInstance | undefined;
       if (key && quickView) {
-        frame = frames[key];
-        if (!frame) {
-          const qw = (
+        instance = instances[key];
+        if (!instance) {
+          const element = (
             <QuickViewInstance
               key={key}
-              ref={(r: QuickViewInstanceActions | null) => {
+              ref={(r) => {
                 if (r) {
-                  newFrames[key].actions.resolve(r);
+                  newInstances[key]!.actions.resolve(r);
                 }
               }}
-              pwdPath={quickView.extensionPath}
-              scriptPath={quickView.quickView.path}
+              quickView={quickView}
             />
           );
-          frame = {
+          instance = {
             quickView: quickView.quickView,
-            element: qw,
+            element: element,
             actions: Promise.withResolvers(),
           };
-          newFrames[key] = frame;
+          newInstances[key] = instance;
         }
       }
-      Object.values(newFrames).forEach((f) => void f.actions.promise.then((a) => a.setIsActive(f.element === frame?.element)));
-      return newFrames;
+      Object.values(newInstances).forEach((f) => void f.actions.promise.then((a) => a.setIsActive(f.element === instance?.element)));
+      return newInstances;
     });
   }, [key, quickView]);
 

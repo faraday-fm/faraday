@@ -4,6 +4,7 @@
   "version": "1.38.1",
   "description": "Web front-end for Faraday file manager",
   "source": "src/index.tsx",
+  "type": "module",
   "main": "dist/index.cjs.js",
   "module": "dist/index.esm.js",
   "types": "dist/index.d.ts",
@@ -47,6 +48,7 @@
     "react": ">=18"
   },
   "devDependencies": {
+    "@frdy/typescript-config": "workspace:*",
     "@biomejs/biome": "^1.8.3",
     "@rollup/plugin-alias": "^5.0.1",
     "@rollup/plugin-commonjs": "^26.0.1",

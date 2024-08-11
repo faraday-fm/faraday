@@ -29,7 +29,7 @@ export function App() {
   const host = useFaradayHost();
   const [devMode, setDevMode] = useState(false);
 
-  const { content: layoutContent } = useFileContent(".faraday/layout.json5");
+  const { content: layoutContent, error: layoutLoadingError } = useFileContent(".faraday/layout.json5");
   useEffect(() => {
     if (layoutContent) {
       try {
@@ -38,8 +38,10 @@ export function App() {
       } catch {
         setPanelsLayout(JSON5.parse(defaultLayout));
       }
+    } else if (layoutLoadingError) {
+      setPanelsLayout(JSON5.parse(defaultLayout));
     }
-  }, [layoutContent, setPanelsLayout]);
+  }, [layoutContent, layoutLoadingError, setPanelsLayout]);
 
   useSetContextVariables("isDesktop", host.config.isDesktop());
   useSetContextVariables("devMode", devMode);

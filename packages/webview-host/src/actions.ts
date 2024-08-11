@@ -18,11 +18,17 @@ async function importModule() {
 
 // biome-ignore lint/suspicious/noExplicitAny: <explanation>
 let module: any;
+let active = true;
+let lastActivefile:string|undefined;
 
 const actions: WebViewActions = {
   setIsActive(isActive) {
+    active = isActive;
     if (isActive) {
       module?.activate?.();
+      if (lastActivefile !== faraday.activefile) {
+        EE.emit("activefilechange", faraday.activefile);
+      }
     } else {
       module?.deactivate?.();
     }
@@ -35,7 +41,10 @@ const actions: WebViewActions = {
   },
   setActiveFilepath(filepath) {
     faraday.activefile = filepath;
-    EE.emit("activefilechange", filepath);
+    if (active) {
+      lastActivefile = filepath;
+      EE.emit("activefilechange", filepath);
+    }
   },
   async loadScript() {
     // biome-ignore lint/suspicious/noExplicitAny: <explanation>

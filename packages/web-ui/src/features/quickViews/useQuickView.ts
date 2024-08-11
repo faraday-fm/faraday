@@ -17,18 +17,18 @@ export function useQuickView(filePath: string | undefined, mimetype?: string) {
     return undefined;
   }
 
-  if (qvByFileName[fileName]?.length > 0) {
+  if (qvByFileName[fileName] && qvByFileName[fileName].length > 0) {
     return qvByFileName[fileName][0];
   }
 
   for (const ext of getAllExtensions(fileName, true)) {
-    if (qvByFileExtension[ext]?.length > 0) {
+    if (qvByFileExtension[ext] && qvByFileExtension[ext].length > 0) {
       return qvByFileExtension[ext][0];
     }
   }
 
   if (mimetype) {
-    if (qvByFileMimetype[mimetype]?.length > 0) {
+    if (qvByFileMimetype[mimetype] && qvByFileMimetype[mimetype].length > 0) {
       return qvByFileMimetype[mimetype][0];
     }
   }

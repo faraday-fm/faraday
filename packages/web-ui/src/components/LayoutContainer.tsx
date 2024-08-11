@@ -72,7 +72,7 @@ function RowContainer({ layout, direction }: LayoutContainerProps & { layout: Ro
     <div className={css("layout-row")} style={{ flexDirection: direction === "h" ? "row" : "column" }}>
       {layout.children.map((l, idx) => (
         <RenderWhen key={l.id} expression={l.when ?? "true"}>
-          {idx > 0 && <Separator rowId={layout.id} direction={direction} items={itemRefs.current} before={layout.children[idx - 1].id} after={l.id} />}
+          {idx > 0 && <Separator rowId={layout.id} direction={direction} items={itemRefs.current} before={layout.children[idx - 1]!.id} after={l.id} />}
           <div
             ref={(r) => {
               itemRefs.current[l.id] = r;

@@ -93,7 +93,7 @@ export function KeyBindingProvider({ children }: PropsWithChildren) {
         .join("+");
       console.debug("Key pressed:", e.key, "(", keyCodeStr, ")");
       for (let i = bindings.length - 1; i >= 0; i -= 1) {
-        const binding = bindings[i];
+        const binding = bindings[i]!;
         if (matchKey(binding.key, e) && (!binding.when || isInContext(binding.when))) {
           if (binding.args != null) {
             console.debug(binding.command, "(", JSON.stringify(binding.args), ")");

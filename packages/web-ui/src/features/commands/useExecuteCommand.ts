@@ -10,7 +10,7 @@ export function useExecuteCommand() {
         return false;
       }
       const [cb] = callbacks;
-      const result = cb(args);
+      const result = cb?.(args);
       if (typeof result === "undefined") {
         return true;
       }

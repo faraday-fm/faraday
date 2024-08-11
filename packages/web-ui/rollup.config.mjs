@@ -50,7 +50,7 @@ export default defineConfig({
       ],
     }),
     commonjs(),
-    ts({ tsconfig: "tsconfig.lib.json", sourceMap: !watch }),
+    ts({ sourceMap: !watch }),
     string({ include: "**/*.{json5,html,css}" }),
   ],
 });
