@@ -1,4 +1,4 @@
-import { useSetContextVariables } from "@frdy/commands";
+import { useSetContextVariable } from "@frdy/commands";
 import { type ReactEventHandler, useEffect, useId, useRef } from "react";
 import { QuickNavigationProvider } from "../contexts/quickNavigationContext";
 import { css } from "../features/styles";
@@ -11,7 +11,7 @@ interface CopyDialogProps {
 }
 
 export default function CopyDialog({ open, onClose }: CopyDialogProps) {
-  useSetContextVariables("copyDialog", open);
+  useSetContextVariable("copyDialog", true, open);
   const dialogId = useId();
   const dialogRef = useRef<HTMLDialogElement>(null);
 

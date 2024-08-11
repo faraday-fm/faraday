@@ -3,58 +3,26 @@ import { usePrevValueIfDeepEqual } from "../utils/usePrevValueIfDeepEqual";
 import { type Node, parser } from "../utils/whenClauseParser";
 import { type ContextVariables, useContextVariables } from "../contextVariables";
 
-type Variables = string | string[] | Record<string, unknown>;
-
-export function useSetContextVariables(variables: Variables, isActive = true): void {
+export function useSetContextVariable<T>(variable: string, value: T, isActive = true): void {
   const id = useContext(ContextVariablesIdContext);
-  const { setVariables, updateVariables } = useContextVariables();
-  variables = usePrevValueIfDeepEqual(variables);
+  const { setVariable, deleteVariable } = useContextVariables();
+  value = usePrevValueIfDeepEqual(value);
 
   useEffect(() => {
     let vars: Record<string, unknown>;
     if (!isActive) {
-      if (typeof variables === "string") {
-        vars = { [variables]: undefined };
-      } else if (Array.isArray(variables)) {
-        vars = variables.reduce(
-          (r, v) => {
-            r[v] = undefined;
-            return r;
-          },
-          {} as typeof vars,
-        );
-      } else {
-        vars = Object.keys(variables).reduce(
-          (r, v) => {
-            r[v] = undefined;
-            return r;
-          },
-          {} as typeof vars,
-        );
-      }
+      deleteVariable(id, variable);
+      vars = { [variable]: undefined };
     } else {
-      if (typeof variables === "string") {
-        vars = { [variables]: true };
-      } else if (Array.isArray(variables)) {
-        vars = variables.reduce(
-          (r, v) => {
-            r[v] = true;
-            return r;
-          },
-          {} as typeof vars,
-        );
-      } else {
-        vars = variables;
-      }
+      setVariable(id, variable, value);
     }
-    updateVariables(id, vars);
-  }, [id, isActive, updateVariables, variables]);
+  }, [id, variable, value, isActive, setVariable, deleteVariable]);
 
   useEffect(() => {
     return () => {
-      setVariables(id, undefined);
+      deleteVariable(id, variable);
     };
-  }, [id, setVariables]);
+  }, [id, deleteVariable, variable]);
 }
 
 function getContextValue(ctx: ContextVariables, variable: string) {
@@ -140,47 +108,7 @@ export function useIsInContextQuery(expression: string) {
 export const ContextVariablesIdContext = createContext<string>("<root>");
 
 export function ContextVariablesProvider({ children }: PropsWithChildren) {
+  const parent = useContext(ContextVariablesIdContext);
   const id = useId();
-  return <ContextVariablesIdContext.Provider value={id}>{children}</ContextVariablesIdContext.Provider>;
-}
-
-export function DebugContextVariables() {
-  const id = useContext(ContextVariablesIdContext);
-  const devMode = useIsInContextQuery("devMode");
-  const { variables } = useContextVariables();
-  const vars = variables[id];
-  const entries = useMemo(
-    () =>
-      Object.entries(vars ?? {})
-        .filter(([, v]) => v != null)
-        .toSorted(([k1], [k2]) => k1.localeCompare(k2)),
-    [vars],
-  );
-  return (
-    <>
-      {devMode && entries.length > 0 && (
-        <div
-          style={{
-            position: "absolute",
-            fontSize: "xx-small",
-            right: 0,
-            top: 0,
-            color: "black",
-            background: "#fff8",
-          }}
-        >
-          <table>
-            <tbody>
-              {entries.map(([key, val]) => (
-                <tr key={key}>
-                  <td>{key}:</td>
-                  <td>{JSON.stringify(val)}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      )}
-    </>
-  );
+  return <ContextVariablesIdContext.Provider value={`${parent}/${id}`}>{children}</ContextVariablesIdContext.Provider>;
 }

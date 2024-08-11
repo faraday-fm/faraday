@@ -6,9 +6,22 @@ import keyBindingsContent from "./assets/keybindings.json5";
 import { KeyBindingsSchema } from "./schema";
 import { useExecuteCommand, useIsInContext } from "./commands";
 
+/**
+ * Parsed key bindings from the provided JSON5 file.
+ */
 const keyBindings = parse(KeyBindingsSchema, JSON5.parse(keyBindingsContent));
 
-type KeyCombination =
+/**
+ * Represents the result of parsing a key combination string.
+ * - If `error` is true, parsing failed.
+ * - If `error` is false, the key combination is represented by the following properties:
+ *   - `ctrl`: Indicates if the "Ctrl" key is part of the combination.
+ *   - `alt`: Indicates if the "Alt" key is part of the combination.
+ *   - `shift`: Indicates if the "Shift" key is part of the combination.
+ *   - `meta`: Indicates if the "Meta" key (e.g., Command key on Mac) is part of the combination.
+ *   - `code`: The specific key code that is pressed.
+ */
+export type KeyCombination =
   | { error: true }
   | {
       error: false;
@@ -27,10 +40,22 @@ const parser = seq(modifiers, regexp(/[A-Za-z0-9]+/)).map(([mod, key]) => ({
   key,
 }));
 
+/**
+ * Normalizes a key combination string by removing all whitespace and converting it to lowercase.
+ *
+ * @param {string} keyStr - The key combination string to normalize.
+ * @returns {string} - The normalized key combination string.
+ */
 function normalizeKeyCombinationStr(keyStr: string): string {
   return keyStr.replaceAll(/\s+/gi, "").toLowerCase();
 }
 
+/**
+ * Parses a key combination string into a KeyCombination object.
+ *
+ * @param {string} keyCombinationStr - The string representing the key combination.
+ * @returns {KeyCombination} - The parsed key combination object.
+ */
 function parseKeyCombination(keyCombinationStr: string): KeyCombination {
   keyCombinationStr = normalizeKeyCombinationStr(keyCombinationStr);
   const res = parser.parse(keyCombinationStr);
@@ -47,6 +72,14 @@ function parseKeyCombination(keyCombinationStr: string): KeyCombination {
   return { error: true };
 }
 
+/**
+ * Represents a single key binding.
+ *
+ * @property {string} key - The key combination as a string (e.g., "Ctrl+S").
+ * @property {string} command - The command to execute when the key combination is triggered.
+ * @property {string} [when] - Optional condition to determine the context in which the key binding is active.
+ * @property {unknown} [args] - Optional arguments to pass to the command when executed.
+ */
 export interface KeyBinding {
   key: string;
   command: string;
@@ -54,10 +87,23 @@ export interface KeyBinding {
   args?: unknown;
 }
 
+/**
+ * Context to provide key bindings to the component tree.
+ */
 const KeyBindingContext = createContext<KeyBinding[]>([]);
 
+/**
+ * Cache for parsed key combinations to avoid reparsing frequently used combinations.
+ */
 const parsedKeyCombinationsCache = new Map<string, KeyCombination>();
 
+/**
+ * Retrieves a KeyCombination object for a given key combination string, using a cache
+ * to avoid redundant parsing.
+ *
+ * @param {string} keyStr - The key combination string.
+ * @returns {KeyCombination} - The parsed key combination.
+ */
 const getKeyCombination = (keyStr: string): KeyCombination => {
   let key = parsedKeyCombinationsCache.get(keyStr);
   if (key) {
@@ -68,7 +114,15 @@ const getKeyCombination = (keyStr: string): KeyCombination => {
   return key;
 };
 
-const matchKey = (key: string, event: KeyboardEvent) => {
+/**
+ * Matches a key combination string against a KeyboardEvent to check if the event matches
+ * the expected key combination.
+ *
+ * @param {string} key - The key combination string to match.
+ * @param {KeyboardEvent} event - The keyboard event to check.
+ * @returns {boolean} - True if the event matches the key combination, otherwise false.
+ */
+const matchKey = (key: string, event: KeyboardEvent): boolean => {
   const combination = getKeyCombination(key);
   if (combination.error) return false;
   return (
@@ -80,7 +134,14 @@ const matchKey = (key: string, event: KeyboardEvent) => {
   );
 };
 
-export function KeyBindingProvider({ children }: PropsWithChildren) {
+/**
+ * Provides key bindings to child components and handles keydown events to execute commands
+ * when matching key combinations are detected.
+ *
+ * @param {PropsWithChildren} props - The properties object with children components.
+ * @returns {JSX.Element} - The KeyBindingContext.Provider with the provided key bindings.
+ */
+export function KeyBindingProvider({ children }: PropsWithChildren): JSX.Element {
   const isInContext = useIsInContext();
   const executeCommand = useExecuteCommand();
 
@@ -88,7 +149,13 @@ export function KeyBindingProvider({ children }: PropsWithChildren) {
 
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
-      const keyCodeStr = [e.ctrlKey ? "Ctrl" : "", e.altKey ? "Alt" : "", e.shiftKey ? "Shift" : "", e.metaKey ? "Meta" : "", e.code]
+      const keyCodeStr = [
+        e.ctrlKey ? "Ctrl" : "",
+        e.altKey ? "Alt" : "",
+        e.shiftKey ? "Shift" : "",
+        e.metaKey ? "Meta" : "",
+        e.code,
+      ]
         .filter((m) => m)
         .join("+");
       console.debug("Key pressed:", e.key, "(", keyCodeStr, ")");

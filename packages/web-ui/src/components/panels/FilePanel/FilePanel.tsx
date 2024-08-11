@@ -1,4 +1,4 @@
-import { useCommandBindings, useExecuteCommand, useSetContextVariables } from "@frdy/commands";
+import { useCommandBinding, useExecuteCommand, useSetContextVariable } from "@frdy/commands";
 import type { Dirent } from "@frdy/sdk";
 import { isDir } from "@frdy/sdk";
 import equal from "fast-deep-equal";
@@ -95,11 +95,11 @@ export const FilePanel = memo(
       focus: () => panelRootRef.current?.focus(),
     }));
 
-    useSetContextVariables("filePanel.focus", focused);
-    useSetContextVariables({ "filePanel.firstItem": cursor.activeIndex === 0 }, focused);
-    useSetContextVariables({ "filePanel.lastItem": cursor.activeIndex === items.size() - 1 }, focused);
-    useSetContextVariables({ "filePanel.activeItem": cursor.activeName }, focused);
-    useSetContextVariables({ "filePanel.path": path }, focused);
+    useSetContextVariable("filePanel.focus", true, focused);
+    useSetContextVariable("filePanel.firstItem", cursor.activeIndex === 0, focused);
+    useSetContextVariable("filePanel.lastItem", cursor.activeIndex === items.size() - 1, focused);
+    useSetContextVariable("filePanel.activeItem", cursor.activeName, focused);
+    useSetContextVariable("filePanel.path", path, focused);
 
     const moveCursorLeftRight = useCallback(
       (direction: "left" | "right", select: boolean) => {
@@ -178,19 +178,14 @@ export const FilePanel = memo(
       [adjustedCursor, displayedItems, items],
     );
 
-    useCommandBindings(
-      {
-        cursorLeft: (args) => moveCursorLeftRight("left", Boolean(args?.select)),
-        cursorRight: (args) => moveCursorLeftRight("right", Boolean(args?.select)),
-        cursorUp: (args) => scroll(-1, false, Boolean(args?.select)),
-        cursorDown: (args) => scroll(1, false, Boolean(args?.select)),
-        cursorStart: (args) => moveCursorToPos(0, Boolean(args?.select)),
-        cursorEnd: (args) => moveCursorToPos(items.size() - 1, Boolean(args?.select)),
-        cursorPageUp: (args) => moveCursorPage("up", Boolean(args?.select)),
-        cursorPageDown: (args) => moveCursorPage("down", Boolean(args?.select)),
-      },
-      focused,
-    );
+    useCommandBinding("cursorLeft", (args) => moveCursorLeftRight("left", Boolean(args?.select)), focused);
+    useCommandBinding("cursorRight", (args) => moveCursorLeftRight("right", Boolean(args?.select)), focused);
+    useCommandBinding("cursorUp", (args) => scroll(-1, false, Boolean(args?.select)), focused);
+    useCommandBinding("cursorDown", (args) => scroll(1, false, Boolean(args?.select)), focused);
+    useCommandBinding("cursorStart", (args) => moveCursorToPos(0, Boolean(args?.select)), focused);
+    useCommandBinding("cursorEnd", (args) => moveCursorToPos(items.size() - 1, Boolean(args?.select)), focused);
+    useCommandBinding("cursorPageUp", (args) => moveCursorPage("up", Boolean(args?.select)), focused);
+    useCommandBinding("cursorPageDown", (args) => moveCursorPage("down", Boolean(args?.select)), focused);
 
     const executeCommand = useExecuteCommand();
     const onItemActivated = useCallback(() => executeCommand("open", { path }), [executeCommand, path]);

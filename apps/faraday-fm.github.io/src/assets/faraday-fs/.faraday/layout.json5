@@ -29,11 +29,11 @@
           flex: 1,
           path: "/",
           view: {
-            /*type: "full",
-            columnDefs: [
-              { field: "name", name: "Name", width: "1fr" },
-              { field: "size", name: "Size" },
-            ],*/
+            type: "full",
+            // columnDefs: [
+            //   { field: "filename", name: "Name", width: "1fr" },
+            //   { field: "attrs.size", name: "Size" },
+            // ],
             type: "condensed",
             columnDef: { field: "name", name: "Name" },
           },

@@ -8,15 +8,19 @@
 
 .frdy.app {
   -webkit-font-smoothing: antialiased;
+
   ::-webkit-scrollbar {
     display: none;
   }
+
   font-size: 13.5;
+
   & :is(button, input) {
     font-family: inherit;
     text-rendering: inherit;
     font-size: inherit;
   }
+
   font-family: var(--fontFamily);
   text-rendering: geometricPrecision;
   background-color: #172637;
@@ -37,6 +41,7 @@
   margin: 1px;
   border-style: solid;
   border-width: 1px;
+
   &.-double {
     border-style: double;
     border-width: 3px;
@@ -94,6 +99,7 @@
   flex-wrap: nowrap;
   align-items: baseline;
   padding-right: 0.5rem;
+
   &:last-child {
     padding-right: 0;
   }
@@ -213,9 +219,11 @@
   grid-template-rows: minmax(0, 1fr) auto;
   overflow: hidden;
   user-select: initial;
+
   & div {
     cursor: initial;
   }
+
   &:focus {
     outline: none;
   }
@@ -249,6 +257,7 @@
   flex-shrink: 1;
   flex-grow: 1;
   overflow: hidden;
+
   &:focus {
     outline: none;
   }
@@ -323,6 +332,7 @@
   inset: 0;
   overflow-y: scroll;
   overscroll-behavior: none;
+
   ::-webkit-scrollbar {
     display: none;
   }
@@ -338,6 +348,7 @@
 
 .frdy.column-border {
   border-right: 1px solid var(--panel-border);
+
   /* border-right-width: 0; */
   &:last-child {
     border-right-width: 0px;
@@ -362,6 +373,7 @@
   cursor: pointer;
   user-select: none;
   -webkit-user-select: none;
+
   & em {
     font-style: normal;
     color: var(--textAcceleratorKey-foreground);
@@ -388,10 +400,12 @@
   overflow: hidden;
   outline: none;
   user-select: none;
+
   &.-focused {
     background-color: var(--panel-background-focus);
   }
 }
+
 .frdy.cell {
   display: flex;
   margin-right: 1px;
@@ -402,6 +416,7 @@
   border-radius: 2px;
   /* ${(p) => p.$cursorStyle === "firm" && "filter: invert(1);"} */
   border: 1px solid transparent;
+
   &:is(.-firm, .-inactive) {
     background-color: var(--files-file-background-focus);
     border: 1px solid var(--files-file-border-focus);
@@ -414,6 +429,7 @@
     /* transform: translate(-0%, -5%); */
     transform: scale(0.97, 0.97);
   }
+
   100% {
     opacity: 1;
     /* transform: translate(0%, 0%); */
@@ -438,10 +454,12 @@
   color: var(--dialog-foreground);
   box-shadow: var(--dialog-shadow);
   padding: 0.5rem;
+
   & p {
     margin: 0;
     padding: 1px;
   }
+
   & input:focus {
     outline: auto;
   }
@@ -451,12 +469,15 @@
   margin: 0 0.25em;
   background-color: transparent;
   border: none;
+
   &:before {
     content: "[ ";
   }
+
   &:after {
     content: " ]";
   }
+
   &:focus {
     background-color: var(--color-11);
     /* outline: none; */
@@ -467,6 +488,7 @@
   color: var(--panel-header-foreground);
   background-color: var(--panel-header-background);
   overflow: hidden;
+
   &.-active {
     color: var(--panel-header-foreground-focus);
     background-color: var(--panel-header-background-focus);
@@ -479,9 +501,10 @@
   flex-direction: row;
   overflow: hidden;
 
-  &:hover > :not(:hover):last-child {
+  &:hover> :not(:hover):last-child {
     /* flex-shrink: 1; */
   }
+
   &.-active {
     --background: linear-gradient(to right, transparent, var(--panel-header-background-focus));
   }
@@ -495,31 +518,38 @@
   min-width: 2ch;
   transition: flex-shrink 0.2s;
   cursor: default;
+
   &:hover {
     flex-shrink: 0;
+
     /* text-decoration: underline; */
     &::after {
       opacity: 0;
     }
   }
+
   &:last-child {
     flex-shrink: 0;
     /* &::after {
       transition: 0;
     } */
   }
+
   &:first-of-type {
     min-width: 1ch;
   }
+
   &:first-of-type::before {
     content: "";
   }
+
   &::before {
     content: "/";
     /* content: "›";
     font-size: small;
     margin: 0 5px; */
   }
+
   &::after {
     position: absolute;
     content: "";
@@ -532,7 +562,21 @@
     opacity: 0;
     pointer-events: none;
   }
+
   &.-showOverflow::after {
     opacity: 1;
+  }
+}
+
+.frdy.debug-panel {
+  position: absolute;
+  font-size: xx-small;
+  right: 0;
+  top: 0;
+  color: black;
+  background: #fff;
+  opacity: 0.8;
+  &:hover {
+    opacity: 0.2;
   }
 }

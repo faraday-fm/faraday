@@ -1,4 +1,4 @@
-import { ContextVariablesProvider, DebugContextVariables, useSetContextVariables } from "@frdy/commands";
+import { ContextVariablesProvider, DebugContextVariables, useSetContextVariable } from "@frdy/commands";
 import { memo, useEffect, useRef } from "react";
 import { usePanels } from "../../../features/panels";
 import { css } from "../../../features/styles";
@@ -28,8 +28,8 @@ export const QuickView = memo(({ layout }: QuickViewPanelProps) => {
   const panelRootRef = useRef<HTMLDivElement>(null);
   const focused = useFocused(panelRootRef);
 
-  useSetContextVariables("quickView.visible");
-  useSetContextVariables("quickView.focus", isActive);
+  useSetContextVariable("quickView.visible", true);
+  useSetContextVariable("quickView.focus", true, isActive);
 
   useEffect(() => {
     if (focused) {

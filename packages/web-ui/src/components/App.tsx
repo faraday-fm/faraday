@@ -1,4 +1,4 @@
-import { useCommandBindings, useSetContextVariables } from "@frdy/commands";
+import { useCommandBinding, useSetContextVariable } from "@frdy/commands";
 import JSON5 from "json5";
 import { useEffect, useRef, useState } from "react";
 import defaultLayout from "../assets/layout.json5";
@@ -43,20 +43,17 @@ export function App() {
     }
   }, [layoutContent, layoutLoadingError, setPanelsLayout]);
 
-  useSetContextVariables("isDesktop", host.config.isDesktop());
-  useSetContextVariables("devMode", devMode);
+  useSetContextVariable("isDesktop", true, host.config.isDesktop());
+  useSetContextVariable("devMode", true, devMode);
 
-  useCommandBindings({
-    togglePanels: () => setPanelsOpen((p) => !p),
-    focusNextPanel: () => focusNextPanel(false),
-    focusPrevPanel: () => focusNextPanel(true),
-    // open: () => setDialogOpen(true),
-    open: () => enterDir(),
-    openShell: () => setCopyDialogOpen(true),
-    copyFiles: () => setCopyDialogOpen(true),
-    deleteFiles: () => setDeleteDialogOpen(true),
-    switchDevMode: () => setDevMode((d) => !d),
-  });
+  useCommandBinding("togglePanels", () => setPanelsOpen((p) => !p));
+  useCommandBinding("focusNextPanel", () => focusNextPanel(false));
+  useCommandBinding("focusPrevPanel", () => focusNextPanel(true));
+  useCommandBinding("open", () => enterDir());
+  useCommandBinding("openShell", () => setCopyDialogOpen(true));
+  useCommandBinding("copyFiles", () => setCopyDialogOpen(true));
+  useCommandBinding("deleteFiles", () => setDeleteDialogOpen(true));
+  useCommandBinding("switchDevMode", () => setDevMode((d) => !d));
 
   // const leftItems = useMemo(() => Array.from(Array(300).keys()).map((i) => ({ name: i.toString(), size: Math.round(Math.random() * 100000000) })), []);
   const { height: glyphHeight } = useGlyphSize();

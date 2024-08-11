@@ -10,6 +10,7 @@ import { Cell } from "./Cell";
 import { CellText } from "./CellText";
 import { FullFileName } from "./FullFileName";
 import type { ColumnDef, CursorStyle } from "./types";
+import { get } from "./utils";
 
 interface ColumnProps {
   items: List<Dirent>;
@@ -91,7 +92,7 @@ export function Column({ items, topmostIndex, selectedIndex, cursorStyle, column
                   {columnDef.field === "filename" ? (
                     <FullFileName dirent={item} cursorStyle={cursorStyle} />
                   ) : (
-                    <CellText text={item[columnDef.field]} cursorStyle={cursorStyle} />
+                    <CellText text={get(item, columnDef.field) ?? '---'} cursorStyle={cursorStyle} />
                   )}
                 </Cell>
               );
