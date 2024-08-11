@@ -1,3 +1,4 @@
+import { useCommandBindings, useSetContextVariables } from "@frdy/commands";
 import JSON5 from "json5";
 import { useEffect, useRef, useState } from "react";
 import defaultLayout from "../assets/layout.json5";
@@ -5,7 +6,6 @@ import { ActionsBar } from "../components/ActionsBar";
 import { LayoutContainer } from "../components/LayoutContainer";
 import { useFaradayHost } from "../contexts/faradayHostContext";
 import { useGlyphSize } from "../contexts/glyphSizeContext";
-import { useCommandBindings, useSetContextVariables } from "../features/commands";
 import { useFileContent } from "../features/fs/hooks";
 import { useInert } from "../features/inert/hooks";
 import { usePanels } from "../features/panels";

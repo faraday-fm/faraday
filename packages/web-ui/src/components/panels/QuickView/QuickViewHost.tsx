@@ -1,9 +1,9 @@
+import { useGlobalContext } from "@frdy/commands";
 import { type ReactElement, useEffect, useState } from "react";
 import { useQuickView } from "../../../features/quickViews";
 import { css } from "../../../features/styles";
 import type { QuickViewDefinition } from "../../../schemas/manifest";
 import { QuickViewInstance, type QuickViewInstanceActions } from "./QuickViewInstance";
-import { useGlobalContext } from "../../../features/globalContext";
 
 interface QVInstance {
   quickView: QuickViewDefinition;

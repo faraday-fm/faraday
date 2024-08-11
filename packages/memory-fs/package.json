@@ -16,7 +16,6 @@
   ],
   "dependencies": {
     "@frdy/sdk": "workspace:*",
-    "@frdy/web-ui": "workspace:*",
     "synchronous-promise": "~2.0.17"
   },
   "devDependencies": {

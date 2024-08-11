@@ -6,13 +6,14 @@ import {
   type DirList,
   type Dirent,
   type FileHandle,
+  FileSystemError,
   type FileSystemProvider,
   FileType,
   Flags,
   type RealPathControlByte,
   type RenameFlags,
+  isDir,
 } from "@frdy/sdk";
-import { FileSystemError, isDir } from "@frdy/web-ui";
 import { SynchronousPromise } from "synchronous-promise";
 
 type FsEntry = Dirent & {

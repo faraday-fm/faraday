@@ -1,9 +1,9 @@
-import type { FileSystemProvider, Theme } from "@frdy/sdk";
+import { useGlobalContext } from "@frdy/commands";
+import type { FileSystemProvider } from "@frdy/sdk";
 import type { WebView, WebViewActions, WebViewHost } from "@frdy/webview-host/types";
 import * as Comlink from "comlink";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { useFs } from "../../../features/fs/useFs";
-import { useGlobalContext } from "../../../features/globalContext";
 import { useTheme } from "../../../features/themes";
 
 type RemoteWebViewParams = {

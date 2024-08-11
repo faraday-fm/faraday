@@ -1,11 +1,10 @@
+import { ContextVariablesProvider, KeyBindingProvider } from "@frdy/commands";
 import { App } from "./components/App";
 import { SettingsTracker } from "./components/SettingsTracker/SettingsTracker";
 import { Extensions } from "./components/extensions/Extensions";
 import { FaradayHostProvider } from "./contexts/faradayHostContext";
 import { FileIconsProvider } from "./contexts/fileIconsContext";
 import { GlyphSizeProvider } from "./contexts/glyphSizeContext";
-import { KeyBindingProvider } from "./contexts/keyBindingContext";
-import { ContextVariablesProvider } from "./features/commands";
 import { AppStoreProvider } from "./features/store";
 import { useStyles } from "./features/styles";
 import { ThemeProvider } from "./features/themes";
@@ -13,8 +12,6 @@ import { darkTheme, lightTheme } from "./features/themes/themes";
 import { useMediaQuery } from "./hooks/useMediaQuery";
 import type { FaradayProps } from "./types";
 
-export { isDir } from "./features/fs/utils";
-export * from "./features/fs/FileSystemError";
 export type {
   FaradayConfig,
   FaradayHost,

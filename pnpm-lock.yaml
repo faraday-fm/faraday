@@ -202,14 +202,96 @@ importers:
         specifier: ~8.2.4
         version: 8.2.4(postcss@8.4.41)(typescript@5.5.4)
 
+  packages/commands:
+    dependencies:
+      '@frdy/sdk':
+        specifier: workspace:*
+        version: link:../sdk
+      deepmerge:
+        specifier: ^4.3.1
+        version: 4.3.1
+      fast-deep-equal:
+        specifier: ^3.1.3
+        version: 3.1.3
+      immer:
+        specifier: ^10.0.3
+        version: 10.1.1
+      is-promise:
+        specifier: ^4.0.0
+        version: 4.0.0
+      jotai:
+        specifier: ^2.9.1
+        version: 2.9.2(@types/react@18.3.3)(react@18.3.1)
+      list:
+        specifier: ^2.0.19
+        version: 2.0.19
+      valibot:
+        specifier: ^0.37.0
+        version: 0.37.0(typescript@5.5.4)
+    devDependencies:
+      '@biomejs/biome':
+        specifier: ^1.8.3
+        version: 1.8.3
+      '@frdy/typescript-config':
+        specifier: workspace:*
+        version: link:../typescript-config
+      '@rollup/plugin-alias':
+        specifier: ^5.0.1
+        version: 5.1.0(rollup@4.20.0)
+      '@rollup/plugin-commonjs':
+        specifier: ^26.0.1
+        version: 26.0.1(rollup@4.20.0)
+      '@rollup/plugin-json':
+        specifier: ^6.0.1
+        version: 6.1.0(rollup@4.20.0)
+      '@rollup/plugin-node-resolve':
+        specifier: ^15.2.3
+        version: 15.2.3(rollup@4.20.0)
+      '@rollup/plugin-terser':
+        specifier: ^0.4.4
+        version: 0.4.4(rollup@4.20.0)
+      '@rollup/pluginutils':
+        specifier: ^5.1.0
+        version: 5.1.0(rollup@4.20.0)
+      '@types/parsimmon':
+        specifier: ^1.10.8
+        version: 1.10.9
+      '@types/react':
+        specifier: ^18.3.3
+        version: 18.3.3
+      json5:
+        specifier: ^2.2.3
+        version: 2.2.3
+      react:
+        specifier: ^18.3.1
+        version: 18.3.1
+      rollup:
+        specifier: ^4.20.0
+        version: 4.20.0
+      rollup-plugin-delete:
+        specifier: ^2.0.0
+        version: 2.0.0
+      rollup-plugin-dts:
+        specifier: ^6.1.0
+        version: 6.1.1(rollup@4.20.0)(typescript@5.5.4)
+      rollup-plugin-peer-deps-external:
+        specifier: ^2.2.4
+        version: 2.2.4(rollup@4.20.0)
+      rollup-plugin-string:
+        specifier: ^3.0.0
+        version: 3.0.0
+      rollup-plugin-typescript2:
+        specifier: ^0.36.0
+        version: 0.36.0(rollup@4.20.0)(typescript@5.5.4)
+      typescript:
+        specifier: ^5.5.4
+        version: 5.5.4
+
   packages/memory-fs:
     dependencies:
       '@frdy/sdk':
         specifier: workspace:*
         version: link:../sdk
-      '@frdy/web-ui':
-        specifier: workspace:*
-        version: link:../web-ui
       synchronous-promise:
         specifier: ~2.0.17
         version: 2.0.17
@@ -228,6 +310,9 @@ importers:
 
   packages/web-ui:
     dependencies:
+      '@frdy/commands':
+        specifier: workspace:*
+        version: link:../commands
       '@frdy/sdk':
         specifier: workspace:*
         version: link:../sdk

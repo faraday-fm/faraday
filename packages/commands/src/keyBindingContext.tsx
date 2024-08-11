@@ -2,9 +2,9 @@ import JSON5 from "json5";
 import { alt, regexp, seq, string } from "parsimmon";
 import { type PropsWithChildren, createContext, useEffect } from "react";
 import { parse } from "valibot";
-import keyBindingsContent from "../assets/keybindings.json5";
-import { useExecuteCommand, useIsInContext } from "../features/commands";
-import { KeyBindingsSchema } from "../schemas/keyBindings";
+import keyBindingsContent from "./assets/keybindings.json5";
+import { KeyBindingsSchema } from "./schema";
+import { useExecuteCommand, useIsInContext } from "./commands";
 
 const keyBindings = parse(KeyBindingsSchema, JSON5.parse(keyBindingsContent));
 

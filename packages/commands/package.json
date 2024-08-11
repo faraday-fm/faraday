@@ -1,36 +1,41 @@
 {
-  "name": "@frdy/web-ui",
-  "private": false,
-  "version": "1.38.1",
-  "description": "Web front-end for Faraday file manager",
+  "name": "@frdy/commands",
+  "version": "0.0.1",
+  "description": "Commands abstraction for Faraday File Manager",
   "source": "src/index.tsx",
   "type": "module",
-  "main": "dist/index.cjs.js",
   "module": "dist/index.esm.js",
   "types": "dist/index.d.ts",
   "scripts": {
     "dev": "rollup -c -w",
     "build": "rollup -c --silent",
-    "test": "echo \"Error: no test specified\" && exit 0",
     "lint": "biome check"
   },
-  "files": ["dist", "package.json", "README.md"],
+  "files": [
+    "dist",
+    "package.json",
+    "LICENSE",
+    "README.md",
+    "CHANGELOG.md"
+  ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/faraday-fm/web-ui.git"
+    "url": "https://github.com/faraday-fm/faraday.git"
   },
-  "keywords": ["faraday", "web", "ui", "frontend", "file-manager"],
+  "keywords": [
+    "faraday",
+    "web",
+    "ui",
+    "frontend",
+    "file-manager",
+    "commands"
+  ],
   "author": "Mikhail Isupov",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/faraday-fm/web-ui/issues"
+    "url": "https://github.com/faraday-fm/faraday/issues"
   },
-  "homepage": "https://github.com/faraday-fm/web-ui#readme",
-  "config": {
-    "commitizen": {
-      "path": "./node_modules/cz-conventional-changelog"
-    }
-  },
+  "homepage": "https://github.com/faraday-fm/faraday#readme",
   "publishConfig": {
     "access": "public"
   },
@@ -38,17 +43,17 @@
     "react": ">=18"
   },
   "devDependencies": {
-    "@frdy/typescript-config": "workspace:*",
     "@biomejs/biome": "^1.8.3",
+    "@frdy/typescript-config": "workspace:*",
     "@rollup/plugin-alias": "^5.0.1",
     "@rollup/plugin-commonjs": "^26.0.1",
     "@rollup/plugin-json": "^6.0.1",
     "@rollup/plugin-node-resolve": "^15.2.3",
     "@rollup/plugin-terser": "^0.4.4",
-    "@rollup/plugin-typescript": "^11.1.6",
     "@rollup/pluginutils": "^5.1.0",
     "@types/parsimmon": "^1.10.8",
     "@types/react": "^18.3.3",
+    "json5": "^2.2.3",
     "react": "^18.3.1",
     "rollup": "^4.20.0",
     "rollup-plugin-delete": "^2.0.0",
@@ -59,24 +64,13 @@
     "typescript": "^5.5.4"
   },
   "dependencies": {
-    "@frdy/commands": "workspace:*",
     "@frdy/sdk": "workspace:*",
-    "@frdy/webview-host": "workspace:*",
-    "@xterm/addon-fit": "~0.10.0",
-    "@xterm/addon-unicode11": "~0.8.0",
-    "@xterm/addon-web-links": "~0.11.0",
-    "@xterm/addon-webgl": "~0.18.0",
-    "@xterm/xterm": "~5.5.0",
-    "ansi-colors": "^4.1.3",
-    "comlink": "^4.4.1",
     "deepmerge": "^4.3.1",
     "fast-deep-equal": "^3.1.3",
     "immer": "^10.0.3",
     "is-promise": "^4.0.0",
     "jotai": "^2.9.1",
-    "json5": "^2.2.3",
     "list": "^2.0.19",
-    "parsimmon": "^1.18.1",
     "valibot": "^0.37.0"
   }
 }

@@ -2,7 +2,8 @@ import equal from "fast-deep-equal";
 import { produce } from "immer";
 import { atom, useAtom } from "jotai";
 import { useCallback, useMemo } from "react";
-import type { ContextVariables } from "./types";
+
+export type ContextVariables = Record<string, Record<string, unknown>>;
 
 export const contextVariablesAtom = atom<ContextVariables>({});
 

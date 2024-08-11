@@ -1,7 +1,7 @@
 import { type Dirent, FileType } from "@frdy/sdk";
+import { isDir } from "@frdy/sdk";
 import { memo } from "react";
 import { useGlyphSize } from "../../../contexts/glyphSizeContext";
-import { isDir } from "../../../features/fs/utils";
 import { css } from "../../../features/styles";
 import { formatDateTime } from "../../../utils/date";
 import { bytesToSize } from "../../../utils/number";

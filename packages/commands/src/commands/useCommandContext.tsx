@@ -1,6 +1,6 @@
 import { type PropsWithChildren, createContext, useCallback, useContext, useEffect, useId, useMemo } from "react";
-import { usePrevValueIfDeepEqual } from "../../hooks/usePrevValueIfDeepEqual";
-import { type Node, parser } from "../../utils/whenClauseParser";
+import { usePrevValueIfDeepEqual } from "../utils/usePrevValueIfDeepEqual";
+import { type Node, parser } from "../utils/whenClauseParser";
 import { type ContextVariables, useContextVariables } from "../contextVariables";
 
 type Variables = string | string[] | Record<string, unknown>;

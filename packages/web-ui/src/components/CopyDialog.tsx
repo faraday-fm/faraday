@@ -1,6 +1,6 @@
+import { useSetContextVariables } from "@frdy/commands";
 import { type ReactEventHandler, useEffect, useId, useRef } from "react";
 import { QuickNavigationProvider } from "../contexts/quickNavigationContext";
-import { useSetContextVariables } from "../features/commands";
 import { css } from "../features/styles";
 import { AutoHotKeyLabel } from "./AutoHotKeyLabel";
 import { Border } from "./Border";

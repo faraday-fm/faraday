@@ -1,11 +1,11 @@
+import { ContextVariablesProvider, DebugContextVariables, useSetContextVariables } from "@frdy/commands";
 import { memo, useEffect, useRef } from "react";
-import { Border } from "../../Border";
-import { PanelHeader } from "../../PanelHeader";
-import { ContextVariablesProvider, DebugContextVariables, useSetContextVariables } from "../../../features/commands";
 import { usePanels } from "../../../features/panels";
 import { css } from "../../../features/styles";
 import { useFocused } from "../../../hooks/useFocused";
 import type { QuickViewLayout } from "../../../types";
+import { Border } from "../../Border";
+import { PanelHeader } from "../../PanelHeader";
 import QuickViewHost from "./QuickViewHost";
 
 interface QuickViewPanelProps {
