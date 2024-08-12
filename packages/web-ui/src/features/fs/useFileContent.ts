@@ -1,6 +1,5 @@
+import { readFile } from "@frdy/sdk";
 import { useEffect, useRef, useState } from "react";
-import { filestream } from "./filestream";
-import { streamToUint8Array } from "./streamToUint8Array";
 import { useFs } from "./useFs";
 
 interface FileContent {
@@ -30,8 +29,7 @@ export function useFileContent(path?: string, skip = false) {
     const abortController = new AbortController();
     const pendingOp = counter.current;
     const readStream = async () => {
-      const stream = filestream(fs, path, abortController.signal);
-      const content = await streamToUint8Array(stream);
+      const content = await readFile(fs, path, { signal: abortController.signal });
       setResult({ done: true, content, path, skipped: false });
     };
     readStream().catch((error: unknown) => {

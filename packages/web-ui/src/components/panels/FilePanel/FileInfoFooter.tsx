@@ -15,18 +15,19 @@ function formatFileSize(e?: Dirent) {
     return "";
   }
   if (isDir(e)) {
+    if (e.attrs.type & FileType.Symlink) return "symlink";
     return e.filename === ".." ? "up" : "dir";
   }
-  switch (e.attrs.type) {
-    case FileType.SYMLINK:
+  switch (true) {
+    case (e.attrs.type & FileType.Symlink) !== 0:
       return "symlink";
-    case FileType.BLOCK_DEVICE:
+    case (e.attrs.type & FileType.Device) !== 0:
       return "block dev";
-    case FileType.CHAR_DEVICE:
+    case (e.attrs.type & FileType.CharDevice) !== 0:
       return "char dev";
-    case FileType.TYPE_FIFO:
+    case (e.attrs.type & FileType.NamedPipe) !== 0:
       return "fifo";
-    case FileType.SOCKET:
+    case (e.attrs.type & FileType.Socket) !== 0:
       return "socket";
     default:
       return bytesToSize(e.attrs.size ?? 0, 999999);
@@ -39,7 +40,7 @@ export const FileInfoFooter = memo(({ file }: FileInfoFooterProps) => {
     <div className={css("file-info-root")} style={{ height }}>
       <div className={css("file-info-name")}>{file?.filename}</div>
       <div className={css("file-info-size")}>{formatFileSize(file)}</div>
-      <div className={css("file-info-time")}>{file?.attrs.mtime ? formatDateTime(new Date(file.attrs.mtime)) : undefined}</div>
+      <div className={css("file-info-time")}>{file?.attrs.mtime ? formatDateTime(new Date(file.attrs.mtime * 1000)) : undefined}</div>
     </div>
   );
 });

@@ -19,7 +19,9 @@ export function filestream(fs: FileSystemProvider, path: string, signal?: AbortS
         offs += BATCH_SIZE;
         if (result.byteLength > 0) {
           controller.enqueue(result);
-        } else {
+        }
+        if (result.byteLength < BATCH_SIZE) {
+          fs.close(handle!);
           controller.close();
         }
       } catch {

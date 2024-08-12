@@ -1,4 +1,4 @@
-import { useGlobalContext } from "@frdy/commands";
+import { useGlobalContext, useSetContextVariable } from "@frdy/commands";
 import { type ReactElement, useEffect, useState } from "react";
 import { useQuickView } from "../../../features/quickViews";
 import { css } from "../../../features/styles";
@@ -17,6 +17,12 @@ export default function QuickViewHost() {
 
   const quickView = useQuickView(path);
   const key = quickView ? `${quickView.extId}.${quickView.quickView.id}` : undefined;
+
+  useSetContextVariable("quickView.key", key);
+  useSetContextVariable("quickView.extensionPath", quickView?.extensionPath);
+  useSetContextVariable("quickView.extensions", quickView?.quickView.extensions);
+  useSetContextVariable("quickView.filenames", quickView?.quickView.filenames);
+  useSetContextVariable("quickView.mimetypes", quickView?.quickView.mimetypes);
 
   useEffect(() => {
     setInstances((instances) => {

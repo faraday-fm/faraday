@@ -1,9 +1,8 @@
+import { readFile } from "@frdy/sdk";
 import isPromise from "is-promise";
 import { type PropsWithChildren, type ReactNode, createContext, useCallback, useContext, useMemo } from "react";
 import { useIconThemes } from "../features/extensions/hooks";
-import { filestream } from "../features/fs/filestream";
 import { useFs } from "../features/fs/hooks";
-import { streamToUint8Array } from "../features/fs/streamToUint8Array";
 import { useSettings } from "../features/settings/settings";
 import { css } from "../features/styles";
 import { type IconTheme, isSvgIcon } from "../schemas/iconTheme";
@@ -104,7 +103,7 @@ export function FileIconsProvider({ children }: PropsWithChildren) {
       }
 
       try {
-        const svgContent = streamToUint8Array(filestream(fs, iconPathAbsolute));
+        const svgContent = readFile(fs, iconPathAbsolute);
         if (isPromise(svgContent)) {
           const svgPromise = svgContent.then(parseSvg).then((svg) => btoa(svg));
           cache.set(iconDefinitionName, svgPromise);

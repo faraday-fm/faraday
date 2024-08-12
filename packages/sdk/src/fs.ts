@@ -1,15 +1,20 @@
 export type FileHandle = string;
 
 export enum FileType {
-  REGULAR = 1,
-  DIRECTORY = 2,
-  SYMLINK = 3,
-  SPECIAL = 4,
-  UNKNOWN = 5,
-  SOCKET = 6,
-  CHAR_DEVICE = 7,
-  BLOCK_DEVICE = 8,
-  TYPE_FIFO = 9,
+  Regular = 0,
+  Dir = 1 << (32 - 1), // d: is a directory
+  Append = 1 << (32 - 2), // a: append-only
+  Exclusive = 1 << (32 - 3), // l: exclusive use
+  Temporary = 1 << (32 - 4), // T: temporary file; Plan 9 only
+  Symlink = 1 << (32 - 5), // L: symbolic link
+  Device = 1 << (32 - 6), // D: device file
+  NamedPipe = 1 << (32 - 7), // p: named pipe (FIFO)
+  Socket = 1 << (32 - 8), // S: Unix domain socket
+  Setuid = 1 << (32 - 9), // u: setuid
+  Setgid = 1 << (32 - 10), // g: setgid
+  CharDevice = 1 << (32 - 11), // c: Unix character device, when ModeDevice is set
+  Sticky = 1 << (32 - 12), // t: sticky
+  Irregular = 1 << (32 - 13), // ?: non-regular file; nothing else is known about this file
 }
 
 export enum Permissions {

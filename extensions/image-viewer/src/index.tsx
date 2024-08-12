@@ -45,7 +45,7 @@ function revokeURL() {
 const load = async (path: string) => {
   console.info("Image loading:", path);
   revokeURL();
-  const content = await readFile(path);
+  const content = await readFile(faraday.fs, path);
   const img = document.createElement("img");
   img.style.width = "100%";
   img.style.height = "100%";

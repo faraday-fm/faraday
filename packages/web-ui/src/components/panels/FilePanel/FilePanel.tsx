@@ -100,6 +100,8 @@ export const FilePanel = memo(
     useSetContextVariable("filePanel.lastItem", cursor.activeIndex === items.size() - 1, focused);
     useSetContextVariable("filePanel.activeItem", cursor.activeName, focused);
     useSetContextVariable("filePanel.path", path, focused);
+    useSetContextVariable("filePanel.totalItemsCount", items.size(), focused);
+    useSetContextVariable("filePanel.selectedItemsCount", selectedItemNames.size(), focused);
 
     const moveCursorLeftRight = useCallback(
       (direction: "left" | "right", select: boolean) => {
@@ -215,7 +217,7 @@ export const FilePanel = memo(
     }
 
     return (
-      <div className={css("panel-root", focused ? "-focused" : "")} ref={panelRootRef} tabIndex={0} onFocus={handleFocus}>
+      <div className={css("panel-root", focused ? "-focused" : "")} ref={panelRootRef} tabIndex={0} onFocus={handleFocus} onWheel={() => panelRootRef.current?.focus()}>
         <GlyphSizeProvider>
           <Border color={focused ? "panel-border-focus" : "panel-border"}>
             <div className={css("panel-content")}>

@@ -56,7 +56,6 @@ export interface Terminal {
 
 export interface FaradayHost {
   config: FaradayConfig;
-  faradayFs: FileSystemProvider;
   rootFs: FileSystemProvider;
   terminal?: Terminal;
 }

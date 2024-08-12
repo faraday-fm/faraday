@@ -1,17 +1,16 @@
-import { Compartment, EditorState } from "@codemirror/state";
-import { AceMask, FileType, Flags, readFile } from "@frdy/sdk";
-import { basicSetup, EditorView } from "codemirror";
-import { forwardRef, useCallback, useEffect, useImperativeHandle, useRef, useState } from "preact/compat";
-import { defaultThemeOption } from "./defaultThemeOption";
-import { cobalt } from "thememirror";
 import { javascript } from "@codemirror/lang-javascript";
-import { detectLang } from "./detectLang";
 import { language } from "@codemirror/language";
+import { Compartment } from "@codemirror/state";
+import { AceMask, type FileType, Flags, readFile } from "@frdy/sdk";
+import { EditorView, basicSetup } from "codemirror";
+import { forwardRef, useCallback, useEffect, useImperativeHandle, useRef, useState } from "preact/compat";
+import { cobalt } from "thememirror";
+import { defaultThemeOption } from "./defaultThemeOption";
+import { detectLang } from "./detectLang";
 
 export type AppRef = {
   activate(): void;
   deactivate(): void;
-  setData(data: string): void;
 };
 
 const languageConf = new Compartment();
@@ -29,6 +28,7 @@ export const App = forwardRef<AppRef>((_, ref) => {
           defaultThemeOption,
           cobalt,
           languageConf.of(javascript()),
+          EditorView.lineWrapping,
           // EditorState.readOnly.of(true)
         ],
         parent: viewParentRef.current,
@@ -44,7 +44,7 @@ export const App = forwardRef<AppRef>((_, ref) => {
         if (!view) return;
         const newLangExt = detectLang(path);
         const currLang = view.state.facet(language);
-        const arr = await readFile(path);
+        const arr = await readFile(faraday.fs, path);
         const text = new TextDecoder().decode(arr);
         const transaction = view.state.update({
           changes: { from: 0, to: view.state.doc.length, insert: text },
@@ -80,7 +80,6 @@ export const App = forwardRef<AppRef>((_, ref) => {
       }
       viewParentRef.current!.style.visibility = "collapse";
     },
-    setData: (data) => {},
   }));
 
   return (
@@ -90,7 +89,7 @@ export const App = forwardRef<AppRef>((_, ref) => {
         <button
           type="button"
           onClick={async () => {
-            const handle = await faraday.fs.open(activefile, AceMask.WRITE_DATA, Flags.CREATE_TRUNCATE, { type: FileType.REGULAR });
+            const handle = await faraday.fs.open(activefile, AceMask.WRITE_DATA, Flags.CREATE_TRUNCATE, { type: 0 as FileType });
             await faraday.fs.write(handle, 0, new TextEncoder().encode(view?.state.doc.toString() ?? ""));
             await faraday.fs.close(handle);
           }}

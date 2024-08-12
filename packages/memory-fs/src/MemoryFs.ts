@@ -78,7 +78,7 @@ function realpath(root: string, ...segments: string[]) {
 export class MemoryFsProvider implements FileSystemProvider {
   #handles = new Map<string, FsEntry>();
   #root: FsEntry = {
-    attrs: { type: FileType.DIRECTORY },
+    attrs: { type: FileType.Dir },
     filename: "",
     path: "/",
     children: [],
@@ -158,7 +158,7 @@ export class MemoryFsProvider implements FileSystemProvider {
       path: filename,
       attrs: {
         ...attrs,
-        type: attrs?.type ?? FileType.REGULAR,
+        type: attrs?.type ?? 0,
         attribBits,
         attribBitsValid: AttribBits.HIDDEN,
       },
@@ -254,7 +254,7 @@ export class MemoryFsProvider implements FileSystemProvider {
       children: [],
       attrs: {
         ...attrs,
-        type: FileType.DIRECTORY,
+        type: FileType.Dir,
         attribBits,
         attribBitsValid: AttribBits.HIDDEN,
       },
@@ -313,7 +313,7 @@ export class MemoryFsProvider implements FileSystemProvider {
         {
           filename: rp,
           path: rp,
-          attrs: { type: FileType.UNKNOWN },
+          attrs: { type: 0 as FileType },
         },
       ],
       endOfList: true,

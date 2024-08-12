@@ -10,13 +10,12 @@ export const EE = new EventEmitter();
 async function importModule() {
   const settings = await host.getSettings();
   const rp = await faraday.fs.realpath(settings.pwd, RealPathControlByte.NO_CHECK, [settings.scriptPath]);
-  const result = await readFile(rp.files[0].path);
+  const result = await readFile(faraday.fs, rp.files[0].path);
   const blob = new Blob([result], { type: "text/javascript" });
   const url = URL.createObjectURL(blob);
   return await import(url);
 }
 
-// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 let module: any;
 let active = true;
 let lastActivefile:string|undefined;

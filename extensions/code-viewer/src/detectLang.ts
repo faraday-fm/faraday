@@ -5,17 +5,14 @@ import { sql } from "@codemirror/lang-sql";
 import { markdown } from "@codemirror/lang-markdown";
 import { css } from "@codemirror/lang-css";
 import { go } from "@codemirror/lang-go";
-import { angular } from "@codemirror/lang-angular";
 import { cpp } from "@codemirror/lang-cpp";
 import { java } from "@codemirror/lang-java";
 import { less } from "@codemirror/lang-less";
 import { lezer } from "@codemirror/lang-lezer";
-import { liquid } from "@codemirror/lang-liquid";
 import { php } from "@codemirror/lang-php";
 import { rust } from "@codemirror/lang-rust";
 import { sass } from "@codemirror/lang-sass";
 import { vue } from "@codemirror/lang-vue";
-import { wast } from "@codemirror/lang-wast";
 import { xml } from "@codemirror/lang-xml";
 import { yaml } from "@codemirror/lang-yaml";
 
@@ -24,12 +21,11 @@ export function detectLang(path: string) {
   if (dotIdx >= 0) {
     const ext = path.substring(dotIdx + 1).toLowerCase();
     switch (ext) {
-      case "component.html":
-        return angular();
       case "json":
         return json();
       case "md":
         return markdown();
+      case "htm":
       case "html":
         return html();
       case "js":
@@ -59,8 +55,6 @@ export function detectLang(path: string) {
         return less();
       case "lezer":
         return lezer();
-      case "liquid":
-        return liquid();
       case "php":
         return php();
       case "rs":
@@ -69,8 +63,6 @@ export function detectLang(path: string) {
         return sass();
       case "vue":
         return vue();
-      case "wast":
-        return wast();
       case "xml":
         return xml();
       case "yml":

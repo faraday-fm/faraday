@@ -5,8 +5,8 @@ import { AceMask, FileType, Flags, type FileSystemProvider } from "@frdy/sdk";
 
 async function dir(fs: FileSystemProvider, name: string, lastModDate: Date) {
   await fs.mkdir(name, {
-    type: FileType.DIRECTORY,
-    mtime: lastModDate.getTime(),
+    type: FileType.Dir,
+    mtime: Math.round(lastModDate.getTime() / 1000),
   });
 }
 
@@ -20,7 +20,7 @@ async function file(
     name,
     AceMask.WRITE_DATA,
     Flags.CREATE_TRUNCATE,
-    { type: FileType.REGULAR, mtime: lastModDate.getTime(), }
+    { type: FileType.Regular, mtime: Math.round(lastModDate.getTime() / 1000), }
   );
   fs.write(handle, 0, new Uint8Array(content));
 }
