@@ -1,5 +1,13 @@
 # @frdy/webview-host
 
+## 0.6.1
+
+### Patch Changes
+
+- 74cdc20: minor improvements
+- Updated dependencies [32d2ef4]
+  - @frdy/sdk@1.5.0
+
 ## 0.6.0
 
 ### Minor Changes

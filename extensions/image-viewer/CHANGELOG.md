@@ -1,5 +1,13 @@
 # image-viewer
 
+## 1.1.3
+
+### Patch Changes
+
+- 74cdc20: minor improvements
+- Updated dependencies [32d2ef4]
+  - @frdy/sdk@1.5.0
+
 ## 1.1.2
 
 ### Patch Changes
