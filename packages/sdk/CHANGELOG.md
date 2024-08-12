@@ -1,5 +1,11 @@
 # @frdy/sdk
 
+## 1.5.0
+
+### Minor Changes
+
+- 32d2ef4: introduced @frdy/commands package
+
 ## 1.4.0
 
 ### Minor Changes

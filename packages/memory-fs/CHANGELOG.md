@@ -1,5 +1,16 @@
 # @frdy/memory-fs
 
+## 1.35.0
+
+### Minor Changes
+
+- 32d2ef4: introduced @frdy/commands package
+
+### Patch Changes
+
+- Updated dependencies [32d2ef4]
+  - @frdy/sdk@1.5.0
+
 ## 1.34.3
 
 ### Patch Changes
