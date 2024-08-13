@@ -14,7 +14,7 @@
           path: "/.faraday/extensions/PKief.material-icon-theme-5.8.0/icons",
           view: {
             type: "condensed",
-            columnDef: { field: "name", name: "Name" },
+            columnDef: { field: "filename", name: "Name" },
           },
         },
       ],
@@ -29,20 +29,9 @@
           flex: 1,
           path: "/",
           view: {
-            type: "full",
-            // columnDefs: [
-            //   { field: "filename", name: "Name", width: "1fr" },
-            //   { field: "attrs.size", name: "Size" },
-            // ],
             type: "condensed",
-            columnDef: { field: "name", name: "Name" },
+            columnDef: { field: "filename", name: "Name" },
           },
-          // when: "quickView.visible",
-        },
-        {
-          id: "panel3",
-          type: "quick-view",
-          //when: "!filePanel.firstItem",
         },
       ],
     },

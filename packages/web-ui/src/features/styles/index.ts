@@ -24,6 +24,7 @@ export function useStyles(theme: Theme): boolean {
     if (!colorsEl || !stylesEl) {
       return;
     }
+    localStorage.setItem("bg", theme.colors["panel.background"]);
     const colorVariables = Object.entries(theme.colors)
       .concat([["fontFamily", theme.fontFamily]])
       .map(([key, val]) => `--${key.replaceAll(/[.:]/g, "-")}:${val};`)

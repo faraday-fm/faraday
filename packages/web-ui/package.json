@@ -61,7 +61,7 @@
   "dependencies": {
     "@frdy/commands": "workspace:*",
     "@frdy/sdk": "workspace:*",
-    "@frdy/webview-host": "workspace:*",
+    "@frdy/extension-host": "workspace:*",
     "@xterm/addon-fit": "~0.10.0",
     "@xterm/addon-unicode11": "~0.8.0",
     "@xterm/addon-web-links": "~0.11.0",

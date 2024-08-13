@@ -8,10 +8,10 @@
   "license": "MIT",
   "private": true,
   "categories": [
-    "QuickView"
+    "Custom Panels"
   ],
   "keywords": [
-    "quickview",
+    "faraday-panels",
     "text"
   ],
   "type": "module",
@@ -28,7 +28,7 @@
     "tsup": "~8.2.4"
   },
   "contributes": {
-    "quickViews": [
+    "customPanels": [
       {
         "id": "image",
         "extensions": [

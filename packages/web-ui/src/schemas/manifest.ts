@@ -1,6 +1,6 @@
 import { type InferOutput, array, enum as enum_, object, optional, string } from "valibot";
 
-const QuickViewDefinition = object({
+const CustomPanelDefinition = object({
   id: string(),
   extensions: optional(array(string())),
   filenames: optional(array(string())),
@@ -26,7 +26,7 @@ const ThemeDefinition = object({
 });
 
 const Contributes = object({
-  quickViews: optional(array(QuickViewDefinition)),
+  customPanels: optional(array(CustomPanelDefinition)),
   iconThemes: optional(array(IconThemeDefinition)),
   themes: optional(array(ThemeDefinition)),
 });
@@ -42,7 +42,7 @@ export const ExtensionManifest = object({
   contributes: optional(Contributes),
 });
 
-export type QuickViewDefinition = InferOutput<typeof QuickViewDefinition>;
+export type CustomPanelDefinition = InferOutput<typeof CustomPanelDefinition>;
 
 export type IconThemeDefinition = InferOutput<typeof IconThemeDefinition>;
 

@@ -190,45 +190,6 @@
   background-color: red;
 }
 
-.frdy.quick-view-content {
-  display: grid;
-  grid-template-rows: auto 1fr;
-  overflow: hidden;
-}
-
-.frdy.quick-view-web-view {
-  border: none;
-  min-width: 0;
-}
-
-.frdy.quick-view-host {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  display: grid;
-  align-items: stretch;
-  justify-items: stretch;
-}
-
-.frdy.quick-view {
-  position: relative;
-  width: 100%;
-  color: var(--panel-foreground);
-  background-color: var(--panel-background);
-  display: grid;
-  grid-template-rows: minmax(0, 1fr) auto;
-  overflow: hidden;
-  user-select: initial;
-
-  & div {
-    cursor: initial;
-  }
-
-  &:focus {
-    outline: none;
-  }
-}
-
 .frdy.file-icon {
   display: flex;
   width: 1lh !important;

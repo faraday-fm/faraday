@@ -5,7 +5,6 @@ import { css } from "../features/styles";
 import type { PanelsLayout, RowLayout } from "../types";
 import { ReduxFilePanel } from "./ReduxFilePanel";
 import { RenderWhen } from "./RenderWhen";
-import { QuickViewPanel } from "./panels/QuickView/QuickView";
 
 interface LayoutContainerProps {
   layout: PanelsLayout;
@@ -94,8 +93,6 @@ function LayoutContainerChooser({ layout, direction }: LayoutContainerProps) {
       return <RowContainer layout={layout} direction={direction} />;
     case "file-panel":
       return <ReduxFilePanel layout={layout} />;
-    case "quick-view":
-      return <QuickViewPanel layout={layout} />;
     default:
       return null;
   }

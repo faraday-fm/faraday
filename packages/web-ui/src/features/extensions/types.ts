@@ -1,11 +1,11 @@
-import type { QuickViewDefinition } from "../../schemas/manifest";
+import type { CustomPanelDefinition } from "../../schemas/manifest";
 
 export type Mimetype = string;
 export type FileName = string;
 export type FileExtension = string;
 
-export interface FullyQualifiedQuickView {
+export interface FullyQualifiedCustomPanel {
   extId: string;
   extensionPath: string;
-  quickView: QuickViewDefinition;
+  customPanel: CustomPanelDefinition;
 }

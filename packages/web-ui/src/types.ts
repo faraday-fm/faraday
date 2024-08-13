@@ -28,12 +28,7 @@ export interface CondensedView {
 }
 export type FilePanelView = FullView | CondensedView;
 
-export interface QuickViewLayout {
-  id: string;
-  type: "quick-view";
-}
-
-export type PanelLayout = FilePanelLayout | QuickViewLayout;
+export type PanelLayout = FilePanelLayout;
 
 export type PanelsLayout = (RowLayout | PanelLayout) & {
   id: string;

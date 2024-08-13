@@ -8,7 +8,7 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "dev": "rollup -c -w",
-    "build": "rollup -c --silent",
+    "build": "rollup -c",
     "lint": "biome check"
   },
   "files": [

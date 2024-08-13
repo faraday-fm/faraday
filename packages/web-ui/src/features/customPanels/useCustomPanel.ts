@@ -1,12 +1,12 @@
 import { filename, getAllExtensions } from "../../utils/path";
-import { useQuickViewsByFileExtension } from "./useQuickViewsByFileExtension";
-import { useQuickViewsByFileName } from "./useQuickViewsByFileName";
-import { useQuickViewsByMimetype } from "./useQuickViewsByMimetype";
+import { useCustomPanelsByFileExtension } from "./useCustomPanelsByFileExtension";
+import { useCustomPanelsByFileName } from "./useCustomPanelsByFileName";
+import { useCustomPanelsByMimetype } from "./useCustomPanelsByMimetype";
 
-export function useQuickView(filePath: string | undefined, mimetype?: string) {
-  const qvByFileName = useQuickViewsByFileName();
-  const qvByFileExtension = useQuickViewsByFileExtension();
-  const qvByFileMimetype = useQuickViewsByMimetype();
+export function useCustomPanel(filePath: string | undefined, mimetype?: string) {
+  const qvByFileName = useCustomPanelsByFileName();
+  const qvByFileExtension = useCustomPanelsByFileExtension();
+  const qvByFileMimetype = useCustomPanelsByMimetype();
 
   if (!filePath) {
     return undefined;

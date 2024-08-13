@@ -1,0 +1,32 @@
+{
+  "name": "@frdy/extension-host",
+  "version": "0.0.1",
+  "description": "Extension Host script",
+  "type": "module",
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "dev": "rollup -c -w",
+    "build": "rollup -c"
+  },
+  "keywords": [],
+  "author": "Mikhail Isupov",
+  "license": "ISC",
+  "files": [
+    "dist"
+  ],
+  "dependencies": {
+    "@frdy/sdk": "workspace:*",
+    "comlink": "^4.4.1",
+    "eventemitter3": "^5.0.1"
+  },
+  "devDependencies": {
+    "@frdy/typescript-config": "workspace:*",
+    "@rollup/plugin-node-resolve": "^15.2.3",
+    "@rollup/plugin-terser": "^0.4.4",
+    "@rollup/pluginutils": "^5.1.0",
+    "rollup": "^4.20.0",
+    "rollup-plugin-typescript2": "^0.36.0",
+    "tsup": "~8.2.4"
+  }
+}
