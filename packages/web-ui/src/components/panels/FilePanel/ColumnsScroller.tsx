@@ -14,7 +14,7 @@ const columnBorders = css`position: absolute;
     display: grid;
     grid-auto-columns: 1fr;
     grid-auto-flow: column;`;
-const columnsScrollerRoot = css`position: relative;
+const columnsScroller = css`position: relative;
     overflow: hidden;`;
 const columnsScrollerFixed = css`position: absolute;
     inset: 0;
@@ -106,7 +106,7 @@ export const ColumnsScroller = memo((props: ColumnsScrollerProps) => {
   );
 
   return (
-    <div className={columnsScrollerRoot} ref={rootRef}>
+    <div className={columnsScroller} ref={rootRef}>
       <Borders columnCount={columnCount} />
 
       <ScrollableContainer

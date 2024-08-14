@@ -37,7 +37,7 @@ const panelRoot = css`width: 100%;
 const panelContent = css`display: grid;
     grid-template-rows: auto 1fr auto auto;
     overflow: hidden;`;
-const panelColumns = `display: grid;
+const panelColumns = css`display: grid;
     flex-shrink: 1;
     flex-grow: 1;
     overflow: hidden;
