@@ -68,7 +68,7 @@
     flex-shrink: 0;
     flex-basis: 1px;
     overflow: hidden;}
-&.action-button {display: flex; flex-wrap: nowrap; align-items: baseline; padding-right: 0.5rem; &:last-child { padding-right: 0; }}
+&.action-button {display: flex; flex-wrap: nowrap; align-items: stretch; padding-right: 0.5rem; &:last-child { padding-right: 0; }}
 &.fn-key {color: var(--actionBar-keyForeground); background-color: var(--actionBar-keyBackground);}
 &.header-button {text-align: left; width: 100%; background-color: var(--actionBar-buttonBackground); color: var(--actionBar-buttonForeground); padding: 0; cursor: pointer;}
 &.tab-name {cursor: pointer;

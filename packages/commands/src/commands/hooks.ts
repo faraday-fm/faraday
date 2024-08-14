@@ -1,3 +1,3 @@
 export * from "./useCommandBinding";
-export * from "./useSetContextVariable";
 export * from "./useExecuteCommand";
+export * from "./useSetContextVariable";

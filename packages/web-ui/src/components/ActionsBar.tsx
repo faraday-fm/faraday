@@ -1,6 +1,7 @@
 import { css } from "@css";
 import { memo } from "react";
 import { ActionButton } from "./ActionButton";
+import { useKeyCommand } from "@frdy/commands";
 
 const actionsBar = css`display: grid;
     grid-auto-flow: column;
@@ -10,21 +11,26 @@ const actionsBar = css`display: grid;
     -moz-user-select: none;
     -webkit-user-select: none;`;
 
+function ActionKey({ fnKey, header }: { fnKey: string; header: string }) {
+  const r = useKeyCommand(`F${fnKey}`);
+  return <ActionButton fnKey={fnKey} header={r} />;
+}
+
 export const ActionsBar = memo(function ActionsBar() {
   return (
     <div className={actionsBar} tabIndex={-1}>
-      <ActionButton fnKey="1" header="Help" />
-      <ActionButton fnKey="2" header="Menu" />
-      <ActionButton fnKey="3" header="View" />
-      <ActionButton fnKey="4" header="Edit" />
-      <ActionButton fnKey="5" header="Copy" />
-      <ActionButton fnKey="6" header="RenMov" />
-      <ActionButton fnKey="7" header="Mkdir" />
-      <ActionButton fnKey="8" header="Delete" />
-      <ActionButton fnKey="9" header="ConfMn" />
-      <ActionButton fnKey="10" header="Quit" />
-      <ActionButton fnKey="11" header="Plugins" />
-      <ActionButton fnKey="12" header="Screens" />
+      <ActionKey fnKey="1" header="Help" />
+      <ActionKey fnKey="2" header="Menu" />
+      <ActionKey fnKey="3" header="View" />
+      <ActionKey fnKey="4" header="Edit" />
+      <ActionKey fnKey="5" header="Copy" />
+      <ActionKey fnKey="6" header="RenMov" />
+      <ActionKey fnKey="7" header="Mkdir" />
+      <ActionKey fnKey="8" header="Delete" />
+      <ActionKey fnKey="9" header="ConfMn" />
+      <ActionKey fnKey="10" header="Quit" />
+      <ActionKey fnKey="11" header="Plugins" />
+      <ActionKey fnKey="12" header="Screens" />
     </div>
   );
 });

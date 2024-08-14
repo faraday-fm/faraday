@@ -21,11 +21,11 @@ export default defineConfig({
   external: ["react", "react/jsx-runtime", "fast-deep-equal", "parsimmon", "immer", "valibot", "jotai", "json5", "is-promise"],
   context: "window",
   plugins: [
-    !watch && [terser({ sourceMap: !watch }), del({ targets: ["dist/*"] })],
+    string({ include: "**/*.{json5,html,css}" }),
     json(),
     nodeResolve({ browser: true }),
     commonjs(),
     ts({ sourceMap: !watch }),
-    string({ include: "**/*.{json5,html,css}" }),
+    !watch && [terser({ sourceMap: !watch }), del({ targets: ["dist/*"] })],
   ],
 });
