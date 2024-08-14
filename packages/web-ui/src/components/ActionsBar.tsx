@@ -1,10 +1,18 @@
+import { css } from "@css";
 import { memo } from "react";
-import { css } from "../features/styles";
 import { ActionButton } from "./ActionButton";
+
+const actionsBar = css`display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: 1fr;
+    overflow: hidden;
+    user-select: none;
+    -moz-user-select: none;
+    -webkit-user-select: none;`;
 
 export const ActionsBar = memo(function ActionsBar() {
   return (
-    <div className={css("actions-bar")} tabIndex={-1}>
+    <div className={actionsBar} tabIndex={-1}>
       <ActionButton fnKey="1" header="Help" />
       <ActionButton fnKey="2" header="Menu" />
       <ActionButton fnKey="3" header="View" />

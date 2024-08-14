@@ -1,12 +1,16 @@
+import { css } from "@css";
 import { readFile } from "@frdy/sdk";
 import isPromise from "is-promise";
 import { type PropsWithChildren, type ReactNode, createContext, useCallback, useContext, useMemo } from "react";
 import { useIconThemes } from "../features/extensions/hooks";
 import { useFs } from "../features/fs/hooks";
 import { useSettings } from "../features/settings/settings";
-import { css } from "../features/styles";
 import { type IconTheme, isSvgIcon } from "../schemas/iconTheme";
 import { combine, filename } from "../utils/path";
+
+const fileIcon = css`display: flex;
+    width: 1lh !important;
+    height: 1lh !important;`;
 
 export type IconResolver = (path: string, isDir: boolean, isOpen: boolean) => ReactNode | PromiseLike<ReactNode>;
 
@@ -60,7 +64,7 @@ function resolveIconDefinitionName(iconTheme: IconTheme, path: string, isDir: bo
 }
 
 function FileIcon({ svg }: { svg: string }) {
-  return <div className={css("file-icon")} style={{ backgroundImage: `url('data:image/svg+xml;base64,${svg}')` }} />;
+  return <div className={fileIcon} style={{ backgroundImage: `url('data:image/svg+xml;base64,${svg}')` }} />;
 }
 
 export function FileIconsProvider({ children }: PropsWithChildren) {

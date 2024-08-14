@@ -6,7 +6,11 @@ export function useExecuteCommand() {
   const executor = useCallback(
     (command: string, args?: unknown) => {
       const callbacks = bindings[command];
-      if (!callbacks || callbacks.size !== 1) {
+      if (!callbacks) {
+        return false;
+      }
+      if (callbacks.size !== 1) {
+        console.warn(`More than one handler is registered for the command ${command}. Skipping execution.`);
         return false;
       }
       const [callback] = callbacks;

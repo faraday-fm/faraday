@@ -1,7 +1,17 @@
 import { type PropsWithChildren, type ReactElement, useRef } from "react";
 import { useQuickNavigation } from "../contexts/quickNavigationContext";
-import { css } from "../features/styles";
 import { Highlight } from "./Highlight";
+import { css } from "@css";
+
+const autoHotkeyLabel = css`cursor: pointer;
+    user-select: none;
+    -webkit-user-select: none;
+
+    & em {
+      font-style: normal;
+      color: var(--textAcceleratorKey-foreground);
+      text-decoration: underline;
+    }`;
 
 type AutoHotKeyLabelProps = {
   text: string;
@@ -13,7 +23,7 @@ export function AutoHotKeyLabel({ text, htmlFor }: AutoHotKeyLabelProps): ReactE
   const key = useQuickNavigation(ref, text);
 
   return (
-    <label className={css("auto-hotkey-label")} ref={ref} htmlFor={htmlFor}>
+    <label className={autoHotkeyLabel} ref={ref} htmlFor={htmlFor}>
       <Highlight text={text} highlight={key} />
     </label>
   );

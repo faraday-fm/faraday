@@ -37,4 +37,18 @@
 
   { key: "Ctrl+KeyO", command: "togglePanels" },
   { key: "Ctrl+KeyD", command: "switchDevMode" },
+  { key: "Ctrl+KeyH", command: "switchShowHiddenFiles" },
+
+  { key: "Alt+ArrowLeft", command: "prevTab" },
+  { key: "Alt+ArrowRight", command: "nextTab" },
+  { key: "Alt+Digit1", command: "setTab", args: { index: 1 } },
+  { key: "Alt+Digit2", command: "setTab", args: { index: 2 } },
+  { key: "Alt+Digit3", command: "setTab", args: { index: 3 } },
+  { key: "Alt+Digit4", command: "setTab", args: { index: 4 } },
+  { key: "Alt+Digit5", command: "setTab", args: { index: 5 } },
+  { key: "Alt+Digit6", command: "setTab", args: { index: 6 } },
+  { key: "Alt+Digit7", command: "setTab", args: { index: 7 } },
+  { key: "Alt+Digit8", command: "setTab", args: { index: 8 } },
+  { key: "Alt+Digit9", command: "setTab", args: { index: 9 } },
+  { key: "Alt+Digit0", command: "setTab", args: { index: 10 } },
 ]

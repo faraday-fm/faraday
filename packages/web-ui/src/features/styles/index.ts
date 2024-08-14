@@ -36,10 +36,3 @@ export function useStyles(theme: Theme): boolean {
 
   return !!colorsEl && !!stylesEl;
 }
-
-export function css(className: string, ...options: string[]) {
-  if (options.length > 0) {
-    return `frdy ${className} ${options.join(" ")}`;
-  }
-  return `frdy ${className}`;
-}

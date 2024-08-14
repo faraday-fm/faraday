@@ -1,11 +1,21 @@
-import { AttribBits, isDir, type Dirent } from "@frdy/sdk";
+import { css } from "@css";
+import { AttribBits, type Dirent, isDir } from "@frdy/sdk";
 import isPromise from "is-promise";
 import { memo, useEffect, useMemo, useState } from "react";
 import { useFileIconResolver } from "../../../contexts/fileIconsContext";
 import { useGlyphSize } from "../../../contexts/glyphSizeContext";
-import { css } from "../../../features/styles";
 import { CellText } from "./CellText";
 import type { CursorStyle } from "./types";
+
+const lineItem = css`overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    padding: 0 calc(0.25rem - 1px);
+    flex-grow: 1;
+    display: flex;`;
+const fileName = css`flex-grow: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;`;
 
 interface FullFileNameProps {
   cursorStyle: CursorStyle;
@@ -55,13 +65,13 @@ export const FullFileName = memo(function FullFileName({ cursorStyle, dirent }: 
     >
       <div>{icon}</div>
       <span
-        className={css("line-item")}
+        className={lineItem}
         style={{
           lineHeight: `${height}px`,
           color: getColor(dirent.filename, dirent && isDir(dirent), cursorStyle === "firm"),
         }}
       >
-        <span className={css("file-name")}>
+        <span className={fileName}>
           <CellText cursorStyle={cursorStyle} text={name} />
         </span>
       </span>

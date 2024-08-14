@@ -1,17 +1,15 @@
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-
 import alias from "@rollup/plugin-alias";
 import commonjs from "@rollup/plugin-commonjs";
 import json from "@rollup/plugin-json";
 import nodeResolve from "@rollup/plugin-node-resolve";
 import terser from "@rollup/plugin-terser";
 import ts from "@rollup/plugin-typescript";
-
 import { defineConfig } from "rollup";
 import del from "rollup-plugin-delete";
-// import peerDepsExternal from "rollup-plugin-peer-deps-external";
 import { string } from "./scripts/string.mjs";
+import { babel } from "@rollup/plugin-babel";
 
 const filename = fileURLToPath(import.meta.url);
 const dirname = path.dirname(filename);
@@ -37,7 +35,7 @@ export default defineConfig({
   external: ["react", "react/jsx-runtime", "fast-deep-equal", "parsimmon", "jotai", "valibot", "list", "json5", "is-promise"],
   context: "window",
   plugins: [
-    !watch && [terser({ sourceMap: !watch }), del({ targets: ["dist/*"] })],
+    !watch && del({ targets: ["dist/*"] }),
     json(),
     // peerDepsExternal(),
     nodeResolve({ browser: true }),
@@ -50,7 +48,9 @@ export default defineConfig({
       ],
     }),
     commonjs(),
-    ts({ sourceMap: !watch }),
     string({ include: "**/*.{json5,html,css}" }),
+    babel({ babelHelpers: "bundled", extensions: [".js", ".jsx", ".ts", ".tsx"] }),
+    ts({ sourceMap: !watch }),
+    !watch && terser(),
   ],
 });

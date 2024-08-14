@@ -1,10 +1,22 @@
-import { type Dirent, FileType } from "@frdy/sdk";
-import { isDir } from "@frdy/sdk";
+import { css } from "@css";
+import { type Dirent, FileType, isDir } from "@frdy/sdk";
 import { memo } from "react";
 import { useGlyphSize } from "../../../contexts/glyphSizeContext";
-import { css } from "../../../features/styles";
 import { formatDateTime } from "../../../utils/date";
 import { bytesToSize } from "../../../utils/number";
+
+const fileInfoRoot = css`display: flex;
+    overflow: hidden;
+    padding: 0.5rem 0;`;
+const fileInfoName = css`text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    flex: 1;`;
+const fileInfoSize = css`white-space: nowrap;
+    justify-self: flex-end;
+    margin: 0 0.75rem;`;
+const fileInfoTime = `white-space: nowrap;
+    justify-self: flex-end;`;
 
 interface FileInfoFooterProps {
   file?: Dirent;
@@ -37,10 +49,10 @@ function formatFileSize(e?: Dirent) {
 export const FileInfoFooter = memo(({ file }: FileInfoFooterProps) => {
   const { height } = useGlyphSize();
   return (
-    <div className={css("file-info-root")} style={{ height }}>
-      <div className={css("file-info-name")}>{file?.filename}</div>
-      <div className={css("file-info-size")}>{formatFileSize(file)}</div>
-      <div className={css("file-info-time")}>{file?.attrs.mtime ? formatDateTime(new Date(file.attrs.mtime * 1000)) : undefined}</div>
+    <div className={fileInfoRoot} style={{ height }}>
+      <div className={fileInfoName}>{file?.filename}</div>
+      <div className={fileInfoSize}>{formatFileSize(file)}</div>
+      <div className={fileInfoTime}>{file?.attrs.mtime ? formatDateTime(new Date(file.attrs.mtime * 1000)) : undefined}</div>
     </div>
   );
 });

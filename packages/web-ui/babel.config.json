@@ -1,0 +1,3 @@
+{
+  "plugins": ["./scripts/css.mjs"]
+}

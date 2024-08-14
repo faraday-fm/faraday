@@ -1,7 +1,26 @@
+import { css } from "@css";
 import { type ReactNode, memo, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
-import { css } from "../../../features/styles";
 import { useElementSize } from "../../../hooks/useElementSize";
 import ScrollableContainer from "./ScrollableContainer";
+
+const columnBorder = css`
+  border-right: 1px solid var(--panel-border);
+  /* border-right-width: 0; */
+  &:last-child {
+    border-right-width: 0px;
+  }`;
+const columnBorders = css`position: absolute;
+    inset: 0;
+    display: grid;
+    grid-auto-columns: 1fr;
+    grid-auto-flow: column;`;
+const columnsScrollerRoot = css`position: relative;
+    overflow: hidden;`;
+const columnsScrollerFixed = css`position: absolute;
+    inset: 0;
+    overflow: hidden;
+    column-gap: 0;
+    column-fill: auto;`;
 
 export interface ColumnsScrollerProps {
   topmostIndex: number;
@@ -17,9 +36,9 @@ export interface ColumnsScrollerProps {
 function Borders({ columnCount }: { columnCount: number }) {
   const borders = [];
   for (let i = 0; i < columnCount; i++) {
-    borders.push(<div className={css("column-border")} key={i} />);
+    borders.push(<div className={columnBorder} key={i} />);
   }
-  return <div className={css("column-borders")}>{borders}</div>;
+  return <div className={columnBorders}>{borders}</div>;
 }
 
 export const ColumnsScroller = memo((props: ColumnsScrollerProps) => {
@@ -87,7 +106,7 @@ export const ColumnsScroller = memo((props: ColumnsScrollerProps) => {
   );
 
   return (
-    <div className={css("columns-scroller-root")} ref={rootRef}>
+    <div className={columnsScrollerRoot} ref={rootRef}>
       <Borders columnCount={columnCount} />
 
       <ScrollableContainer
@@ -97,7 +116,7 @@ export const ColumnsScroller = memo((props: ColumnsScrollerProps) => {
         innerContainerStyle={{ width: "100%", height: "100%" }}
         onScroll={onScroll}
       >
-        <div className={css("columns-scroller-fixed")} ref={fixedRef} style={{ columnCount }}>
+        <div className={columnsScrollerFixed} ref={fixedRef} style={{ columnCount }}>
           {/* BUG in Chrome (macOS)? When we use `e` as a key, the column layout works incorrectly without this hidden div */}
           {/* To reproduce: comment out the next line, navigate to a directory with big amount of files and use left-right keyboard arrows. */}
           <div style={{ height: 0.1, overflow: "hidden" }} />

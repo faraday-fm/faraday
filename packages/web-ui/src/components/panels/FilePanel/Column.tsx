@@ -1,7 +1,7 @@
+import { css } from "@css";
 import type { Dirent } from "@frdy/sdk";
 import { useEffect, useRef, useState } from "react";
 import { useGlyphSize } from "../../../contexts/glyphSizeContext";
-import { css } from "../../../features/styles";
 import { useElementSize } from "../../../hooks/useElementSize";
 import type { List } from "../../../utils/immutableList";
 import { clamp } from "../../../utils/number";
@@ -11,6 +11,31 @@ import { CellText } from "./CellText";
 import { FullFileName } from "./FullFileName";
 import type { ColumnDef, CursorStyle } from "./types";
 import { get } from "./utils";
+
+const columnRoot = css`position: relative;
+    display: grid;
+    grid-template-rows: min-content 1fr 0.25rem;
+    height: 100%;
+    text-align: left;
+    box-sizing: border-box;
+    padding-top: calc(0.5rem - 1px);`;
+const columnHeader = css`text-align: center;
+    color: var(--panel-header-foreground);
+    text-overflow: ellipsis;
+    overflow: hidden;
+    padding: 0 calc(0.25rem - 1px);`;
+const topScroller = css`position: absolute;
+    height: 0.25rem;
+    left: 0;
+    right: 0;
+    top: 0.5rem;
+    cursor: n-resize;`;
+const bottomScroller = css`position: absolute;
+    height: 0.25rem;
+    left: 0;
+    right: 0;
+    bottom: 0rem;
+    cursor: s-resize;`;
 
 interface ColumnProps {
   items: List<Dirent>;
@@ -49,8 +74,8 @@ export function Column({ items, topmostIndex, selectedIndex, cursorStyle, column
   let idx = 0;
   return (
     <Border color="panel-border">
-      <div className={css("column-root")} style={{ overflow: "hidden" }}>
-        <div className={css("column-header")}>{columnDef.name}</div>
+      <div className={columnRoot} style={{ overflow: "hidden" }}>
+        <div className={columnHeader}>{columnDef.name}</div>
         <div
           ref={ref}
           style={{ overflow: "hidden" }}
@@ -92,7 +117,7 @@ export function Column({ items, topmostIndex, selectedIndex, cursorStyle, column
                   {columnDef.field === "filename" ? (
                     <FullFileName dirent={item} cursorStyle={cursorStyle} />
                   ) : (
-                    <CellText text={get(item, columnDef.field) ?? '---'} cursorStyle={cursorStyle} />
+                    <CellText text={get(item, columnDef.field) ?? "---"} cursorStyle={cursorStyle} />
                   )}
                 </Cell>
               );
@@ -101,7 +126,7 @@ export function Column({ items, topmostIndex, selectedIndex, cursorStyle, column
             })}
         </div>
         <div
-          className={css("top-scroller")}
+          className={topScroller}
           onMouseDown={(e) => {
             e.stopPropagation();
             window.addEventListener("mouseup", () => setAutoscroll(0), {
@@ -111,7 +136,7 @@ export function Column({ items, topmostIndex, selectedIndex, cursorStyle, column
           }}
         />
         <div
-          className={css("bottom-scroller")}
+          className={bottomScroller}
           onMouseDown={(e) => {
             e.stopPropagation();
             window.addEventListener("mouseup", () => setAutoscroll(0), {

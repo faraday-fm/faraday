@@ -1,3 +1,4 @@
+import { css } from "@css";
 import { useCommandBinding, useExecuteCommand, useSetContextVariable } from "@frdy/commands";
 import type { Dirent } from "@frdy/sdk";
 import { isDir } from "@frdy/sdk";
@@ -5,11 +6,10 @@ import equal from "fast-deep-equal";
 import { forwardRef, memo, useCallback, useImperativeHandle, useMemo, useRef, useState } from "react";
 import { GlyphSizeProvider } from "../../../contexts/glyphSizeContext";
 import type { CursorPosition } from "../../../features/panels";
-import { css } from "../../../features/styles";
 import { useElementSize } from "../../../hooks/useElementSize";
 import { useFocused } from "../../../hooks/useFocused";
 import { usePrevValueIfDeepEqual } from "../../../hooks/usePrevValueIfDeepEqual";
-import type { FilePanelView } from "../../../types";
+import type { TabFilesView } from "../../../types";
 import type { List } from "../../../utils/immutableList";
 import { clamp } from "../../../utils/number";
 import { Border } from "../../Border";
@@ -19,12 +19,59 @@ import { FileInfoFooter } from "./FileInfoFooter";
 import type { CursorStyle } from "./types";
 import { CondensedView } from "./views/CondensedView";
 import { FullView } from "./views/FullView";
+import clsx from "clsx";
+
+const panelRoot = css`width: 100%;
+    height: 100%;
+    position: relative;
+    color: var(--panel-foreground);
+    background-color: var(--panel-background);
+    display: grid;
+    overflow: hidden;
+    outline: none;
+    user-select: none;
+
+    &.-focused {
+      background-color: var(--panel-background-focus);
+    }`;
+const panelContent = css`display: grid;
+    grid-template-rows: auto 1fr auto auto;
+    overflow: hidden;`;
+const panelColumns = `display: grid;
+    flex-shrink: 1;
+    flex-grow: 1;
+    overflow: hidden;
+
+    &:focus {
+      outline: none;
+    }`;
+const fileInfoPanel = css`/* border: 1px solid var(--color-11);
+    padding: calc(0.5rem - 1px) calc(0.25rem - 1px);
+    color: var(--color-11); */
+    margin: 2px;
+    margin-top: 0;
+    border: 1px solid var(--panel-border);
+    overflow: hidden;`;
+const panelFooter = css`/* position: absolute; */
+    /* bottom: 0;
+    left: 50%;
+    transform: translate(-50%, 0); */
+    /* max-width: calc(100% - 2em); */
+    /* z-index: 1; */
+    margin: 2px;
+    margin-top: 0;
+    border: 1px solid var(--panel-border);
+    padding: 0 0.25em;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    text-align: left;`;
 
 export interface FilePanelProps {
   items: List<Dirent>;
   selectedItemNames: List<string>;
   cursor: CursorPosition;
-  view: FilePanelView;
+  view: TabFilesView;
   path: string;
   showCursorWhenBlurred?: boolean;
   onFocus?: () => void;
@@ -213,14 +260,20 @@ export const FilePanel = memo(
 
     const pathParts = path.split("/");
     if (!columnCount) {
-      return <div className={css("panel-root", focused ? "-focused" : "")} ref={panelRootRef} tabIndex={0} onFocus={handleFocus} />;
+      return <div className={clsx(panelRoot, focused && "-focused")} ref={panelRootRef} tabIndex={0} onFocus={handleFocus} />;
     }
 
     return (
-      <div className={css("panel-root", focused ? "-focused" : "")} ref={panelRootRef} tabIndex={0} onFocus={handleFocus} onWheel={() => panelRootRef.current?.focus()}>
+      <div
+        className={clsx(panelRoot, focused && "-focused")}
+        ref={panelRootRef}
+        tabIndex={0}
+        onFocus={handleFocus}
+        onWheel={() => panelRootRef.current?.focus()}
+      >
         <GlyphSizeProvider>
           <Border color={focused ? "panel-border-focus" : "panel-border"}>
-            <div className={css("panel-content")}>
+            <div className={panelContent}>
               <PanelHeader active={focused}>
                 <Breadcrumb isActive={focused}>
                   {pathParts.map((x, i) => (
@@ -230,7 +283,7 @@ export const FilePanel = memo(
                 </Breadcrumb>
               </PanelHeader>
               <div
-                className={css("panel-columns")}
+                className={panelColumns}
                 // onWheel={(e) => scroll(Math.sign(e.deltaY), true)}
                 onKeyDown={(e) => {
                   // dispatch({ type: "findFirst", char: e.key });
@@ -262,10 +315,10 @@ export const FilePanel = memo(
                   />
                 )}
               </div>
-              <div className={css("file-info-panel")}>
+              <div className={fileInfoPanel}>
                 <FileInfoFooter file={items.get(adjustedCursor.activeIndex)} />
               </div>
-              <div className={css("panel-footer")}>{`${bytesCount.toLocaleString()} bytes in ${filesCount.toLocaleString()} files`}</div>
+              <div className={panelFooter}>{`${bytesCount.toLocaleString()} bytes in ${filesCount.toLocaleString()} files`}</div>
             </div>
           </Border>
         </GlyphSizeProvider>

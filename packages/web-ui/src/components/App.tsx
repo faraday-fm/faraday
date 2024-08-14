@@ -7,41 +7,88 @@ import { LayoutContainer } from "../components/LayoutContainer";
 import { useFaradayHost } from "../contexts/faradayHostContext";
 import { useGlyphSize } from "../contexts/glyphSizeContext";
 import { useFileContent } from "../features/fs/hooks";
-import { useInert } from "../features/inert/hooks";
 import { usePanels } from "../features/panels";
-import { css } from "../features/styles";
-import type { PanelsLayout } from "../types";
-import CopyDialog from "./CopyDialog";
-import DeleteDialog from "./DeleteDialog";
+import type { TabLayout } from "../types";
+import CopyDialog from "./dialogs/CopyDialog";
+import DeleteDialog from "./dialogs/DeleteDialog";
+import { useSettings } from "../features/settings/settings";
+import { css } from "@css";
+
+const app = css`-webkit-font-smoothing: antialiased;
+
+    ::-webkit-scrollbar {
+      display: none;
+    }
+
+    font-size: 13.5;
+
+    & :is(button, input) {
+      font-family: inherit;
+      text-rendering: inherit;
+      font-size: inherit;
+    }
+
+    font-family: var(--fontFamily);
+    text-rendering: geometricPrecision;
+    background-color: #172637;
+    height: 100%;
+    display: grid;
+    grid-template-rows: minmax(0, 1fr) auto;
+    flex-direction: column;
+    direction: ltr;
+    user-select: none;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    cursor: default;`;
+const mainDiv = css`grid-row: 1;
+    position: relative;
+    overflow: hidden;`;
+const terminalContainer = css`position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 0;`;
+const tabsContainer = css`display: grid;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 17px;
+    grid-auto-flow: column;
+    grid-auto-columns: 1fr;
+    z-index: 0;`;
+const footerDiv = css`grid-row: 2;
+    overflow: hidden;`;
 
 // const Terminal = lazy(() => import("@components/Terminal/Terminal"));
 
 const decoder = new TextDecoder();
 
 export function App() {
-  const { inert } = useInert();
   const rootRef = useRef<HTMLDivElement>(null);
   const [copyDialogOpen, setCopyDialogOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [panelsOpen, setPanelsOpen] = useState(true);
   const [executing] = useState(false);
-  const { layout, setPanelsLayout, focusNextPanel, enterDir } = usePanels();
+  const { layout, setLayout, focusNextPanel, enterDir } = usePanels();
   const host = useFaradayHost();
   const [devMode, setDevMode] = useState(false);
+  const { setShowHiddenFiles } = useSettings();
 
   const { content: layoutContent, error: layoutLoadingError } = useFileContent(".faraday/layout.json5");
   useEffect(() => {
     if (layoutContent) {
       try {
-        const layout: PanelsLayout = JSON5.parse(decoder.decode(layoutContent));
-        setPanelsLayout(layout);
+        const layout: TabLayout = JSON5.parse(decoder.decode(layoutContent));
+        setLayout(layout);
       } catch {
-        setPanelsLayout(JSON5.parse(defaultLayout));
+        setLayout(JSON5.parse(defaultLayout));
       }
     } else if (layoutLoadingError) {
-      setPanelsLayout(JSON5.parse(defaultLayout));
+      setLayout(JSON5.parse(defaultLayout));
     }
-  }, [layoutContent, layoutLoadingError, setPanelsLayout]);
+  }, [layoutContent, layoutLoadingError, setLayout]);
 
   useSetContextVariable("isDesktop", true, host.config.isDesktop());
   useSetContextVariable("devMode", true, devMode);
@@ -54,6 +101,7 @@ export function App() {
   useCommandBinding("copyFiles", () => setCopyDialogOpen(true));
   useCommandBinding("deleteFiles", () => setDeleteDialogOpen(true));
   useCommandBinding("switchDevMode", () => setDevMode((d) => !d));
+  useCommandBinding("switchShowHiddenFiles", () => setShowHiddenFiles((d) => !d));
 
   // const leftItems = useMemo(() => Array.from(Array(300).keys()).map((i) => ({ name: i.toString(), size: Math.round(Math.random() * 100000000) })), []);
   const { height: glyphHeight } = useGlyphSize();
@@ -66,25 +114,25 @@ export function App() {
   }
 
   return (
-    <div className={css("app")} ref={rootRef} {...{ inert: inert ? "" : undefined }}>
-      <div className={css("main-div")}>
-        <div className={css("terminal-container")}>
+    <div className={app} ref={rootRef}>
+      <div className={mainDiv}>
+        <div className={terminalContainer}>
           {/* <Suspense fallback={<div />}>
               <Terminal fullScreen={!panelsOpen} onRunStart={onRunStart} onRunEnd={onRunEnd} />
             </Suspense> */}
         </div>
         <div
-          className={css("panels-container")}
+          className={tabsContainer}
           style={{
             opacity: !executing && panelsOpen ? 1 : 0,
             pointerEvents: !executing && panelsOpen ? "all" : "none",
             bottom: glyphHeight,
           }}
         >
-          {layout && <LayoutContainer layout={layout} direction="h" />}
+          {layout && <LayoutContainer layout={layout} direction="h" setLayout={setLayout} />}
         </div>
       </div>
-      <div className={css("footer-div")}>
+      <div className={footerDiv}>
         <ActionsBar />
       </div>
       <CopyDialog open={copyDialogOpen} onClose={() => setCopyDialogOpen(false)} />

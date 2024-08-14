@@ -1,85 +1,105 @@
-import { useCallback, useRef } from "react";
-import { useInert } from "../features/inert/hooks";
-import { usePanels } from "../features/panels";
-import { css } from "../features/styles";
-import type { PanelsLayout, RowLayout } from "../types";
-import { ReduxFilePanel } from "./ReduxFilePanel";
+import { type MutableRefObject, type ReactNode, useCallback, useRef } from "react";
+import type { NodeLayout, RowLayout } from "../types";
 import { RenderWhen } from "./RenderWhen";
+import { Tab } from "./Tabs/Tab";
+import { Tabs } from "./Tabs/Tabs";
+import { css } from "@css";
 
-interface LayoutContainerProps {
-  layout: PanelsLayout;
+const layoutSeparator = css`position: relative;
+    z-index: 1;`;
+const layoutSeparatorThumb = css`position: absolute;
+    left: -2px;
+    right: -2px;
+    top: -2px;
+    bottom: -2px;`;
+const layoutRow = css`width: 100%;
+    display: flex;`;
+const flexPanel = css`display: flex;
+    flex-shrink: 0;
+    flex-basis: 1px;
+    overflow: hidden;`;
+
+interface LayoutContainerProps<L> {
+  layout: L;
+  setLayout: (layout: L) => void;
   direction: "h" | "v";
 }
 
 function Separator({
-  rowId,
+  layout,
+  setLayout,
   direction,
   items,
-  before,
-  after,
+  index,
 }: {
-  rowId: string;
+  layout: RowLayout;
+  setLayout: (layout: RowLayout) => void;
   direction: "h" | "v";
-  items: Record<string, HTMLDivElement | null>;
-  before: string;
-  after: string;
+  items: MutableRefObject<HTMLDivElement | null>[];
+  index: number;
 }) {
-  const { resizeChildren } = usePanels();
-  const { setInert } = useInert();
+  const thumbRef = useRef<HTMLDivElement>(null);
 
-  const beforeItem = items[before];
-  const afterItem = items[after];
+  const beforeItem = items[index];
+  const afterItem = items[index + 1];
   const pointerDownCoords = useRef<{ x: number; y: number } | undefined>();
   const handlePointerDown = useCallback(
     (e: React.PointerEvent) => {
       const dim = (r?: DOMRect) => (direction === "h" ? r?.width : r?.height);
-      const resizeCursor = direction === "h" ? "col-resize" : "row-resize";
-      document.body.style.cursor = resizeCursor;
+      thumbRef.current?.setPointerCapture(e.pointerId);
       pointerDownCoords.current = { x: e.clientX, y: e.clientY };
-      const bw = dim(beforeItem?.getBoundingClientRect()) ?? 0;
-      const aw = dim(afterItem?.getBoundingClientRect()) ?? 0;
-      setInert(true);
+      const bw = dim(beforeItem?.current?.getBoundingClientRect()) ?? 0;
+      const aw = dim(afterItem?.current?.getBoundingClientRect()) ?? 0;
       const handlePointerMove = (e: PointerEvent) => {
-        const sizes = Object.values(items).map((i) => dim(i?.getBoundingClientRect()) ?? 1);
+        const sizes = Object.values(items).map((i) => dim(i?.current?.getBoundingClientRect()) ?? 1);
         const offs = direction === "h" ? e.clientX : e.clientY;
-        const nbw = offs;
-        const naw = bw + aw - offs;
-        sizes[0] = nbw;
-        sizes[1] = naw;
-        resizeChildren(rowId, sizes);
+        let nbw = offs;
+        let naw = bw + aw - offs;
+        const p = nbw / (nbw + naw);
+        if (Math.abs(p - 0.5) < 0.01) {
+          nbw = naw = (nbw + naw) / 2;
+        }
+        sizes[index] = nbw;
+        sizes[index + 1] = naw;
+        setLayout({ ...layout, children: layout.children.map((c, idx) => ({ ...c, flex: sizes[idx] })) });
       };
-      const handlePointerUp = () => {
+      const handlePointerUp = (e: PointerEvent) => {
         window.removeEventListener("pointermove", handlePointerMove);
-        setInert(false);
-        document.body.style.removeProperty("cursor");
+        thumbRef.current?.releasePointerCapture(e.pointerId);
       };
       window.addEventListener("pointermove", handlePointerMove);
       window.addEventListener("pointerup", handlePointerUp, { once: true });
     },
-    [afterItem, beforeItem, direction, items, resizeChildren, rowId, setInert],
+    [afterItem, beforeItem, direction, items, setLayout, layout, index],
   );
   return (
-    <div className={css("layout-separator")}>
-      <div className={css("layout-separator-thumb")} style={{ cursor: direction === "h" ? "col-resize" : "row-resize" }} onPointerDown={handlePointerDown} />
+    <div className={layoutSeparator}>
+      <div
+        ref={thumbRef}
+        className={layoutSeparatorThumb}
+        style={{ cursor: direction === "h" ? "col-resize" : "row-resize" }}
+        onPointerDown={handlePointerDown}
+      />
     </div>
   );
 }
 
-function RowContainer({ layout, direction }: LayoutContainerProps & { layout: RowLayout }) {
-  const itemRefs = useRef<Record<string, HTMLDivElement | null>>({});
+function RowContainer({ layout, direction, setLayout }: LayoutContainerProps<RowLayout>) {
+  const items: MutableRefObject<HTMLDivElement | null>[] = [];
+  for (let i = 0; i < layout.children.length; i++) {
+    items.push({ current: null });
+  }
   return (
-    <div className={css("layout-row")} style={{ flexDirection: direction === "h" ? "row" : "column" }}>
+    <div className={layoutRow} style={{ flexDirection: direction === "h" ? "row" : "column" }}>
       {layout.children.map((l, idx) => (
         <RenderWhen key={l.id} expression={l.when ?? "true"}>
-          {idx > 0 && <Separator rowId={layout.id} direction={direction} items={itemRefs.current} before={layout.children[idx - 1]!.id} after={l.id} />}
-          <div
-            ref={(r) => {
-              itemRefs.current[l.id] = r;
-            }}
-            className={css("flex-panel")}
-            style={{ flexGrow: l.flex ?? 1 }}
-          >
-            <LayoutContainer layout={l} direction={direction === "h" ? "v" : "h"} />
+          {idx > 0 && <Separator layout={layout} setLayout={setLayout} direction={direction} items={items} index={idx - 1} />}
+          <div ref={items[idx]} className={flexPanel} style={{ flexGrow: l.flex ?? 1 }}>
+            <LayoutContainer
+              layout={l}
+              direction={direction === "h" ? "v" : "h"}
+              setLayout={(t: any) => setLayout({ ...layout, children: layout.children.toSpliced(idx, 1, t) })}
+            />
           </div>
         </RenderWhen>
       ))}
@@ -87,23 +107,16 @@ function RowContainer({ layout, direction }: LayoutContainerProps & { layout: Ro
   );
 }
 
-function LayoutContainerChooser({ layout, direction }: LayoutContainerProps) {
+export function LayoutContainer({ layout, setLayout, direction }: LayoutContainerProps<NodeLayout>) {
+  const withWhenClause = (child: ReactNode) => (layout.when ? <RenderWhen expression={layout.when}>{child}</RenderWhen> : child);
   switch (layout.type) {
     case "row":
-      return <RowContainer layout={layout} direction={direction} />;
-    case "file-panel":
-      return <ReduxFilePanel layout={layout} />;
+      return withWhenClause(<RowContainer layout={layout} direction={direction} setLayout={setLayout} />);
+    case "tab-set":
+      return withWhenClause(<Tabs layout={layout} setLayout={setLayout} />);
+    case "tab":
+      return withWhenClause(<Tab layout={layout} />);
     default:
       return null;
   }
-}
-
-export function LayoutContainer({ layout, direction }: LayoutContainerProps) {
-  return layout.when ? (
-    <RenderWhen expression={layout.when}>
-      <LayoutContainerChooser layout={layout} direction={direction} />
-    </RenderWhen>
-  ) : (
-    <LayoutContainerChooser layout={layout} direction={direction} />
-  );
 }

@@ -11,6 +11,7 @@ export interface List<T> extends Iterable<T> {
   map<To>(mapper: (item: T) => To): List<To>;
   reduce<To>(reducer: (agg: To, item: T) => To, init: To): To;
   sort(sorter: (a: T, b: T) => number): List<T>;
+  filter(predicate: (item: T) => boolean): List<T>;
   unshift(item: T): List<T>;
   toSet(): Set<T>;
 }
@@ -37,6 +38,7 @@ export function createList<T>(e?: Iterable<T>): List<T> {
     size: () => L.length(l),
     slice: (from, to) => createList(L.slice(from, to, l)),
     sort: (sorter) => createList(L.sortWith(fixOrderingResult(sorter), l)),
+    filter: (predicate) => createList(L.filter(predicate, l)),
     unshift: (i) => createList(L.prepend(i, l)),
     [Symbol.iterator]: () => l[Symbol.iterator](),
     toSet: () => new Set(l),

@@ -1,7 +1,22 @@
-import type { JSX, PropsWithChildren } from "react";
-import { css } from "../../../features/styles";
+import { css } from "@css";
+import type { PropsWithChildren } from "react";
 import { useMediaQuery } from "../../../hooks/useMediaQuery";
 import type { CursorStyle } from "./types";
+import clsx from "clsx";
+
+const cell = css`display: flex;
+    margin-right: 1px;
+    cursor: default;
+    overflow: hidden;
+    padding: 0 2px;
+    /* margin: 0 2px; */
+    border-radius: 2px;
+    border: 1px solid transparent;
+
+    &:is(.-firm, .-inactive) {
+      background-color: var(--files-file-background-focus);
+      border: 1px solid var(--files-file-border-focus);
+    }`;
 
 interface CellProps {
   cursorStyle: CursorStyle;
@@ -28,7 +43,7 @@ export function Cell({ children, selected, cursorStyle, onMouseDown, onMouseOver
   return (
     <div
       draggable
-      className={css("cell", `-${cursorStyle}`, selected ? "-selected" : "")}
+      className={clsx(cell, `-${cursorStyle}`, selected && "-selected")}
       style={{ background: selected ? "red" : undefined }}
       onMouseDown={onMouseDown}
       onMouseOver={onMouseOver}
