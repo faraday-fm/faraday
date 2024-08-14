@@ -10,7 +10,7 @@ interface ScrollableContainerProps {
   frictionFactor?: number;
   style?: CSSProperties;
   innerContainerStyle?: CSSProperties;
-  onScroll?: (scrollTop: number) => void;
+  onScroll?: (scrollTop: number, event: MouseEvent) => void;
 }
 
 const ScrollableContainer: React.FC<ScrollableContainerProps> = ({
@@ -48,19 +48,19 @@ const ScrollableContainer: React.FC<ScrollableContainerProps> = ({
     let velocity = 0;
     let isInertiaScrolling = false;
 
-    const updateScrollTop = (scrollDelta: number) => {
+    const updateScrollTop = (scrollDelta: number, event: MouseEvent) => {
       if (onScrollRef.current && scrollPaneRef.current) {
         let newScrollTop = scrollTopRef.current + scrollDelta;
         newScrollTop = Math.min(newScrollTop, scrollHeight);
         newScrollTop = Math.max(0, newScrollTop);
         if (scrollTopRef.current !== newScrollTop) {
-          onScrollRef.current(newScrollTop);
+          onScrollRef.current(newScrollTop, event);
         }
       }
     };
 
     const handleWheel = (event: WheelEvent) => {
-      updateScrollTop(event.deltaY);
+      updateScrollTop(event.deltaY, event);
     };
 
     const handlePointerDown = (event: PointerEvent) => {
@@ -82,7 +82,7 @@ const ScrollableContainer: React.FC<ScrollableContainerProps> = ({
       }
 
       innerContainer.setPointerCapture(event.pointerId);
-      updateScrollTop(deltaY);
+      updateScrollTop(deltaY, event);
       touchStartY = touchCurrentY;
       const currentTime = performance.now();
       const timeDelta = currentTime - touchStartTime;
@@ -101,7 +101,7 @@ const ScrollableContainer: React.FC<ScrollableContainerProps> = ({
       innerContainer.releasePointerCapture(event.pointerId);
       const inertiaScroll = () => {
         if (Math.abs(velocity) > 0.1) {
-          updateScrollTop(velocity * velocityFactor);
+          updateScrollTop(velocity * velocityFactor, event);
           velocity *= frictionFactor;
           requestAnimationFrame(inertiaScroll);
         } else {

@@ -227,14 +227,23 @@ export const FilePanel = memo(
       [adjustedCursor, displayedItems, items],
     );
 
-    useCommandBinding("cursorLeft", (args) => moveCursorLeftRight("left", Boolean(args?.select)), focused);
-    useCommandBinding("cursorRight", (args) => moveCursorLeftRight("right", Boolean(args?.select)), focused);
-    useCommandBinding("cursorUp", (args) => scroll(-1, false, Boolean(args?.select)), focused);
-    useCommandBinding("cursorDown", (args) => scroll(1, false, Boolean(args?.select)), focused);
-    useCommandBinding("cursorStart", (args) => moveCursorToPos(0, Boolean(args?.select)), focused);
-    useCommandBinding("cursorEnd", (args) => moveCursorToPos(items.size() - 1, Boolean(args?.select)), focused);
-    useCommandBinding("cursorPageUp", (args) => moveCursorPage("up", Boolean(args?.select)), focused);
-    useCommandBinding("cursorPageDown", (args) => moveCursorPage("down", Boolean(args?.select)), focused);
+    useCommandBinding("cursorLeft", () => moveCursorLeftRight("left", false), focused);
+    useCommandBinding("cursorRight", () => moveCursorLeftRight("right", false), focused);
+    useCommandBinding("cursorUp", () => scroll(-1, false, false), focused);
+    useCommandBinding("cursorDown", () => scroll(1, false, false), focused);
+    useCommandBinding("cursorStart", () => moveCursorToPos(0, false), focused);
+    useCommandBinding("cursorEnd", () => moveCursorToPos(items.size() - 1, false), focused);
+    useCommandBinding("cursorPageUp", () => moveCursorPage("up", false), focused);
+    useCommandBinding("cursorPageDown", () => moveCursorPage("down", false), focused);
+
+    useCommandBinding("selectLeft", () => moveCursorLeftRight("left", true), focused);
+    useCommandBinding("selectRight", () => moveCursorLeftRight("right", true), focused);
+    useCommandBinding("selectUp", () => scroll(-1, false, true), focused);
+    useCommandBinding("selectDown", () => scroll(1, false, true), focused);
+    useCommandBinding("selectStart", () => moveCursorToPos(0, true), focused);
+    useCommandBinding("selectEnd", () => moveCursorToPos(items.size() - 1, true), focused);
+    useCommandBinding("selectPageUp", () => moveCursorPage("up", true), focused);
+    useCommandBinding("selectPageDown", () => moveCursorPage("down", true), focused);
 
     const executeCommand = useExecuteCommand();
     const onItemActivated = useCallback(() => executeCommand("open", { path }), [executeCommand, path]);

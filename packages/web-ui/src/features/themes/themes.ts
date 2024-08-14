@@ -64,8 +64,8 @@ import type { Theme } from "./types";
 
 export const baseTheme = (): Theme => ({
   // palette: colors,
-  // fontFamily: "Verdana, Geneva, sans-serif",
-  fontFamily: "ui-monospace, SFMono-Regular, SF Mono, Menlo, Consolas, Liberation Mono, monospace",
+  fontFamily: "Verdana, Geneva, sans-serif",
+  // fontFamily: "ui-monospace, SFMono-Regular, SF Mono, Menlo, Consolas, Liberation Mono, monospace",
   colors: {
     focusBorder: "#005cc5",
     foreground: "#d1d5da",

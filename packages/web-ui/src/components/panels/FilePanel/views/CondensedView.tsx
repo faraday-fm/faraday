@@ -3,7 +3,7 @@ import { memo, useCallback } from "react";
 import { useGlyphSize } from "../../../../contexts/glyphSizeContext";
 import type { List } from "../../../../utils/immutableList";
 import { Cell } from "../Cell";
-import { ColumnsScroller, type ColumnsScrollerProps } from "../ColumnsScroller";
+import { MultiColumnList, type MultiColumnListProps } from "../MultiColumnList";
 import { FullFileName } from "../FullFileName";
 import type { CursorStyle } from "../types";
 
@@ -36,7 +36,7 @@ export const CondensedView = memo(function CondensedView({
   const rowHeight = Math.ceil(glyphHeight);
   const selectedNames = selectedItemNames.toSet();
 
-  const handlePosChange: ColumnsScrollerProps["onPosChange"] = useCallback((topmost, active) => onPosChange(topmost, active), [onPosChange]);
+  const handlePosChange: MultiColumnListProps["onPosChange"] = useCallback((topmost, active) => onPosChange(topmost, active), [onPosChange]);
 
   const itemContent = useCallback(
     (index: number) => (
@@ -57,7 +57,7 @@ export const CondensedView = memo(function CondensedView({
   );
 
   return (
-    <ColumnsScroller
+    <MultiColumnList
       topmostIndex={topmostIndex}
       activeIndex={selectedIndex}
       columnCount={columnCount}

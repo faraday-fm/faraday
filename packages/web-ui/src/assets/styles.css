@@ -300,6 +300,7 @@ box-shadow: 0.5rem 0.5rem #0004;
       border: 1px solid var(--files-file-border-focus);
     }}
 &.column-border {
+overflow: hidden;
   border-right: 1px solid var(--panel-border);
   /* border-right-width: 0; */
   &:last-child {
@@ -315,8 +316,7 @@ box-shadow: 0.5rem 0.5rem #0004;
 &.columns-scroller-fixed {position: absolute;
     inset: 0;
     overflow: hidden;
-    column-gap: 0;
-    column-fill: auto;}
+    }
 &.line-item {overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;

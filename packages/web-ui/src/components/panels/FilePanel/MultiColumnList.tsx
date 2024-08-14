@@ -4,25 +4,20 @@ import { useElementSize } from "../../../hooks/useElementSize";
 import ScrollableContainer from "./ScrollableContainer";
 
 const columnBorder = css`
+overflow: hidden;
   border-right: 1px solid var(--panel-border);
   /* border-right-width: 0; */
   &:last-child {
     border-right-width: 0px;
   }`;
-const columnBorders = css`position: absolute;
-    inset: 0;
-    display: grid;
-    grid-auto-columns: 1fr;
-    grid-auto-flow: column;`;
 const columnsScroller = css`position: relative;
     overflow: hidden;`;
 const columnsScrollerFixed = css`position: absolute;
     inset: 0;
     overflow: hidden;
-    column-gap: 0;
-    column-fill: auto;`;
+    `;
 
-export interface ColumnsScrollerProps {
+export interface MultiColumnListProps {
   topmostIndex: number;
   activeIndex: number;
   columnCount: number;
@@ -33,15 +28,7 @@ export interface ColumnsScrollerProps {
   onMaxItemsPerColumnChanged?: (count: number) => void;
 }
 
-function Borders({ columnCount }: { columnCount: number }) {
-  const borders = [];
-  for (let i = 0; i < columnCount; i++) {
-    borders.push(<div className={columnBorder} key={i} />);
-  }
-  return <div className={columnBorders}>{borders}</div>;
-}
-
-export const ColumnsScroller = memo((props: ColumnsScrollerProps) => {
+export const MultiColumnList = memo((props: MultiColumnListProps) => {
   let { topmostIndex, activeIndex, columnCount, totalCount, itemHeight, renderItem, onPosChange, onMaxItemsPerColumnChanged } = props;
 
   if (!Number.isInteger(itemHeight) || itemHeight <= 0) {
@@ -77,7 +64,7 @@ export const ColumnsScroller = memo((props: ColumnsScrollerProps) => {
 
   const items = useMemo(() => {
     const itemsSlice = [];
-    for (let i = topmostIndex; i < topmostIndex + Math.min(totalCount, itemsPerColumn * columnCount); i++) {
+    for (let i = topmostIndex; i < topmostIndex + Math.min(totalCount, columnCount * itemsPerColumn); i++) {
       itemsSlice.push(
         <div key={i} style={{ height: itemHeight }}>
           {renderItem(i)}
@@ -94,9 +81,9 @@ export const ColumnsScroller = memo((props: ColumnsScrollerProps) => {
   }, [itemHeight, activeIndex]);
 
   const onScroll = useCallback(
-    (scroll: number) => {
-      setScrollTop(scroll);
-      const newActiveItem = Math.round(scroll / itemHeight);
+    (scrollTop: number) => {
+      setScrollTop(scrollTop);
+      const newActiveItem = Math.round(scrollTop / itemHeight);
       const delta = newActiveItem - activeIndexRef.current;
       if (delta) {
         onPosChangeRef.current?.(topmostIndexRef.current + delta, newActiveItem);
@@ -105,9 +92,15 @@ export const ColumnsScroller = memo((props: ColumnsScrollerProps) => {
     [itemHeight],
   );
 
+  const columnItems: (typeof items)[] = [];
+  const slice = (column: number) => items.slice(column * itemsPerColumn, (column + 1) * itemsPerColumn);
+  for (let i = 0; i < columnCount; i++) {
+    columnItems[i] = slice(i);
+  }
+
   return (
     <div className={columnsScroller} ref={rootRef}>
-      <Borders columnCount={columnCount} />
+      {/* <Borders columnCount={columnCount} /> */}
 
       <ScrollableContainer
         scrollTop={scrollTop}
@@ -116,11 +109,21 @@ export const ColumnsScroller = memo((props: ColumnsScrollerProps) => {
         innerContainerStyle={{ width: "100%", height: "100%" }}
         onScroll={onScroll}
       >
-        <div className={columnsScrollerFixed} ref={fixedRef} style={{ columnCount }}>
-          {/* BUG in Chrome (macOS)? When we use `e` as a key, the column layout works incorrectly without this hidden div */}
-          {/* To reproduce: comment out the next line, navigate to a directory with big amount of files and use left-right keyboard arrows. */}
-          <div style={{ height: 0.1, overflow: "hidden" }} />
-          {items}
+        <div
+          className={columnsScrollerFixed}
+          ref={fixedRef}
+          style={{
+            display: "grid",
+            gridTemplateColumns: `repeat(${columnCount}, 1fr)`,
+            overflow: "hidden",
+          }}
+        >
+          {columnItems.map((items, i) => (
+            // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
+            <div key={i} className={columnBorder}>
+              {items}
+            </div>
+          ))}
         </div>
       </ScrollableContainer>
     </div>
