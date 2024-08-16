@@ -1,20 +1,20 @@
+import type { Dirent, FileSystemProvider } from "@frdy/sdk";
+import { ContextProvider } from "@lit/context";
 import { createComponent } from "@lit/react";
 import { css, html, LitElement } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import React from "react";
-import { createList, type List } from "../../../utils/immutableList";
-import type { Dirent, FileSystemProvider } from "@frdy/sdk";
-import { ContextProvider } from "@lit/context";
+import { createExtensionsContext, extensionsContext } from "../../../lit-contexts/extensionContext";
+import { createExtensionRepoContext, extensionRepoContext } from "../../../lit-contexts/extensionRepoContext";
 import { fsContext } from "../../../lit-contexts/fsContext";
 import { createIconsCache, iconsCacheContext } from "../../../lit-contexts/iconsCacheContext";
-import type { CursorStyle } from "./types";
-import "./MultiColumnList";
-import "./FileName";
-import "./ColumnCell";
-import { createSettingsContext, settingsContext } from "../../../lit-contexts/settingsContext";
-import { createExtensionRepoContext, extensionRepoContext } from "../../../lit-contexts/extensionRepoContext";
-import { createExtensionsContext, extensionsContext } from "../../../lit-contexts/extensionContext";
 import { createIconThemeContext, iconThemeContext } from "../../../lit-contexts/iconThemeContext";
+import { createSettingsContext, settingsContext } from "../../../lit-contexts/settingsContext";
+import { createList, type List } from "../../../utils/immutableList";
+import "./ColumnCell";
+import "./FileName";
+import "./MultiColumnList";
+import type { CursorStyle } from "./types";
 
 const TAG = "frdy-condensed-view";
 

@@ -93,6 +93,7 @@ export class ScrollableLit extends LitElement {
         requestAnimationFrame(inertiaScroll);
       } else {
         this.#isInertiaScrolling = false;
+        this.updateScrollTop(0);
       }
     };
     if (!this.#isInertiaScrolling) {
@@ -116,7 +117,7 @@ export class ScrollableLit extends LitElement {
       this.scrollTop = newScrollTop;
       this.dispatchEvent(
         new CustomEvent("scroll", {
-          detail: { top: newScrollTop },
+          detail: { top: newScrollTop, isInertiaScrolling: this.#isInertiaScrolling },
           bubbles: true,
           composed: true,
         })
@@ -126,20 +127,9 @@ export class ScrollableLit extends LitElement {
 
   render() {
     return html`
-      <div
-        style=${[
-          "overflow: hidden; position: relative; touch-action: none;",
-          ...this.style,
-        ]}
-      >
-        <div
-          ref=${ref(this.scrollPaneRef)}
-          style="position: absolute; inset: 0; overflowY: scroll;"
-        >
-          <div
-            style="height: ${this.fullScrollHeight +
-            (this.scrollPaneRef.value?.clientHeight ?? 0)}px"
-          ></div>
+      <div style=${["overflow: hidden; position: relative; touch-action: none;", ...this.style]}>
+        <div ref=${ref(this.scrollPaneRef)} style="position: absolute; inset: 0; overflowY: scroll;">
+          <div style="height: ${this.fullScrollHeight + (this.scrollPaneRef.value?.clientHeight ?? 0)}px"></div>
         </div>
         <div
           ref=${ref(this.containerRef)}

@@ -118,6 +118,8 @@ export const baseTheme = (): Theme => ({
     "files.directory.border:focus": "#3272bd",
     "files.file.background": "#000000",
     "files.file.foreground": "#ffffff",
+    "files.file.background:selected": "#215487",
+    "files.file.foreground:selected": "#ffffff",
     "files.file.background:focus": "#16385b",
     "files.file.foreground:focus": "#ffffff",
     "files.file.border:focus": "#3272bd",

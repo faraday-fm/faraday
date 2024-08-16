@@ -1,9 +1,9 @@
 import { type FileSystemProvider } from "@frdy/sdk";
 import { createContext } from "@lit/context";
 import { ExtensionManifest, IconThemeDefinition } from "../schemas/manifest";
-import { ExtensionRepoContext } from "./extensionRepoContext";
-import { readFileJson, realpath } from "./fsUtils";
 import { combine } from "../utils/path";
+import { ExtensionRepoContext } from "./extensionRepoContext";
+import { readFileJson } from "./fsUtils";
 
 export type Extension = {
   path: string;
@@ -19,13 +19,14 @@ export type ExtensionsContext = {
 export const extensionsContext = createContext<ExtensionsContext>(Symbol("extensions"));
 
 async function loadExt(fs: FileSystemProvider, path: string, id: { uuid: string }, loc: string): Promise<Extension> {
-  const extensionLocation = combine(path + "/", loc);
+  const extensionLocation = `${combine(path + "/", loc)}/`;
   try {
-    const manifestLocation = combine(extensionLocation + "/", "package.json");
+    const manifestLocation = combine(extensionLocation, "package.json");
     const manifest = await readFileJson(fs, manifestLocation, ExtensionManifest);
     const iconThemes = new Map(manifest.contributes?.iconThemes?.map((t) => [`${manifest.publisher}.${manifest.name}.${t.id}`, t]));
     return { path: extensionLocation, manifest, iconThemeDefinitions: iconThemes };
   } catch (err) {
+    console.error("Unable to load extension:", path);
     return { path: extensionLocation, loadingError: err, manifest: undefined, iconThemeDefinitions: new Map() };
   }
 }

@@ -10,6 +10,11 @@
     "lint": {
       "dependsOn": ["^lint"]
     },
+    "preview": {
+      "dependsOn": ["^preview"],
+      "cache": false,
+      "persistent": true
+    },
     "dev": {
       "cache": false,
       "persistent": true

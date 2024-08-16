@@ -1,17 +1,15 @@
-import JSON5 from "json5";
 import { type PropsWithChildren, createContext, useEffect } from "react";
 import { parse } from "valibot";
+import keyBindingsContent from "../assets/keybindings.json";
 import { useExecuteCommand, useIsInContext } from "../commands";
 import { KeyBindingsSchema } from "../schema";
-import keyBindingsContent from "../assets/keybindings.json5";
 import type { KeyBinding } from "./types";
-import { type KeyCombination, parseKeyCombination } from "./utils";
 import { useKeyModifiers } from "./useKeyModifiers";
 
 /**
- * Parsed key bindings from the provided JSON5 file.
+ * Parsed key bindings from the provided JSON file.
  */
-const keyBindings = parse(KeyBindingsSchema, JSON5.parse(keyBindingsContent));
+const keyBindings = parse(KeyBindingsSchema, keyBindingsContent);
 
 /**
  * Context to provide key bindings to the component tree.

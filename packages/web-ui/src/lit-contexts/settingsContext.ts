@@ -10,5 +10,5 @@ export type SettingsContext = {
 export const settingsContext = createContext<SettingsContext>(Symbol("settings"));
 
 export function createSettingsContext(fs: FileSystemProvider): SettingsContext {
-  return { settings: readFileJson(fs, ".faraday/settings.json5", Settings) };
+  return { settings: readFileJson(fs, ".faraday/settings.json", Settings) };
 }

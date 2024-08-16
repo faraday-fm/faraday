@@ -95,6 +95,8 @@ export interface Theme {
     "files.directory.border:focus": string;
     "files.file.background": string;
     "files.file.foreground": string;
+    "files.file.background:selected": string;
+    "files.file.foreground:selected": string;
     "files.file.background:focus": string;
     "files.file.foreground:focus": string;
     "files.file.border:focus": string;

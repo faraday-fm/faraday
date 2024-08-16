@@ -4,6 +4,7 @@
   "scripts": {
     "build": "turbo build",
     "dev": "turbo dev",
+    "preview": "turbo preview",
     "lint": "turbo lint",
     "changeset": "changeset add",
     "version": "changeset version",

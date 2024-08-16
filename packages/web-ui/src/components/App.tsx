@@ -1,7 +1,7 @@
 import { useCommandBinding, useSetContextVariable } from "@frdy/commands";
 import JSON5 from "json5";
 import { useEffect, useRef, useState } from "react";
-import defaultLayout from "../assets/layout.json5";
+import defaultLayout from "../assets/layout.json";
 import { ActionsBar } from "../components/ActionsBar";
 import { LayoutContainer } from "../components/LayoutContainer";
 import { useFaradayHost } from "../contexts/faradayHostContext";
@@ -14,52 +14,62 @@ import DeleteDialog from "./dialogs/DeleteDialog";
 import { useSettings } from "../features/settings/settings";
 import { css } from "@css";
 
-const app = css`-webkit-font-smoothing: antialiased;
+const app = css`
+  -webkit-font-smoothing: antialiased;
 
-    ::-webkit-scrollbar {
-      display: none;
-    }
+  ::-webkit-scrollbar {
+    display: none;
+  }
 
-    font-size: 13.5;
+  font-size: 13.5;
 
-    & :is(button, input) {
-      font-family: inherit;
-      text-rendering: inherit;
-      font-size: inherit;
-    }
+  & :is(button, input) {
+    font-family: inherit;
+    text-rendering: inherit;
+    font-size: inherit;
+  }
 
-    font-family: var(--fontFamily);
-    text-rendering: geometricPrecision;
-    background-color: #172637;
-    height: 100%;
-    display: grid;
-    grid-template-rows: minmax(0, 1fr) auto;
-    flex-direction: column;
-    direction: ltr;
-    user-select: none;
-    -moz-user-select: none;
-    -webkit-user-select: none;
-    cursor: default;`;
-const mainDiv = css`grid-row: 1;
-    position: relative;
-    overflow: hidden;`;
-const terminalContainer = css`position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    z-index: 0;`;
-const tabsContainer = css`display: grid;
-    position: absolute;
-    left: 0;
-    right: 0;
-    top: 0;
-    bottom: 17px;
-    grid-auto-flow: column;
-    grid-auto-columns: 1fr;
-    z-index: 0;`;
-const footerDiv = css`grid-row: 2;
-    overflow: hidden;`;
+  font-family: var(--fontFamily);
+  text-rendering: geometricPrecision;
+  background-color: #172637;
+  height: 100%;
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) auto;
+  flex-direction: column;
+  direction: ltr;
+  user-select: none;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  cursor: default;
+`;
+const mainDiv = css`
+  grid-row: 1;
+  position: relative;
+  overflow: hidden;
+`;
+const terminalContainer = css`
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 0;
+`;
+const tabsContainer = css`
+  display: grid;
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 17px;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
+  z-index: 0;
+`;
+const footerDiv = css`
+  grid-row: 2;
+  overflow: hidden;
+`;
 
 // const Terminal = lazy(() => import("@components/Terminal/Terminal"));
 
@@ -76,17 +86,19 @@ export function App() {
   const [devMode, setDevMode] = useState(false);
   const { setShowHiddenFiles } = useSettings();
 
-  const { content: layoutContent, error: layoutLoadingError } = useFileContent(".faraday/layout.json5");
+  const { content: layoutContent, error: layoutLoadingError } = useFileContent(".faraday/layout.json");
   useEffect(() => {
     if (layoutContent) {
       try {
+        console.info("Loading layout...");
         const layout: TabLayout = JSON5.parse(decoder.decode(layoutContent));
+        console.info("Loaded layout.");
         setLayout(layout);
       } catch {
-        setLayout(JSON5.parse(defaultLayout));
+        setLayout(defaultLayout as any);
       }
     } else if (layoutLoadingError) {
-      setLayout(JSON5.parse(defaultLayout));
+      setLayout(defaultLayout as any);
     }
   }, [layoutContent, layoutLoadingError, setLayout]);
 

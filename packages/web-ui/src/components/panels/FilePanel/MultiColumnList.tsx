@@ -1,8 +1,8 @@
 import { createComponent } from "@lit/react";
 import { LitElement, type PropertyValues, type TemplateResult, css, html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
+import { range } from 'lit/directives/range.js';
 import { type Ref, createRef, ref } from "lit/directives/ref.js";
-import {range} from 'lit/directives/range.js';
 import { repeat } from "lit/directives/repeat.js";
 import React from "react";
 import "./ScrollableContainer";
@@ -97,6 +97,9 @@ export class MultiColumnList extends LitElement {
     super.updated(_changedProperties);
     if (_changedProperties.has("itemHeight")) {
       this._updateMaxItemsPerColumn();
+    }
+    if (_changedProperties.has("activeIndex") || _changedProperties.has("itemHeight")) {
+      this._scrollTop = this.activeIndex * this.itemHeight;
     }
   }
 

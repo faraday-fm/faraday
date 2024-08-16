@@ -11,6 +11,7 @@ export type ExtensionRepoContext = {
 export const extensionRepoContext = createContext<ExtensionRepoContext>(Symbol("extension-repo"));
 
 export function createExtensionRepoContext(fs: FileSystemProvider): ExtensionRepoContext {
+  console.info("Loading extensions list...");
   return {
     path: ".faraday/extensions",
     repo: readFileJson(fs, ".faraday/extensions/extensions.json", ExtensionRepoSchema),

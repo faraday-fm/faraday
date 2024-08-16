@@ -4,9 +4,10 @@ import { readFileJson, realpath } from "./fsUtils";
 import { SettingsContext } from "./settingsContext";
 import { IconTheme, IconThemeSchema } from "../schemas/iconTheme";
 import { createContext } from "@lit/context";
+import { combine } from "../utils/path";
 
 export type IconThemeContext = {
-  iconTheme: Promise<{ extension: Extension; path: string, theme: IconTheme } | undefined>;
+  iconTheme: Promise<{ extension: Extension; path: string, theme: IconTheme }>;
 };
 
 export const iconThemeContext = createContext<IconThemeContext>(Symbol("icon-theme"));
@@ -18,11 +19,11 @@ export function createIconThemeContext(fs: FileSystemProvider, settingsCtx: Sett
     const iconThemeExt = exts.find((e) => e.iconThemeDefinitions.has(settings.iconThemeId));
     if (iconThemeExt) {
       const themeDefinition = iconThemeExt.iconThemeDefinitions.get(settings.iconThemeId)!;
-      const iconThemeFile = await realpath(fs, iconThemeExt.path, themeDefinition.path);
+      const iconThemeFile = combine(iconThemeExt.path, themeDefinition.path);
       const theme = await readFileJson(fs, iconThemeFile, IconThemeSchema);
       return { extension: iconThemeExt, path: iconThemeFile, theme };
     }
-    return undefined;
+    throw new Error("No Icon Theme defined");
   };
 
   return { iconTheme: loadIconTheme() };
