@@ -10,6 +10,7 @@ import { defineConfig } from "rollup";
 import del from "rollup-plugin-delete";
 import { string } from "./scripts/string.mjs";
 import { babel } from "@rollup/plugin-babel";
+import { compileLitTemplates } from "@lit-labs/compiler";
 
 const filename = fileURLToPath(import.meta.url);
 const dirname = path.dirname(filename);
@@ -31,13 +32,17 @@ export default defineConfig({
       format: "esm",
     },
   ],
-  // external: ["react", "react/jsx-runtime"],
   external: ["react", "react/jsx-runtime", "fast-deep-equal", "parsimmon", "jotai", "valibot", "list", "json5", "is-promise"],
   context: "window",
   plugins: [
     !watch && del({ targets: ["dist/*"] }),
     json(),
-    // peerDepsExternal(),
+    ts({
+      sourceMap: !watch,
+      // transformers: {
+      //   before: [compileLitTemplates()],
+      // },
+    }),
     nodeResolve({ browser: true }),
     alias({
       entries: [
@@ -50,7 +55,6 @@ export default defineConfig({
     commonjs(),
     string({ include: "**/*.{json5,html,css}" }),
     babel({ babelHelpers: "bundled", extensions: [".js", ".jsx", ".ts", ".tsx"] }),
-    ts({ sourceMap: !watch }),
     !watch && terser(),
   ],
 });

@@ -48,8 +48,10 @@
     "react": ">=18"
   },
   "devDependencies": {
+    "@babel/plugin-proposal-decorators": "^7.24.7",
     "@biomejs/biome": "^1.8.3",
     "@frdy/typescript-config": "workspace:*",
+    "@lit-labs/compiler": "^1.1.0",
     "@rollup/plugin-alias": "^5.0.1",
     "@rollup/plugin-babel": "^6.0.4",
     "@rollup/plugin-commonjs": "^26.0.1",
@@ -69,12 +71,16 @@
     "rollup-plugin-peer-deps-external": "^2.2.4",
     "rollup-plugin-string": "^3.0.0",
     "rollup-plugin-typescript2": "^0.36.0",
+    "tslib": "^2.6.3",
     "typescript": "^5.5.4"
   },
   "dependencies": {
     "@frdy/commands": "workspace:*",
     "@frdy/extension-host": "workspace:*",
     "@frdy/sdk": "workspace:*",
+    "@lit/context": "^1.1.2",
+    "@lit/react": "^1.0.5",
+    "@lit/task": "^1.0.1",
     "@xterm/addon-fit": "~0.10.0",
     "@xterm/addon-unicode11": "~0.8.0",
     "@xterm/addon-web-links": "~0.11.0",
@@ -90,6 +96,7 @@
     "jotai": "^2.9.1",
     "json5": "^2.2.3",
     "list": "^2.0.19",
+    "lit": "^3.2.0",
     "parsimmon": "^1.18.1",
     "valibot": "^0.37.0"
   }

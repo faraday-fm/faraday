@@ -17,55 +17,66 @@ import { Breadcrumb } from "../../Breadcrumb";
 import { PanelHeader } from "../../PanelHeader";
 import { FileInfoFooter } from "./FileInfoFooter";
 import type { CursorStyle } from "./types";
-import { CondensedView } from "./views/CondensedView";
-import { FullView } from "./views/FullView";
 import clsx from "clsx";
+import { useFs } from "../../../features/fs/useFs";
+import { CondensedViewReact } from "./CondensedView";
+import { useMediaQuery } from "../../../hooks/useMediaQuery";
 
-const panelRoot = css`width: 100%;
-    height: 100%;
-    position: relative;
-    color: var(--panel-foreground);
-    background-color: var(--panel-background);
-    display: grid;
-    overflow: hidden;
+const panelRoot = css`
+  width: 100%;
+  height: 100%;
+  position: relative;
+  color: var(--panel-foreground);
+  background-color: var(--panel-background);
+  display: grid;
+  overflow: hidden;
+  outline: none;
+  user-select: none;
+
+  &.-focused {
+    background-color: var(--panel-background-focus);
+  }
+`;
+const panelContent = css`
+  display: grid;
+  grid-template-rows: auto 1fr auto auto;
+  overflow: hidden;
+`;
+const panelColumns = css`
+  display: grid;
+  flex-shrink: 1;
+  flex-grow: 1;
+  overflow: hidden;
+
+  &:focus {
     outline: none;
-    user-select: none;
-
-    &.-focused {
-      background-color: var(--panel-background-focus);
-    }`;
-const panelContent = css`display: grid;
-    grid-template-rows: auto 1fr auto auto;
-    overflow: hidden;`;
-const panelColumns = css`display: grid;
-    flex-shrink: 1;
-    flex-grow: 1;
-    overflow: hidden;
-
-    &:focus {
-      outline: none;
-    }`;
-const fileInfoPanel = css`/* border: 1px solid var(--color-11);
+  }
+`;
+const fileInfoPanel = css`
+  /* border: 1px solid var(--color-11);
     padding: calc(0.5rem - 1px) calc(0.25rem - 1px);
     color: var(--color-11); */
-    margin: 2px;
-    margin-top: 0;
-    border: 1px solid var(--panel-border);
-    overflow: hidden;`;
-const panelFooter = css`/* position: absolute; */
-    /* bottom: 0;
+  margin: 2px;
+  margin-top: 0;
+  border: 1px solid var(--panel-border);
+  overflow: hidden;
+`;
+const panelFooter = css`
+  /* position: absolute; */
+  /* bottom: 0;
     left: 50%;
     transform: translate(-50%, 0); */
-    /* max-width: calc(100% - 2em); */
-    /* z-index: 1; */
-    margin: 2px;
-    margin-top: 0;
-    border: 1px solid var(--panel-border);
-    padding: 0 0.25em;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    text-align: left;`;
+  /* max-width: calc(100% - 2em); */
+  /* z-index: 1; */
+  margin: 2px;
+  margin-top: 0;
+  border: 1px solid var(--panel-border);
+  padding: 0 0.25em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-align: left;
+`;
 
 export interface FilePanelProps {
   items: List<Dirent>;
@@ -119,6 +130,8 @@ function adjustCursor(cursor: CursorPosition, items: List<Dirent>, displayedItem
 export const FilePanel = memo(
   forwardRef<FilePanelActions, FilePanelProps>((props, ref) => {
     const { items, selectedItemNames, cursor, view, path, showCursorWhenBlurred, onFocus, onCursorPositionChange } = props;
+    const fs = useFs();
+    const isTouchscreen = useMediaQuery("(pointer: coarse)");
 
     const onFocusRef = useRef(onFocus);
     const onCursorPositionChangeRef = useRef(onCursorPositionChange);
@@ -171,7 +184,7 @@ export const FilePanel = memo(
           onCursorPositionChangeRef.current(newCursor, select);
         }
       },
-      [adjustedCursor, displayedItems, items, maxItemsPerColumn],
+      [adjustedCursor, displayedItems, items, maxItemsPerColumn]
     );
 
     const adjustedCursorRef = useRef(adjustedCursor);
@@ -190,7 +203,7 @@ export const FilePanel = memo(
           onCursorPositionChangeRef.current(c, select);
         }
       },
-      [items, displayedItems],
+      [items, displayedItems]
     );
 
     const moveCursorToPos = useCallback(
@@ -204,7 +217,7 @@ export const FilePanel = memo(
           onCursorPositionChangeRef.current(c, select);
         }
       },
-      [adjustedCursor, displayedItems, items],
+      [adjustedCursor, displayedItems, items]
     );
 
     const moveCursorPage = useCallback(
@@ -224,7 +237,7 @@ export const FilePanel = memo(
           onCursorPositionChangeRef.current(c, select);
         }
       },
-      [adjustedCursor, displayedItems, items],
+      [adjustedCursor, displayedItems, items]
     );
 
     useCommandBinding("cursorLeft", () => moveCursorLeftRight("left", false), focused);
@@ -246,13 +259,25 @@ export const FilePanel = memo(
     useCommandBinding("selectPageDown", () => moveCursorPage("down", true), focused);
 
     const executeCommand = useExecuteCommand();
-    const onItemActivated = useCallback(() => executeCommand("open", { path }), [executeCommand, path]);
+    // const onItemActivate = useCallback(() => executeCommand("open", { path }), [executeCommand, path]);
 
-    const onMaxItemsPerColumnChanged = useCallback((maxItemsPerColumn: number) => setMaxItemsPerColumn(maxItemsPerColumn), []);
-    const onItemClicked = useCallback((pos: number) => moveCursorToPos(pos, false), [moveCursorToPos]);
+    const onMaxItemsPerColumnChange = useCallback((e: Event) => {
+      setMaxItemsPerColumn((e as CustomEvent).detail.maxItemsPerColumn);
+    }, []);
+    // const onItemClicked = useCallback((pos: number) => moveCursorToPos(pos, false), [moveCursorToPos]);
     const selectedIndexRef = useRef(cursor.activeIndex);
     selectedIndexRef.current = cursor.activeIndex;
-    const handlePosChange = useCallback((topmost: number, active: number) => scroll(active - (selectedIndexRef.current ?? 0), true, false), [scroll]);
+    const onActiveIndexChange = useCallback(
+      (e: Event) => {
+        const { activeIndex, initiator } = (e as CustomEvent).detail;
+        if (initiator === 'scroll') {
+          scroll(activeIndex - (selectedIndexRef.current ?? 0), true, false);
+        } else if (initiator === 'click') {
+          moveCursorToPos(activeIndex, false);
+        }
+      },
+      [scroll]
+    );
     const handleFocus = useCallback(() => onFocusRef.current?.(), []);
 
     let cursorStyle: CursorStyle;
@@ -299,28 +324,20 @@ export const FilePanel = memo(
                   e.preventDefault();
                 }}
               >
-                {view.type === "full" ? (
-                  <FullView
-                    cursorStyle={cursorStyle}
-                    items={items}
-                    cursor={adjustedCursor}
-                    onItemClicked={onItemClicked}
-                    onItemActivated={onItemActivated}
-                    onMaxVisibleItemsChanged={onMaxItemsPerColumnChanged}
-                    columnDefs={view.columnDefs}
-                  />
-                ) : (
-                  <CondensedView
+                {view.type === "condensed" && (
+                  <CondensedViewReact
+                    ref={(ref) => ref?.setFs(fs)}
                     cursorStyle={cursorStyle}
                     items={items}
                     selectedItemNames={selectedItemNames}
                     topmostIndex={adjustedCursor.topmostIndex}
-                    selectedIndex={adjustedCursor.activeIndex}
+                    activeIndex={adjustedCursor.activeIndex}
                     columnCount={columnCount}
-                    onItemClicked={onItemClicked}
-                    onItemActivated={onItemActivated}
-                    onMaxItemsPerColumnChanged={onMaxItemsPerColumnChanged}
-                    onPosChange={handlePosChange}
+                    isTouchscreen={isTouchscreen}
+                    // onItemClicked={onItemClicked}
+                    // onItemActivate={onItemActivate}
+                    onMaxItemsPerColumnChange={onMaxItemsPerColumnChange}
+                    onActiveIndexChange={onActiveIndexChange}
                   />
                 )}
               </div>
@@ -333,6 +350,6 @@ export const FilePanel = memo(
         </GlyphSizeProvider>
       </div>
     );
-  }),
+  })
 );
 FilePanel.displayName = "FilePanel";
