@@ -37,8 +37,8 @@ export function Faraday({ host }: FaradayProps) {
               <GlyphSizeProvider>
                 <FileIconsProvider>
                   <App />
-                  <Extensions root=".faraday/extensions" />
-                  <SettingsTracker path=".faraday/settings.json5" />
+                  {/* <Extensions root=".faraday/extensions" />
+                  <SettingsTracker path=".faraday/settings.json5" /> */}
                 </FileIconsProvider>
               </GlyphSizeProvider>
             </KeyBindingProvider>

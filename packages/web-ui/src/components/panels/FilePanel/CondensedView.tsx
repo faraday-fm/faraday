@@ -5,12 +5,16 @@ import React from "react";
 import { createList, type List } from "../../../utils/immutableList";
 import type { Dirent, FileSystemProvider } from "@frdy/sdk";
 import { ContextProvider } from "@lit/context";
-import { fsContext } from "./contexts/fsContext";
-import { createIconsCache, iconsCacheContext } from "./contexts/iconsCacheContext";
+import { fsContext } from "../../../lit-contexts/fsContext";
+import { createIconsCache, iconsCacheContext } from "../../../lit-contexts/iconsCacheContext";
 import type { CursorStyle } from "./types";
 import "./MultiColumnList";
 import "./FileName";
 import "./ColumnCell";
+import { createSettingsContext, settingsContext } from "../../../lit-contexts/settingsContext";
+import { createExtensionRepoContext, extensionRepoContext } from "../../../lit-contexts/extensionRepoContext";
+import { createExtensionsContext, extensionsContext } from "../../../lit-contexts/extensionContext";
+import { createIconThemeContext, iconThemeContext } from "../../../lit-contexts/iconThemeContext";
 
 const TAG = "frdy-condensed-view";
 
@@ -23,14 +27,20 @@ export class CondensedView extends LitElement {
   `;
 
   private _fsProvider = new ContextProvider(this, { context: fsContext });
-  private _iconsCacheProvider = new ContextProvider(this, {
-    context: iconsCacheContext,
-  });
+  private _settingsProvider = new ContextProvider(this, { context: settingsContext });
+  private _extensionRepoProvider = new ContextProvider(this, { context: extensionRepoContext });
+  private _extensionsProvider = new ContextProvider(this, { context: extensionsContext });
+  private _iconThemeProvider = new ContextProvider(this, { context: iconThemeContext });
+  private _iconsCacheProvider = new ContextProvider(this, { context: iconsCacheContext });
 
   public setFs(fs: FileSystemProvider) {
     if (!this._fsProvider.value) {
       this._fsProvider.setValue(fs);
-      this._iconsCacheProvider.setValue(createIconsCache(fs));
+      this._settingsProvider.setValue(createSettingsContext(fs));
+      this._extensionRepoProvider.setValue(createExtensionRepoContext(fs));
+      this._extensionsProvider.setValue(createExtensionsContext(fs, this._extensionRepoProvider.value));
+      this._iconThemeProvider.setValue(createIconThemeContext(fs, this._settingsProvider.value, this._extensionsProvider.value));
+      this._iconsCacheProvider.setValue(createIconsCache(fs, this._iconThemeProvider.value));
     }
   }
 

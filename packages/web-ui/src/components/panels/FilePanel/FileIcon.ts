@@ -2,7 +2,7 @@ import { consume } from "@lit/context";
 import { Task } from "@lit/task";
 import { LitElement, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
-import { type IconsCache, iconsCacheContext } from "./contexts/iconsCacheContext";
+import { type IconsCache, iconsCacheContext } from "../../../lit-contexts/iconsCacheContext";
 
 const TAG = "frdy-fileicon";
 
@@ -42,7 +42,7 @@ export class FileIcon extends LitElement {
       if (!filepath) {
         return this.icons?.getDefaultIcon(isDir, isOpen);
       }
-      return this.icons?.getIcon(filepath);
+      return this.icons?.getIcon(filepath, isDir, isOpen);
     },
     args: () => [this.filepath, this.isDir, this.isOpen] as const,
   });
@@ -50,10 +50,10 @@ export class FileIcon extends LitElement {
   protected render() {
     return this._task.render({
       initial: () =>
-        html`<img style="width:${this.size}px;height:${this.size}px" src="data:image/svg+xml;base64,${this.icons?.getDefaultIcon(true, false) ?? ""}" />`,
+        html`<img style="width:${this.size}px;height:${this.size}px" src="data:image/svg+xml;base64,${this.icons?.getDefaultIcon(this.isDir, this.isOpen) ?? ""}" />`,
       pending: () =>
-        html`<img style="width:${this.size}px;height:${this.size}px" src="data:image/svg+xml;base64,${this.icons?.getDefaultIcon(true, false) ?? ""}" />`,
-      complete: (x) => html`<img style="width:${this.size}px;height:${this.size}px" src="data:image/svg+xml;base64,${btoa(x ?? "")}" />`,
+        html`<img style="width:${this.size}px;height:${this.size}px" src="data:image/svg+xml;base64,${this.icons?.getDefaultIcon(this.isDir, this.isOpen) ?? ""}" />`,
+      complete: (x) => html`<img style="width:${this.size}px;height:${this.size}px" src="data:image/svg+xml;base64,${x}" />`,
     });
   }
 }

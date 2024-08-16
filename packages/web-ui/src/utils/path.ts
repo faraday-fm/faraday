@@ -40,6 +40,12 @@ export function filename(path: string) {
   return path.split("/").at(-1);
 }
 
+export function dir(path: string) {
+  if (path.endsWith("/")) return path;
+  const slash = path.lastIndexOf("/");
+  return slash >= 0 ? path.substring(0, slash + 1) : path;
+}
+
 export function* getAllExtensions(path: string, dotPrefix = false) {
   if (isRoot(path)) {
     return;
@@ -59,5 +65,5 @@ export function combine(path: string, name: string) {
   if (isAbsolute(name)) {
     return name;
   }
-  return path.endsWith("/") ? `${path}${name}` : `${path}/${name}`;
+  return `${dir(path)}${name}`;
 }
