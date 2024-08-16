@@ -334,8 +334,6 @@ export const FilePanel = memo(
                     activeIndex={adjustedCursor.activeIndex}
                     columnCount={columnCount}
                     isTouchscreen={isTouchscreen}
-                    // onItemClicked={onItemClicked}
-                    // onItemActivate={onItemActivate}
                     onMaxItemsPerColumnChange={onMaxItemsPerColumnChange}
                     onActiveIndexChange={onActiveIndexChange}
                   />

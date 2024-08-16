@@ -2,6 +2,7 @@ import { createComponent } from "@lit/react";
 import { LitElement, type PropertyValues, type TemplateResult, css, html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { type Ref, createRef, ref } from "lit/directives/ref.js";
+import {range} from 'lit/directives/range.js';
 import { repeat } from "lit/directives/repeat.js";
 import React from "react";
 import "./ScrollableContainer";
@@ -137,10 +138,7 @@ export class MultiColumnList extends LitElement {
   }
 
   protected render() {
-    const items: number[] = [];
-    for (let i = this.topmostIndex; i < this.topmostIndex + Math.min(this.itemsCount, this.columnCount * this._maxItemsPerColumn); i++) {
-      items.push(i);
-    }
+    const items = Array.from(range(this.topmostIndex, this.topmostIndex + Math.min(this.itemsCount, this.columnCount * this._maxItemsPerColumn)));
     const columnItems: (typeof items)[] = [];
     const slice = (column: number) => items.slice(column * this._maxItemsPerColumn, (column + 1) * this._maxItemsPerColumn);
     for (let i = 0; i < this.columnCount; i++) {

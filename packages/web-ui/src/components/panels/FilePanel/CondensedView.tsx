@@ -89,12 +89,12 @@ export class CondensedView extends LitElement {
             .selected=${selectedNames.has(this.items.get(i)?.filename ?? "")}
             .cursorStyle=${i === this.activeIndex && this.cursorStyle === "firm" ? "firm" : "hidden"}
           >
-            <frdy-filename .height=${rowHeight} .dirent=${this.items.get(i)}></frdy-filename>
+            <frdy-filename .dirent=${this.items.get(i)}></frdy-filename>
           </frdy-column-cell>
         `}
-        itemsCount=${this.items.size()}
-        itemHeight=${rowHeight}
-        isTouchscreen=${this.isTouchscreen}
+        .itemsCount=${this.items.size()}
+        .itemHeight=${rowHeight}
+        .isTouchscreen=${this.isTouchscreen}
       ></frdy-multicolumn-list>
     `;
   }
@@ -113,6 +113,5 @@ export const CondensedViewReact = createComponent({
   events: {
     onActiveIndexChange: "active-index-change",
     onMaxItemsPerColumnChange: "max-items-per-column-change",
-    // onItemActivate: "activate",
   },
 });

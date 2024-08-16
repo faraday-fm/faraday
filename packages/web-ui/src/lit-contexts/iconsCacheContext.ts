@@ -1,10 +1,9 @@
-import { readFile, type FileSystemProvider } from "@frdy/sdk";
+import { type FileSystemProvider } from "@frdy/sdk";
 import { createContext } from "@lit/context";
-import { IconThemeContext } from "./iconThemeContext";
 import { IconTheme, isSvgIcon } from "../schemas/iconTheme";
 import { combine, filename } from "../utils/path";
-import isPromise from "is-promise";
-import { readFileString, realpath } from "./fsUtils";
+import { readFileString } from "./fsUtils";
+import { IconThemeContext } from "./iconThemeContext";
 
 export type IconsCache = {
   getDefaultIcon(isDir: boolean, isOpen: boolean): string;
@@ -25,7 +24,6 @@ const defaultFileIcon = btoa(
 
 export function createIconsCache(fs: FileSystemProvider, iconThemeContext: IconThemeContext): IconsCache {
   const cache = new Map<string, Promise<string>>();
-  const decoder = new TextDecoder();
   return {
     getDefaultIcon(isDir, isOpen) {
       return isDir ? (isOpen ? defaultDirOpenIcon : defaultDirIcon) : defaultFileIcon;
@@ -42,7 +40,6 @@ export function createIconsCache(fs: FileSystemProvider, iconThemeContext: IconT
       }
       const iconDefinition = iconTheme.theme.iconDefinitions[iconDefinitionName];
       const iconPath = isSvgIcon(iconDefinition) ? iconDefinition.iconPath : undefined;
-      console.info("@#$%@#", iconTheme.path, iconPath)
       const iconPathAbsolute = iconPath ? combine(iconTheme.path, iconPath) : undefined;
       if (!iconPathAbsolute) {
         return this.getDefaultIcon(isDir, isOpen);

@@ -25,7 +25,7 @@ export function filestream(fs: FileSystemProvider, path: string, signal?: AbortS
           controller.close();
         }
       } catch {
-        controller.close();
+        controller.error();
       }
     },
     async cancel() {

@@ -50,10 +50,18 @@ export class FileIcon extends LitElement {
   protected render() {
     return this._task.render({
       initial: () =>
-        html`<img style="width:${this.size}px;height:${this.size}px" src="data:image/svg+xml;base64,${this.icons?.getDefaultIcon(this.isDir, this.isOpen) ?? ""}" />`,
+        html`<img
+          style="width:${this.size}px;height:${this.size}px"
+          src="data:image/svg+xml;base64,${this.icons?.getDefaultIcon(this.isDir, this.isOpen) ?? ""}"
+          alt=${this.filepath}
+        />`,
       pending: () =>
-        html`<img style="width:${this.size}px;height:${this.size}px" src="data:image/svg+xml;base64,${this.icons?.getDefaultIcon(this.isDir, this.isOpen) ?? ""}" />`,
-      complete: (x) => html`<img style="width:${this.size}px;height:${this.size}px" src="data:image/svg+xml;base64,${x}" />`,
+        html`<img
+          style="width:${this.size}px;height:${this.size}px"
+          src="data:image/svg+xml;base64,${this.icons?.getDefaultIcon(this.isDir, this.isOpen) ?? ""}"
+          alt=${this.filepath}
+        />`,
+      complete: (x) => html`<img style="width:${this.size}px;height:${this.size}px" src="data:image/svg+xml;base64,${x}" alt=${this.filepath} />`,
     });
   }
 }
