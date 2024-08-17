@@ -2,6 +2,8 @@ import clsx from "clsx";
 import { LitElement, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import type { CursorStyle } from "./types";
+import { consume } from "@lit/context";
+import { isTouchScreenContext } from "../../../lit-contexts/IsTouchScreenProvider";
 
 const TAG = "frdy-column-cell";
 
@@ -18,7 +20,6 @@ export class ColumnCell extends LitElement {
       overflow: hidden;
       box-sizing: border-box;
       padding: 0 2px;
-      /* margin: 0 2px; */
       border-radius: 2px;
       border: 1px solid transparent;
       &:is(.-firm, .-inactive) {
@@ -37,7 +38,7 @@ export class ColumnCell extends LitElement {
   @property({ type: String })
   cursorStyle: CursorStyle;
 
-  @property({ type: Boolean })
+  @consume({ context: isTouchScreenContext, subscribe: true })
   isTouchscreen: boolean;
 
   constructor() {
@@ -72,7 +73,7 @@ export class ColumnCell extends LitElement {
   protected render() {
     return html`
       <div
-        draggable
+        draggable="true"
         class=${clsx("cell", `-${this.cursorStyle}`, this.selected && "-selected")}
         @pointerdown=${this.onPointerDown}
         @click=${() => this.onOpen(false)}

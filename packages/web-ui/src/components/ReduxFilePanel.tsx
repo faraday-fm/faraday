@@ -3,18 +3,20 @@ import { ContextVariablesProvider, DebugContextVariables, useUpdateGlobalContext
 import type { Dirent } from "@frdy/sdk";
 import { isDir, isHidden } from "@frdy/sdk";
 import { memo, useCallback, useEffect, useLayoutEffect, useRef } from "react";
-import { FilePanel, type FilePanelActions } from "../components/panels/FilePanel/FilePanel";
-import { useDirListing } from "../features/fs/hooks";
+import { useDirListing, useFs } from "../features/fs/hooks";
 import { type CursorPosition, usePanelState, usePanels } from "../features/panels";
 import { useSettings } from "../features/settings/settings";
 import type { TabLayout } from "../types";
 import { createList, empty } from "../utils/immutableList";
 import { combine } from "../utils/path";
+import { FilePanel, FilePanelReact } from "./panels/FilePanel/FilePanelLit";
 
-const reduxFilePanelRoot = css`width: 100%;
-    height: 100%;
-    display: flex;
-    position: relative;`;
+const reduxFilePanelRoot = css`
+  width: 100%;
+  height: 100%;
+  display: grid;
+  position: relative;
+`;
 
 interface ReduxFilePanelProps {
   layout: TabLayout & { id: string };
@@ -34,12 +36,19 @@ function fsCompare(a: Dirent, b: Dirent) {
 
 export const ReduxFilePanel = memo(function ReduxFilePanel({ layout }: ReduxFilePanelProps) {
   const { id } = layout;
-  const panelRef = useRef<FilePanelActions>(null);
+  const panelRef = useRef<FilePanel>(null);
   const { activeTab, initPanelState, setPanelItems, setPanelSelectedItems, setPanelCursorPos, setActiveTabId } = usePanels();
   const state = usePanelState(id);
   const updateState = useUpdateGlobalContext();
   const isActive = activeTab?.id === id;
   const { showHiddenFiles } = useSettings();
+  const fs = useFs();
+  
+  useEffect(() => {
+    if (panelRef.current){
+      panelRef.current.setFs(fs);
+    }
+  }, [])
 
   let items = state?.items ?? createList();
   if (!showHiddenFiles) {
@@ -74,8 +83,8 @@ export const ReduxFilePanel = memo(function ReduxFilePanel({ layout }: ReduxFile
         files = files.sort(fsCompare);
         setPanelItems(id, files);
       },
-      [id, setPanelItems],
-    ),
+      [id, setPanelItems]
+    )
   );
 
   const onFocus = useCallback(() => setActiveTabId(id), [id, setActiveTabId]);
@@ -107,35 +116,36 @@ export const ReduxFilePanel = memo(function ReduxFilePanel({ layout }: ReduxFile
       }
       setPanelCursorPos(id, targetCursor);
     },
-    [id, setPanelCursorPos, setPanelSelectedItems, selectedItems, cursor, items],
+    [id, setPanelCursorPos, setPanelSelectedItems, selectedItems, cursor, items]
   );
 
   const onSelectItems = useCallback(
     (itemNames: string[], select: boolean) => {
       setPanelSelectedItems(id, itemNames, select);
     },
-    [id, setPanelSelectedItems],
+    [id, setPanelSelectedItems]
   );
 
   return (
     <div
       className={reduxFilePanelRoot}
+      style={{ display: "grid" }}
       onKeyDown={() => {
         selectionType.current = undefined;
       }}
     >
       <ContextVariablesProvider>
-        <FilePanel
+        <FilePanelReact
           ref={panelRef}
+          view={layout.component.view}
+          items={items}
           selectedItemNames={selectedItems}
           showCursorWhenBlurred={isActive}
-          onFocus={onFocus}
-          onCursorPositionChange={onCursorPositionChange}
-          onSelectItems={onSelectItems}
-          cursor={cursor}
-          items={items}
+          // onFocus={onFocus}
+          // onActiveIndexChange={onCursorPositionChange}
+          // onSelectItems={onSelectItems}
+          fileCursor={cursor}
           path={state ? state.pos.path : "/"}
-          view={layout.component.view}
         />
         <DebugContextVariables />
       </ContextVariablesProvider>

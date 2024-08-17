@@ -17,6 +17,8 @@
   "files": [
     "dist",
     "package.json",
+    "LICENSE",
+    "CHANGELOG.md",
     "README.md"
   ],
   "repository": {

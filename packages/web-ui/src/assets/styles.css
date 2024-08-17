@@ -1,50 +1,60 @@
 .frdy {
-@keyframes dialog-animation{0%{opacity:0;transform:scale(.97,.97)}to{opacity:1;transform:scale(1,1)}}&.app {-webkit-font-smoothing: antialiased;
+@keyframes dialog-animation{0%{opacity:0;transform:scale(.97,.97)}to{opacity:1;transform:scale(1,1)}}&.app {
+  -webkit-font-smoothing: antialiased;
 
-    ::-webkit-scrollbar {
-      display: none;
-    }
+  ::-webkit-scrollbar {
+    display: none;
+  }
 
-    font-size: 13.5;
+  font-size: 13.5;
 
-    & :is(button, input) {
-      font-family: inherit;
-      text-rendering: inherit;
-      font-size: inherit;
-    }
+  & :is(button, input) {
+    font-family: inherit;
+    text-rendering: inherit;
+    font-size: inherit;
+  }
 
-    font-family: var(--fontFamily);
-    text-rendering: geometricPrecision;
-    background-color: #172637;
-    height: 100%;
-    display: grid;
-    grid-template-rows: minmax(0, 1fr) auto;
-    flex-direction: column;
-    direction: ltr;
-    user-select: none;
-    -moz-user-select: none;
-    -webkit-user-select: none;
-    cursor: default;}
-&.main-div {grid-row: 1;
-    position: relative;
-    overflow: hidden;}
-&.terminal-container {position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    z-index: 0;}
-&.tabs-container {display: grid;
-    position: absolute;
-    left: 0;
-    right: 0;
-    top: 0;
-    bottom: 17px;
-    grid-auto-flow: column;
-    grid-auto-columns: 1fr;
-    z-index: 0;}
-&.footer-div {grid-row: 2;
-    overflow: hidden;}
+  font-family: var(--fontFamily);
+  text-rendering: geometricPrecision;
+  background-color: #172637;
+  height: 100%;
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) auto;
+  flex-direction: column;
+  direction: ltr;
+  user-select: none;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  cursor: default;
+}
+&.main-div {
+  grid-row: 1;
+  position: relative;
+  overflow: hidden;
+}
+&.terminal-container {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 0;
+}
+&.tabs-container {
+  display: grid;
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 17px;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
+  z-index: 0;
+}
+&.footer-div {
+  grid-row: 2;
+  overflow: hidden;
+}
 &.file-icon {display: flex;
     width: 1lh !important;
     height: 1lh !important;}
@@ -152,146 +162,6 @@ box-shadow: 0.5rem 0.5rem #0004;
 }
 &.redux-file-panel-root {width: 100%;
     height: 100%;
-    display: flex;
+    display: grid;
     position: relative;}
-&.panel-root {
-  width: 100%;
-  height: 100%;
-  position: relative;
-  color: var(--panel-foreground);
-  background-color: var(--panel-background);
-  display: grid;
-  overflow: hidden;
-  outline: none;
-  user-select: none;
-
-  &.-focused {
-    background-color: var(--panel-background-focus);
-  }
-}
-&.panel-content {
-  display: grid;
-  grid-template-rows: auto 1fr auto auto;
-  overflow: hidden;
-}
-&.panel-columns {
-  display: grid;
-  flex-shrink: 1;
-  flex-grow: 1;
-  overflow: hidden;
-
-  &:focus {
-    outline: none;
-  }
-}
-&.file-info-panel {
-  /* border: 1px solid var(--color-11);
-    padding: calc(0.5rem - 1px) calc(0.25rem - 1px);
-    color: var(--color-11); */
-  margin: 2px;
-  margin-top: 0;
-  border: 1px solid var(--panel-border);
-  overflow: hidden;
-}
-&.panel-footer {
-  /* position: absolute; */
-  /* bottom: 0;
-    left: 50%;
-    transform: translate(-50%, 0); */
-  /* max-width: calc(100% - 2em); */
-  /* z-index: 1; */
-  margin: 2px;
-  margin-top: 0;
-  border: 1px solid var(--panel-border);
-  padding: 0 0.25em;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  text-align: left;
-}
-&.breadcrumb {--background: linear-gradient(to right, transparent, var(--panel-header-background));
-    display: flex;
-    flex-direction: row;
-    overflow: hidden;
-
-    &:hover> :not(:hover):last-child {
-      /* flex-shrink: 1; */
-    }
-
-    &.-active {
-      --background: linear-gradient(to right, transparent, var(--panel-header-background-focus));
-    }}
-&.panel-header {color: var(--panel-header-foreground);
-    background-color: var(--panel-header-background);
-    overflow: hidden;
-
-    &.-active {
-      color: var(--panel-header-foreground-focus);
-      background-color: var(--panel-header-background-focus);
-    }}
-&.file-info-root {display: flex;
-    overflow: hidden;
-    padding: 0.5rem 0;}
-&.file-info-name {text-overflow: ellipsis;
-    overflow: hidden;
-    white-space: nowrap;
-    flex: 1;}
-&.file-info-size {white-space: nowrap;
-    justify-self: flex-end;
-    margin: 0 0.75rem;}
-&.breadcrumb-item {position: relative;
-    overflow: hidden;
-    white-space: nowrap;
-    flex-shrink: 1;
-    min-width: 2ch;
-    transition: flex-shrink 0.2s;
-    cursor: default;
-
-    &:hover {
-      flex-shrink: 0;
-
-      /* text-decoration: underline; */
-      &::after {
-        opacity: 0;
-      }
-    }
-
-    &:last-child {
-      flex-shrink: 0;
-      /* &::after {
-      transition: 0;
-    } */
-    }
-
-    &:first-of-type {
-      min-width: 1ch;
-    }
-
-    &:first-of-type::before {
-      content: "";
-    }
-
-    &::before {
-      content: "/";
-      /* content: "›";
-    font-size: small;
-    margin: 0 5px; */
-    }
-
-    &::after {
-      position: absolute;
-      content: "";
-      right: 0;
-      top: 0;
-      bottom: 0;
-      width: 2ch;
-      background: var(--background);
-      transition: opacity 0.2s;
-      opacity: 0;
-      pointer-events: none;
-    }
-
-    &.-showOverflow::after {
-      opacity: 1;
-    }}
 }

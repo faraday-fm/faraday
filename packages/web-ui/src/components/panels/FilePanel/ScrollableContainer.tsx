@@ -1,8 +1,10 @@
+import { consume } from "@lit/context";
 import { createComponent } from "@lit/react";
 import { LitElement, type PropertyValues, css, html } from "lit";
 import { customElement, eventOptions, property } from "lit/decorators.js";
 import { type Ref, createRef, ref } from "lit/directives/ref.js";
 import React from "react";
+import { isTouchScreenContext } from "../../../lit-contexts/IsTouchScreenProvider";
 
 const TAG = "frdy-scrollable";
 
@@ -30,6 +32,7 @@ export class ScrollableLit extends LitElement {
   frictionFactor: number;
 
   @property({ type: Boolean })
+  @consume({ context: isTouchScreenContext, subscribe: true })
   isTouchscreen: boolean;
 
   constructor() {
@@ -127,7 +130,7 @@ export class ScrollableLit extends LitElement {
 
   render() {
     return html`
-      <div style=${["overflow: hidden; position: relative; touch-action: none;", ...this.style]}>
+      <div style=${"overflow: hidden; position: relative; touch-action: none;"}>
         <div ref=${ref(this.scrollPaneRef)} style="position: absolute; inset: 0; overflowY: scroll;">
           <div style="height: ${this.fullScrollHeight + (this.scrollPaneRef.value?.clientHeight ?? 0)}px"></div>
         </div>

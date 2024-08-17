@@ -2,6 +2,7 @@ import { consume } from "@lit/context";
 import { Task } from "@lit/task";
 import { LitElement, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
+import { ifDefined } from "lit/directives/if-defined.js";
 import { type IconsCache, iconsCacheContext } from "../../../lit-contexts/iconsCacheContext";
 
 const TAG = "frdy-fileicon";
@@ -67,20 +68,20 @@ export class FileIcon extends LitElement {
         html`<img
           style="width:${this.size}px;height:${this.size}px"
           src="data:image/svg+xml;base64,${getDefaultIcon(this.isDir, this.isOpen) ?? ""}"
-          alt=${this.filepath}
+          alt=${ifDefined(this.filepath)}
         />`,
       pending: () =>
         html`<img
           style="width:${this.size}px;height:${this.size}px"
           src="data:image/svg+xml;base64,${getDefaultIcon(this.isDir, this.isOpen) ?? ""}"
-          alt=${this.filepath}
+          alt=${ifDefined(this.filepath)}
         />`,
-      complete: (x) => html`<img style="width:${this.size}px;height:${this.size}px" src="data:image/svg+xml;base64,${x}" alt=${this.filepath} />`,
+      complete: (x) => html`<img style="width:${this.size}px;height:${this.size}px" src="data:image/svg+xml;base64,${x}" alt=${ifDefined(this.filepath)} />`,
       error: () =>
         html`<img
           style="width:${this.size}px;height:${this.size}px"
           src="data:image/svg+xml;base64,${getDefaultIcon(this.isDir, this.isOpen) ?? ""}"
-          alt=${this.filepath}
+          alt=${ifDefined(this.filepath)}
         />`,
     });
   }

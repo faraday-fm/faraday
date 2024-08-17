@@ -1,15 +1,9 @@
-import type { Dirent, FileSystemProvider } from "@frdy/sdk";
-import { ContextProvider } from "@lit/context";
+import type { Dirent } from "@frdy/sdk";
 import { createComponent } from "@lit/react";
 import { css, html, LitElement } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import React from "react";
-import { createExtensionsContext, extensionsContext } from "../../../lit-contexts/extensionContext";
-import { createExtensionRepoContext, extensionRepoContext } from "../../../lit-contexts/extensionRepoContext";
-import { fsContext } from "../../../lit-contexts/fsContext";
-import { createIconsCache, iconsCacheContext } from "../../../lit-contexts/iconsCacheContext";
-import { createIconThemeContext, iconThemeContext } from "../../../lit-contexts/iconThemeContext";
-import { createSettingsContext, settingsContext } from "../../../lit-contexts/settingsContext";
+import "../../../lit-contexts/GlyphSizeProvider";
 import { createList, type List } from "../../../utils/immutableList";
 import "./ColumnCell";
 import "./FileName";
@@ -26,34 +20,16 @@ export class CondensedView extends LitElement {
     }
   `;
 
-  private _fsProvider = new ContextProvider(this, { context: fsContext });
-  private _settingsProvider = new ContextProvider(this, { context: settingsContext });
-  private _extensionRepoProvider = new ContextProvider(this, { context: extensionRepoContext });
-  private _extensionsProvider = new ContextProvider(this, { context: extensionsContext });
-  private _iconThemeProvider = new ContextProvider(this, { context: iconThemeContext });
-  private _iconsCacheProvider = new ContextProvider(this, { context: iconsCacheContext });
-
-  public setFs(fs: FileSystemProvider) {
-    if (!this._fsProvider.value) {
-      this._fsProvider.setValue(fs);
-      this._settingsProvider.setValue(createSettingsContext(fs));
-      this._extensionRepoProvider.setValue(createExtensionRepoContext(fs));
-      this._extensionsProvider.setValue(createExtensionsContext(fs, this._extensionRepoProvider.value));
-      this._iconThemeProvider.setValue(createIconThemeContext(fs, this._settingsProvider.value, this._extensionsProvider.value));
-      this._iconsCacheProvider.setValue(createIconsCache(fs, this._iconThemeProvider.value));
-    }
-  }
-
   @property()
   cursorStyle: CursorStyle;
 
   @property({ attribute: false })
   items: List<Dirent>;
 
-  @property()
+  @property({ attribute: false })
   selectedItemNames: List<string>;
 
-  @property()
+  @property({ type: Number })
   topmostIndex: number;
 
   @property({ type: Number })
@@ -61,9 +37,6 @@ export class CondensedView extends LitElement {
 
   @property({ type: Number })
   columnCount: number;
-
-  @property({ type: Boolean })
-  isTouchscreen: boolean;
 
   constructor() {
     super();
@@ -73,29 +46,30 @@ export class CondensedView extends LitElement {
     this.topmostIndex = 0;
     this.activeIndex = 0;
     this.columnCount = 1;
-    this.isTouchscreen = false;
   }
 
   protected render() {
     const selectedNames = this.selectedItemNames.toSet();
     const rowHeight = 25;
     return html`
-      <frdy-multicolumn-list
-        topmostIndex=${this.topmostIndex}
-        activeIndex=${this.activeIndex}
-        columnCount=${this.columnCount}
-        .renderItem=${(i: number) => html`
-          <frdy-column-cell
-            .selected=${selectedNames.has(this.items.get(i)?.filename ?? "")}
-            .cursorStyle=${i === this.activeIndex && this.cursorStyle === "firm" ? "firm" : "hidden"}
-          >
-            <frdy-filename .dirent=${this.items.get(i)}></frdy-filename>
-          </frdy-column-cell>
-        `}
-        .itemsCount=${this.items.size()}
-        .itemHeight=${rowHeight}
-        .isTouchscreen=${this.isTouchscreen}
-      ></frdy-multicolumn-list>
+      <frdy-glyph-size-provider>
+        <frdy-multicolumn-list
+          .topmostIndex=${this.topmostIndex}
+          .activeIndex=${this.activeIndex}
+          .minColumnWidth=${250}
+          .columnCount=${this.columnCount}
+          .renderItem=${(i: number) => html`
+            <frdy-column-cell
+              .selected=${selectedNames.has(this.items.get(i)?.filename ?? "")}
+              .cursorStyle=${i === this.activeIndex && this.cursorStyle === "firm" ? "firm" : "hidden"}
+            >
+              <frdy-filename .dirent=${this.items.get(i)}></frdy-filename>
+            </frdy-column-cell>
+          `}
+          .itemsCount=${this.items.size()}
+          .itemHeight=${rowHeight}
+        ></frdy-multicolumn-list>
+      </frdy-glyph-size-provider>
     `;
   }
 }
@@ -112,6 +86,6 @@ export const CondensedViewReact = createComponent({
   react: React,
   events: {
     onActiveIndexChange: "active-index-change",
-    onMaxItemsPerColumnChange: "max-items-per-column-change",
+    onItemsPerColumnChange: "items-per-column-change",
   },
 });

@@ -1,7 +1,7 @@
 import { createComponent } from "@lit/react";
 import { LitElement, type PropertyValues, type TemplateResult, css, html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
-import { range } from 'lit/directives/range.js';
+import { range } from "lit/directives/range.js";
 import { type Ref, createRef, ref } from "lit/directives/ref.js";
 import { repeat } from "lit/directives/repeat.js";
 import React from "react";
@@ -46,7 +46,7 @@ export class MultiColumnList extends LitElement {
   activeIndex: number;
 
   @property({ type: Number })
-  columnCount: number;
+  minColumnWidth: number;
 
   @property({ type: Number })
   itemsCount: number;
@@ -54,72 +54,72 @@ export class MultiColumnList extends LitElement {
   @property({ type: Number })
   itemHeight: number;
 
-  @property({ type: Boolean })
-  isTouchscreen: boolean;
-
   @property({ attribute: false })
-  renderItem?: (index: number) => TemplateResult;
+  renderItem?: (index: number) => TemplateResult<1>;
+
+  private _rootRef: Ref<HTMLInputElement> = createRef();
+  private _fixedRef: Ref<HTMLInputElement> = createRef();
+  private _observer: ResizeObserver;
 
   constructor() {
     super();
     this.topmostIndex = 0;
     this.activeIndex = 0;
-    this.columnCount = 1;
+    this.minColumnWidth = 350;
     this.itemsCount = 0;
-    this.itemHeight = 27;
-    this.isTouchscreen = false;
+    this.itemHeight = 20;
+    this._observer = new ResizeObserver(this._updateDimentions);
   }
-
-  private _rootRef: Ref<HTMLInputElement> = createRef();
-  private _fixedRef: Ref<HTMLInputElement> = createRef();
 
   @state()
   private _scrollTop = 0;
 
   @state()
-  private _maxItemsPerColumn = 10;
+  private _itemsPerColumn = 10;
 
-  private _observer?: ResizeObserver;
+  @state()
+  private _columnCount = 1;
 
   connectedCallback() {
     super.connectedCallback();
-    this._updateMaxItemsPerColumn();
-    const observer = new ResizeObserver(() => this._updateMaxItemsPerColumn());
-    observer.observe(this);
+    this._observer.observe(this);
   }
 
   disconnectedCallback() {
     super.disconnectedCallback();
-    this._observer?.disconnect();
+    this._observer.unobserve(this);
   }
 
   protected updated(_changedProperties: PropertyValues): void {
     super.updated(_changedProperties);
-    if (_changedProperties.has("itemHeight")) {
-      this._updateMaxItemsPerColumn();
+    if (_changedProperties.has("itemHeight") || _changedProperties.has("minColumnWidth")) {
+      this._updateDimentions();
     }
     if (_changedProperties.has("activeIndex") || _changedProperties.has("itemHeight")) {
       this._scrollTop = this.activeIndex * this.itemHeight;
     }
   }
 
-  private _updateMaxItemsPerColumn() {
-    const height = this.clientHeight;
-    const maxItemsPerColumn = Math.max(1, Math.floor(height / this.itemHeight));
+  private _updateDimentions = () => {
+    const { clientWidth, clientHeight } = this;
 
-    if (this._maxItemsPerColumn !== maxItemsPerColumn) {
-      this._maxItemsPerColumn = maxItemsPerColumn;
+    this._columnCount = Math.max(1, Math.floor(clientWidth / this.minColumnWidth));
+
+    const itemsPerColumn = Math.max(1, Math.floor(clientHeight / this.itemHeight));
+
+    if (this._itemsPerColumn !== itemsPerColumn) {
+      this._itemsPerColumn = itemsPerColumn;
       this.dispatchEvent(
-        new CustomEvent("max-items-per-column-change", {
+        new CustomEvent("items-per-column-change", {
           detail: {
-            maxItemsPerColumn,
+            itemsPerColumn,
           },
           bubbles: true,
           composed: true,
         })
       );
     }
-  }
+  };
 
   private onScroll(e: CustomEvent) {
     const scrollTop = e.detail.top as number;
@@ -141,25 +141,20 @@ export class MultiColumnList extends LitElement {
   }
 
   protected render() {
-    const items = Array.from(range(this.topmostIndex, this.topmostIndex + Math.min(this.itemsCount, this.columnCount * this._maxItemsPerColumn)));
+    const items = Array.from(range(this.topmostIndex, this.topmostIndex + Math.min(this.itemsCount, this._columnCount * this._itemsPerColumn)));
     const columnItems: (typeof items)[] = [];
-    const slice = (column: number) => items.slice(column * this._maxItemsPerColumn, (column + 1) * this._maxItemsPerColumn);
-    for (let i = 0; i < this.columnCount; i++) {
+    const slice = (column: number) => items.slice(column * this._itemsPerColumn, (column + 1) * this._itemsPerColumn);
+    for (let i = 0; i < this._columnCount; i++) {
       columnItems[i] = slice(i);
     }
 
     return html`
       <div class="columns-scroller" ref=${ref(this._rootRef)} style="display: grid">
-        <frdy-scrollable
-          .fullScrollHeight=${(this.itemsCount - 1) * this.itemHeight}
-          .fullScrollTop=${this._scrollTop}
-          .isTouchscreen=${this.isTouchscreen}
-          @scroll=${this.onScroll}
-        >
+        <frdy-scrollable .fullScrollHeight=${(this.itemsCount - 1) * this.itemHeight} .fullScrollTop=${this._scrollTop} @scroll=${this.onScroll}>
           <div
             class="columns-scroller-fixed"
             ref=${ref(this._fixedRef)}
-            style="display: grid; grid-template-columns: ${`repeat(${this.columnCount}, 1fr)`}; overflow: hidden"
+            style="display: grid; grid-template-columns: ${`repeat(${this._columnCount}, 1fr)`}; overflow: hidden"
           >
             ${columnItems.map(
               (items) => html`<div class="column-border">
@@ -200,6 +195,6 @@ export const MultiColumnListReact = createComponent({
   react: React,
   events: {
     onActiveIndexChange: "active-index-change",
-    onMaxItemsPerColumnChange: "max-items-per-column-change",
+    onItemsPerColumnChange: "items-per-column-change",
   },
 });
