@@ -56,24 +56,23 @@ export class FilePanel extends LitElement {
     }
   `;
 
-private _fsProvider = new ContextProvider(this, { context: fsContext });
-private _settingsProvider = new ContextProvider(this, { context: settingsContext });
-private _extensionRepoProvider = new ContextProvider(this, { context: extensionRepoContext });
-private _extensionsProvider = new ContextProvider(this, { context: extensionsContext });
-private _iconThemeProvider = new ContextProvider(this, { context: iconThemeContext });
-private _iconsCacheProvider = new ContextProvider(this, { context: iconsCacheContext });
+  private _fsProvider = new ContextProvider(this, { context: fsContext });
+  private _settingsProvider = new ContextProvider(this, { context: settingsContext });
+  private _extensionRepoProvider = new ContextProvider(this, { context: extensionRepoContext });
+  private _extensionsProvider = new ContextProvider(this, { context: extensionsContext });
+  private _iconThemeProvider = new ContextProvider(this, { context: iconThemeContext });
+  private _iconsCacheProvider = new ContextProvider(this, { context: iconsCacheContext });
 
-public setFs(fs: FileSystemProvider) {
-  if (!this._fsProvider.value) {
-    this._fsProvider.setValue(fs);
-    this._settingsProvider.setValue(createSettingsContext(fs));
-    this._extensionRepoProvider.setValue(createExtensionRepoContext(fs));
-    this._extensionsProvider.setValue(createExtensionsContext(fs, this._extensionRepoProvider.value));
-    this._iconThemeProvider.setValue(createIconThemeContext(fs, this._settingsProvider.value, this._extensionsProvider.value));
-    this._iconsCacheProvider.setValue(createIconsCache(fs, this._iconThemeProvider.value));
+  public setFs(fs: FileSystemProvider) {
+    if (!this._fsProvider.value) {
+      this._fsProvider.setValue(fs);
+      this._settingsProvider.setValue(createSettingsContext(fs));
+      this._extensionRepoProvider.setValue(createExtensionRepoContext(fs));
+      this._extensionsProvider.setValue(createExtensionsContext(fs, this._extensionRepoProvider.value));
+      this._iconThemeProvider.setValue(createIconThemeContext(fs, this._settingsProvider.value, this._extensionsProvider.value));
+      this._iconsCacheProvider.setValue(createIconsCache(fs, this._iconThemeProvider.value));
+    }
   }
-}
-
 
   @property({ attribute: false })
   items: List<Dirent>;
@@ -102,11 +101,11 @@ public setFs(fs: FileSystemProvider) {
 
   private _onItemsPerColumnChange = (e: CustomEvent) => {
     console.error("_onMaxItemsPerColumnChange", e.detail);
-  }
+  };
 
   private _onActiveIndexChange = (e: CustomEvent) => {
     console.error("_onActiveIndexChange", e.detail);
-  }
+  };
 
   protected render() {
     const bytesCount = this.items.reduce((acc, item) => acc + ((!isDir(item) ? item.attrs.size : 0) ?? 0), 0);
@@ -119,7 +118,7 @@ public setFs(fs: FileSystemProvider) {
           <frdy-is-touch-screen-provider>
             <div class="panel-content">
               <div class="panel-columns">
-              ${when(
+                ${when(
                   this.view?.type === "condensed",
                   () => html`<frdy-condensed-view
                     .cursorStyle=${cursorStyle}
@@ -137,7 +136,7 @@ public setFs(fs: FileSystemProvider) {
                     .selectedItemNames=${this.selectedItemNames}
                     @items-per-column-change=${this._onItemsPerColumnChange}
                     @active-index-change=${this._onActiveIndexChange}
-                  ></frdy-condensed-view>`
+                  ></frdy-full-view>`
                 )}
               </div>
               <div class="file-info-panel"></div>

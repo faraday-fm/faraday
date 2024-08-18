@@ -8,6 +8,8 @@ import { repeat } from "lit/directives/repeat.js";
 import React from "react";
 import "./ScrollableContainer";
 import { clamp } from "../../../utils/number";
+import { consume } from "@lit/context";
+import { glyphSizeContext } from "../../../lit-contexts/GlyphSizeProvider";
 
 const TAG = "frdy-multicolumn-list";
 
@@ -54,10 +56,13 @@ export class MultiColumnList extends LitElement {
   itemsCount: number;
 
   @property({ type: Number })
-  itemHeight: number;
+  lineHeight: number;
 
   @property({ attribute: false })
   renderItem?: (index: number, isActive: boolean) => TemplateResult<1>;
+
+  @consume({ context: glyphSizeContext, subscribe: true })
+  glyph?: { w: number; h: number };
 
   private _rootRef: Ref<HTMLInputElement> = createRef();
   private _fixedRef: Ref<HTMLInputElement> = createRef();
@@ -68,7 +73,7 @@ export class MultiColumnList extends LitElement {
     this.topmostIndex = 0;
     this.activeIndex = 0;
     this.itemsCount = 0;
-    this.itemHeight = 20;
+    this.lineHeight = 1;
     this._observer = new ResizeObserver(this._updateDimentions);
   }
 
@@ -91,13 +96,20 @@ export class MultiColumnList extends LitElement {
     this._observer.unobserve(this);
   }
 
+  private _getItemHeight() {
+    return (this.glyph?.h ?? 16) * this.lineHeight;
+  }
+
   protected updated(_changedProperties: PropertyValues): void {
     super.updated(_changedProperties);
-    if (_changedProperties.has("itemHeight") || _changedProperties.has("minColumnWidth")) {
+    if (_changedProperties.has("glyph")) {
+      console.error("***")
+    }
+    if (_changedProperties.has("glyph") || _changedProperties.has("lineHeight") || _changedProperties.has("minColumnWidth")) {
       this._updateDimentions();
     }
-    if (_changedProperties.has("activeIndex") || _changedProperties.has("itemHeight")) {
-      this._scrollTop = this.activeIndex * this.itemHeight;
+    if (_changedProperties.has("activeIndex") || _changedProperties.has("lineHeight") || _changedProperties.has("glyph")) {
+      this._scrollTop = this.activeIndex * this._getItemHeight();
     }
   }
 
@@ -106,7 +118,7 @@ export class MultiColumnList extends LitElement {
 
     this._columnCount = this.minColumnWidth != null ? Math.max(1, Math.floor(clientWidth / this.minColumnWidth)) : 1;
 
-    const itemsPerColumn = Math.max(1, Math.floor(clientHeight / this.itemHeight));
+    const itemsPerColumn = Math.max(1, Math.floor(clientHeight / this._getItemHeight()));
 
     if (this._itemsPerColumn !== itemsPerColumn) {
       this._itemsPerColumn = itemsPerColumn;
@@ -126,18 +138,16 @@ export class MultiColumnList extends LitElement {
   private _onScroll(e: CustomEvent) {
     const scrollTop = e.detail.top as number;
     this._scrollTop = scrollTop;
-    const newActiveIndex = Math.round(scrollTop / this.itemHeight);
+    const newActiveIndex = Math.round(scrollTop / this._getItemHeight());
     if (newActiveIndex !== this.activeIndex) {
       this._updateActiveIndex(newActiveIndex, true);
-      this._fireActiveIndexChange(newActiveIndex);
     }
   }
 
   private _onActivate(e: CustomEvent, index: number) {
     e.stopPropagation();
-    this._scrollTop = index * this.itemHeight;
+    this._scrollTop = index * this._getItemHeight();
     this._updateActiveIndex(index, false);
-    this._fireActiveIndexChange(index);
   }
 
   private _updateActiveIndex = (newActiveIndex: number, shiftTop: boolean) => {
@@ -162,7 +172,7 @@ export class MultiColumnList extends LitElement {
   protected render() {
     return html`
       <div class="columns-scroller" ref=${ref(this._rootRef)} style="display: grid">
-        <frdy-scrollable .fullScrollHeight=${(this.itemsCount - 1) * this.itemHeight} .fullScrollTop=${this._scrollTop} @scroll=${this._onScroll}>
+        <frdy-scrollable .fullScrollHeight=${(this.itemsCount - 1) * this._getItemHeight()} .fullScrollTop=${this._scrollTop} @scroll=${this._onScroll}>
           <div
             class="columns-scroller-fixed"
             ref=${ref(this._fixedRef)}
@@ -180,7 +190,7 @@ export class MultiColumnList extends LitElement {
                   (i) =>
                     html`<div
                       class="item"
-                      style="height:${this.itemHeight}px;"
+                      style="height:${this._getItemHeight()}px;"
                       @activate=${(e: CustomEvent) => this._onActivate(e, i)}
                       @open=${(e: CustomEvent) => {
                         this.dispatchEvent(new CustomEvent("open", { detail: { index: i } }));

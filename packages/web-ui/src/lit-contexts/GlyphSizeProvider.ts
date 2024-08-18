@@ -27,9 +27,18 @@ export class GlyphSizeProvider extends LitElement {
   w!: HTMLDivElement;
 
   private _glyphSizeProvider = new ContextProvider(this, { context: glyphSizeContext, initialValue: { w: 8, h: 16 } });
+  private _observer = new ResizeObserver(() => {
+    this._glyphSizeProvider.setValue({ w: this.w.clientWidth, h: this.w.clientHeight });
+  });
+
+  disconnectedCallback(): void {
+    super.disconnectedCallback();
+    this._observer.unobserve(this.w);
+  }
 
   firstUpdated() {
     this._glyphSizeProvider.setValue({ w: this.w.clientWidth, h: this.w.clientHeight });
+    this._observer.observe(this.w);
   }
 
   protected render() {

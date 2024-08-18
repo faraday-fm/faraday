@@ -22,11 +22,14 @@ export class ColumnCell extends LitElement {
       padding: 0 2px;
       border-radius: 2px;
       border: 1px solid transparent;
-      &:is(.-firm, .-inactive) {
+      &.firm-cursor {
         background-color: var(--files-file-background-focus);
         border: 1px solid var(--files-file-border-focus);
       }
-      &.-selected {
+      &.inactive-cursor {
+        background-color: var(--files-file-background-selected);
+      }
+      &.selected {
         background-color: var(--files-file-background-selected);
       }
     }
@@ -74,7 +77,7 @@ export class ColumnCell extends LitElement {
     return html`
       <div
         draggable="true"
-        class=${clsx("cell", `-${this.cursorStyle}`, this.selected && "-selected")}
+        class=${clsx("cell", this.cursorStyle !== 'hidden' && `${this.cursorStyle}-cursor`, this.selected && "selected")}
         @pointerdown=${this.onPointerDown}
         @click=${() => this.onOpen(false)}
         @doubleclick=${() => this.onOpen(true)}

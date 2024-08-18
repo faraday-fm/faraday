@@ -50,7 +50,6 @@ export class CondensedView extends LitElement {
 
   protected render() {
     const selectedNames = this.selectedItemNames.toSet();
-    const rowHeight = 25;
     return html`
       <frdy-glyph-size-provider>
         <frdy-multicolumn-list
@@ -64,7 +63,7 @@ export class CondensedView extends LitElement {
             </frdy-column-cell>
           `}
           .itemsCount=${this.items.size()}
-          .itemHeight=${rowHeight}
+          .lineHeight=${1.2}
         ></frdy-multicolumn-list>
       </frdy-glyph-size-provider>
     `;
