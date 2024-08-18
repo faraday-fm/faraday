@@ -42,14 +42,7 @@ export const ReduxFilePanel = memo(function ReduxFilePanel({ layout }: ReduxFile
   const updateState = useUpdateGlobalContext();
   const isActive = activeTab?.id === id;
   const { showHiddenFiles } = useSettings();
-  const fs = useFs();
   
-  useEffect(() => {
-    if (panelRef.current){
-      panelRef.current.setFs(fs);
-    }
-  }, [])
-
   let items = state?.items ?? createList();
   if (!showHiddenFiles) {
     items = items.filter((i) => !isHidden(i));

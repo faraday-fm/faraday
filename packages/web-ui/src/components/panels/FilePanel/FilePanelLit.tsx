@@ -1,5 +1,4 @@
-import { Dirent, FileSystemProvider, isDir } from "@frdy/sdk";
-import { ContextProvider } from "@lit/context";
+import { Dirent, isDir } from "@frdy/sdk";
 import { createComponent } from "@lit/react";
 import clsx from "clsx";
 import { LitElement, css, html } from "lit";
@@ -8,12 +7,6 @@ import { when } from "lit/directives/when.js";
 import React from "react";
 import { CursorPosition } from "../../../features/panels";
 import "../../../lit-contexts/GlyphSizeProvider";
-import { createExtensionsContext, extensionsContext } from "../../../lit-contexts/extensionContext";
-import { createExtensionRepoContext, extensionRepoContext } from "../../../lit-contexts/extensionRepoContext";
-import { fsContext } from "../../../lit-contexts/fsContext";
-import { createIconThemeContext, iconThemeContext } from "../../../lit-contexts/iconThemeContext";
-import { createIconsCache, iconsCacheContext } from "../../../lit-contexts/iconsCacheContext";
-import { createSettingsContext, settingsContext } from "../../../lit-contexts/settingsContext";
 import { TabFilesView } from "../../../types";
 import { List, createList } from "../../../utils/immutableList";
 import "./ScrollableContainer";
@@ -56,24 +49,6 @@ export class FilePanel extends LitElement {
     }
   `;
 
-  private _fsProvider = new ContextProvider(this, { context: fsContext });
-  private _settingsProvider = new ContextProvider(this, { context: settingsContext });
-  private _extensionRepoProvider = new ContextProvider(this, { context: extensionRepoContext });
-  private _extensionsProvider = new ContextProvider(this, { context: extensionsContext });
-  private _iconThemeProvider = new ContextProvider(this, { context: iconThemeContext });
-  private _iconsCacheProvider = new ContextProvider(this, { context: iconsCacheContext });
-
-  public setFs(fs: FileSystemProvider) {
-    if (!this._fsProvider.value) {
-      this._fsProvider.setValue(fs);
-      this._settingsProvider.setValue(createSettingsContext(fs));
-      this._extensionRepoProvider.setValue(createExtensionRepoContext(fs));
-      this._extensionsProvider.setValue(createExtensionsContext(fs, this._extensionRepoProvider.value));
-      this._iconThemeProvider.setValue(createIconThemeContext(fs, this._settingsProvider.value, this._extensionsProvider.value));
-      this._iconsCacheProvider.setValue(createIconsCache(fs, this._iconThemeProvider.value));
-    }
-  }
-
   @property({ attribute: false })
   items: List<Dirent>;
 
@@ -100,11 +75,11 @@ export class FilePanel extends LitElement {
   }
 
   private _onItemsPerColumnChange = (e: CustomEvent) => {
-    console.error("_onMaxItemsPerColumnChange", e.detail);
+    // console.error("_onMaxItemsPerColumnChange", e.detail);
   };
 
   private _onActiveIndexChange = (e: CustomEvent) => {
-    console.error("_onActiveIndexChange", e.detail);
+    // console.error("_onActiveIndexChange", e.detail);
   };
 
   protected render() {
@@ -113,7 +88,7 @@ export class FilePanel extends LitElement {
     const cursorStyle = "firm";
 
     return html`
-      <div class=${clsx("panel-root")} tab-index="0">
+      <div class=${clsx("panel-root")}>
         <frdy-glyph-size-provider>
           <frdy-is-touch-screen-provider>
             <div class="panel-content">
@@ -121,6 +96,8 @@ export class FilePanel extends LitElement {
                 ${when(
                   this.view?.type === "condensed",
                   () => html`<frdy-condensed-view
+                    tabIndex="0"
+                    .view=${this.view as any /* TODO: think how to get rid of any */}
                     .cursorStyle=${cursorStyle}
                     .items=${this.items}
                     .selectedItemNames=${this.selectedItemNames}
@@ -131,6 +108,8 @@ export class FilePanel extends LitElement {
                 ${when(
                   this.view?.type === "full",
                   () => html`<frdy-full-view
+                    tabIndex="0"
+                    .view=${this.view as any /* TODO: think how to get rid of any */}
                     .cursorStyle=${cursorStyle}
                     .items=${this.items}
                     .selectedItemNames=${this.selectedItemNames}

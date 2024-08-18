@@ -31,7 +31,7 @@ export type TabSetLayout = {
 
 export type TabFilesFullView = {
   type: "full";
-  columnDefs: any
+  columnDefs: { field: string; name: string; flex?: number }[];
 };
 
 export type TabFilesCondensedView = {

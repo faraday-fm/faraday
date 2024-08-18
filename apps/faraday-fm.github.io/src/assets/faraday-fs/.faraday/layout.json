@@ -36,9 +36,20 @@
               "id": "panel2",
               "type": "tab",
               "flex": 1,
-              "name": "~",
-              "path": ".",
-              "component": { "type": "files", "view": { "type": "condensed", "columnDef": { "field": "name", "name": "Name" } } }
+              // "name": "~",
+              // "path": ".",
+              "name": "icons",
+              "path": ".faraday/extensions/PKief.material-icon-theme-5.8.0/icons",
+              "component": {
+                "type": "files",
+                "view": {
+                  "type": "full",
+                  "columnDefs": [
+                    { "field": "attrs.size", "name": "Size", "flex": 0.3 },
+                    { "field": "attrs.mtime", "name": "Mtime", "flex": 0.3 }
+                  ]
+                }
+              }
               // when: "quickView.visible",
             }
           ]

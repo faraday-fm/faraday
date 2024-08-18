@@ -8,8 +8,8 @@ const host: FaradayHost = {
   config: {
     isDesktop: () => false,
   },
-  rootFs: faradayFs,
-  // rootFs: wsfs,
+  // rootFs: faradayFs,
+  rootFs: wsfs,
 };
 
 function App() {

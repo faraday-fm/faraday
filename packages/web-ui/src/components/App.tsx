@@ -6,13 +6,14 @@ import { ActionsBar } from "../components/ActionsBar";
 import { LayoutContainer } from "../components/LayoutContainer";
 import { useFaradayHost } from "../contexts/faradayHostContext";
 import { useGlyphSize } from "../contexts/glyphSizeContext";
-import { useFileContent } from "../features/fs/hooks";
+import { useFileContent, useFs } from "../features/fs/hooks";
 import { usePanels } from "../features/panels";
 import type { TabLayout } from "../types";
 import CopyDialog from "./dialogs/CopyDialog";
 import DeleteDialog from "./dialogs/DeleteDialog";
 import { useSettings } from "../features/settings/settings";
 import { css } from "@css";
+import { FrdyAppReact } from "./FrdyApp";
 
 const app = css`
   -webkit-font-smoothing: antialiased;
@@ -84,6 +85,7 @@ export function App() {
   const host = useFaradayHost();
   const [devMode, setDevMode] = useState(false);
   const { setShowHiddenFiles } = useSettings();
+  const fs = useFs();
 
   const { content: layoutContent, error: layoutLoadingError } = useFileContent(".faraday/layout.json");
   useEffect(() => {
@@ -125,30 +127,32 @@ export function App() {
   }
 
   return (
-    <div className={app} ref={rootRef}>
-      <div className={mainDiv}>
-        <div className={terminalContainer}>
-          {/* <Suspense fallback={<div />}>
+    <FrdyAppReact ref={(r) => r?.setFs(fs)}>
+      <div className={app} ref={rootRef}>
+        <div className={mainDiv}>
+          <div className={terminalContainer}>
+            {/* <Suspense fallback={<div />}>
               <Terminal fullScreen={!panelsOpen} onRunStart={onRunStart} onRunEnd={onRunEnd} />
             </Suspense> */}
+          </div>
+          <div
+            className={tabsContainer}
+            style={{
+              opacity: !executing && panelsOpen ? 1 : 0,
+              pointerEvents: !executing && panelsOpen ? "all" : "none",
+              bottom: glyphHeight,
+            }}
+          >
+            {layout && <LayoutContainer layout={layout} direction="h" setLayout={setLayout} />}
+          </div>
         </div>
-        <div
-          className={tabsContainer}
-          style={{
-            opacity: !executing && panelsOpen ? 1 : 0,
-            pointerEvents: !executing && panelsOpen ? "all" : "none",
-            bottom: glyphHeight,
-          }}
-        >
-          {layout && <LayoutContainer layout={layout} direction="h" setLayout={setLayout} />}
+        <div className={footerDiv}>
+          <ActionsBar />
         </div>
+        <CopyDialog open={copyDialogOpen} onClose={() => setCopyDialogOpen(false)} />
+        <DeleteDialog open={deleteDialogOpen} onClose={() => setDeleteDialogOpen(false)} />
+        {/* <TopMenu /> */}
       </div>
-      <div className={footerDiv}>
-        <ActionsBar />
-      </div>
-      <CopyDialog open={copyDialogOpen} onClose={() => setCopyDialogOpen(false)} />
-      <DeleteDialog open={deleteDialogOpen} onClose={() => setDeleteDialogOpen(false)} />
-      {/* <TopMenu /> */}
-    </div>
+    </FrdyAppReact>
   );
 }

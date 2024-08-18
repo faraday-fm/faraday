@@ -102,9 +102,6 @@ export class MultiColumnList extends LitElement {
 
   protected updated(_changedProperties: PropertyValues): void {
     super.updated(_changedProperties);
-    if (_changedProperties.has("glyph")) {
-      console.error("***")
-    }
     if (_changedProperties.has("glyph") || _changedProperties.has("lineHeight") || _changedProperties.has("minColumnWidth")) {
       this._updateDimentions();
     }

@@ -15,7 +15,8 @@ export class ColumnCell extends LitElement {
       overflow: hidden;
     }
     .cell {
-      display: flex;
+      display: grid;
+      align-items: center;
       cursor: default;
       overflow: hidden;
       box-sizing: border-box;
