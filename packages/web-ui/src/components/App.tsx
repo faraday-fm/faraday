@@ -21,7 +21,7 @@ const app = css`
     display: none;
   }
 
-  font-size: 13.5;
+  /* font-size: 13.5px; */
 
   & :is(button, input) {
     font-family: inherit;
@@ -36,7 +36,6 @@ const app = css`
   display: grid;
   grid-template-rows: minmax(0, 1fr) auto;
   flex-direction: column;
-  direction: ltr;
   user-select: none;
   -moz-user-select: none;
   -webkit-user-select: none;

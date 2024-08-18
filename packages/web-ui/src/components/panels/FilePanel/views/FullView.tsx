@@ -3,17 +3,17 @@ import { createComponent } from "@lit/react";
 import { css, html, LitElement } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import React from "react";
-import "../../../lit-contexts/GlyphSizeProvider";
-import { createList, type List } from "../../../utils/immutableList";
-import "./ColumnCell";
-import "./FileName";
-import "./MultiColumnList";
-import type { CursorStyle } from "./types";
+import "../../../../lit-contexts/GlyphSizeProvider";
+import { createList, type List } from "../../../../utils/immutableList";
+import "../ColumnCell";
+import "../FileName";
+import "../MultiColumnList";
+import type { CursorStyle } from "../types";
 
-const TAG = "frdy-condensed-view";
+const TAG = "frdy-full-view";
 
 @customElement(TAG)
-export class CondensedView extends LitElement {
+export class FullView extends LitElement {
   static styles = css`
     :host {
       display: grid;
@@ -54,14 +54,10 @@ export class CondensedView extends LitElement {
     return html`
       <frdy-glyph-size-provider>
         <frdy-multicolumn-list
-          .topmostIndex=${this.topmostIndex}
-          .activeIndex=${this.activeIndex}
-          .minColumnWidth=${250}
-          .columnCount=${this.columnCount}
-          .renderItem=${(i: number) => html`
+          .renderItem=${(i: number, isActive: boolean) => html`
             <frdy-column-cell
               .selected=${selectedNames.has(this.items.get(i)?.filename ?? "")}
-              .cursorStyle=${i === this.activeIndex && this.cursorStyle === "firm" ? "firm" : "hidden"}
+              .cursorStyle=${isActive && this.cursorStyle === "firm" ? "firm" : "hidden"}
             >
               <frdy-filename .dirent=${this.items.get(i)}></frdy-filename>
             </frdy-column-cell>
@@ -76,13 +72,13 @@ export class CondensedView extends LitElement {
 
 declare global {
   interface HTMLElementTagNameMap {
-    [TAG]: CondensedView;
+    [TAG]: FullView;
   }
 }
 
-export const CondensedViewReact = createComponent({
+export const FullViewReact = createComponent({
   tagName: TAG,
-  elementClass: CondensedView,
+  elementClass: FullView,
   react: React,
   events: {
     onActiveIndexChange: "active-index-change",

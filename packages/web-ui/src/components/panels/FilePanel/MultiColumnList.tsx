@@ -2,10 +2,12 @@ import { createComponent } from "@lit/react";
 import { LitElement, type PropertyValues, type TemplateResult, css, html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { range } from "lit/directives/range.js";
+import { map } from "lit/directives/map.js";
 import { type Ref, createRef, ref } from "lit/directives/ref.js";
 import { repeat } from "lit/directives/repeat.js";
 import React from "react";
 import "./ScrollableContainer";
+import { clamp } from "../../../utils/number";
 
 const TAG = "frdy-multicolumn-list";
 
@@ -27,9 +29,9 @@ export class MultiColumnList extends LitElement {
     }
     .column-border {
       overflow: hidden;
-      border-right: 1px solid var(--panel-border);
+      border-inline-end: 1px solid var(--panel-border);
       &:last-child {
-        border-right-width: 0;
+        border-inline-end: none;
       }
     }
     .item {
@@ -46,7 +48,7 @@ export class MultiColumnList extends LitElement {
   activeIndex: number;
 
   @property({ type: Number })
-  minColumnWidth: number;
+  minColumnWidth?: number;
 
   @property({ type: Number })
   itemsCount: number;
@@ -55,7 +57,7 @@ export class MultiColumnList extends LitElement {
   itemHeight: number;
 
   @property({ attribute: false })
-  renderItem?: (index: number) => TemplateResult<1>;
+  renderItem?: (index: number, isActive: boolean) => TemplateResult<1>;
 
   private _rootRef: Ref<HTMLInputElement> = createRef();
   private _fixedRef: Ref<HTMLInputElement> = createRef();
@@ -65,7 +67,6 @@ export class MultiColumnList extends LitElement {
     super();
     this.topmostIndex = 0;
     this.activeIndex = 0;
-    this.minColumnWidth = 350;
     this.itemsCount = 0;
     this.itemHeight = 20;
     this._observer = new ResizeObserver(this._updateDimentions);
@@ -103,7 +104,7 @@ export class MultiColumnList extends LitElement {
   private _updateDimentions = () => {
     const { clientWidth, clientHeight } = this;
 
-    this._columnCount = Math.max(1, Math.floor(clientWidth / this.minColumnWidth));
+    this._columnCount = this.minColumnWidth != null ? Math.max(1, Math.floor(clientWidth / this.minColumnWidth)) : 1;
 
     const itemsPerColumn = Math.max(1, Math.floor(clientHeight / this.itemHeight));
 
@@ -119,59 +120,74 @@ export class MultiColumnList extends LitElement {
         })
       );
     }
+    this._updateActiveIndex(this.activeIndex, false);
   };
 
-  private onScroll(e: CustomEvent) {
+  private _onScroll(e: CustomEvent) {
     const scrollTop = e.detail.top as number;
     this._scrollTop = scrollTop;
     const newActiveIndex = Math.round(scrollTop / this.itemHeight);
     if (newActiveIndex !== this.activeIndex) {
-      this._fireActiveIndexChange(newActiveIndex, "scroll");
+      this._updateActiveIndex(newActiveIndex, true);
+      this._fireActiveIndexChange(newActiveIndex);
     }
   }
 
-  private onActivate(e: CustomEvent, index: number) {
+  private _onActivate(e: CustomEvent, index: number) {
     e.stopPropagation();
     this._scrollTop = index * this.itemHeight;
-    this._fireActiveIndexChange(index, "click");
+    this._updateActiveIndex(index, false);
+    this._fireActiveIndexChange(index);
   }
 
-  private _fireActiveIndexChange(activeIndex: number, initiator: string) {
-    this.dispatchEvent(new CustomEvent("active-index-change", { detail: { activeIndex, initiator }, bubbles: true, composed: true }));
+  private _updateActiveIndex = (newActiveIndex: number, shiftTop: boolean) => {
+    const oldActiveIndex = this.activeIndex;
+    this.activeIndex = clamp(0, newActiveIndex, this.itemsCount - 1);
+    if (shiftTop) {
+      const delta = this.activeIndex - oldActiveIndex;
+      this.topmostIndex += delta;
+    }
+    const itemsVisible = this._columnCount * this._itemsPerColumn;
+    this.topmostIndex = clamp(this.activeIndex - itemsVisible + 1, this.topmostIndex, this.activeIndex);
+    this.topmostIndex = clamp(0, this.topmostIndex, this.itemsCount - itemsVisible);
+    if (oldActiveIndex !== this.activeIndex) {
+      this._fireActiveIndexChange(this.activeIndex);
+    }
+  };
+
+  private _fireActiveIndexChange(activeIndex: number) {
+    this.dispatchEvent(new CustomEvent("active-index-change", { detail: { activeIndex }, bubbles: true, composed: true }));
   }
 
   protected render() {
-    const items = Array.from(range(this.topmostIndex, this.topmostIndex + Math.min(this.itemsCount, this._columnCount * this._itemsPerColumn)));
-    const columnItems: (typeof items)[] = [];
-    const slice = (column: number) => items.slice(column * this._itemsPerColumn, (column + 1) * this._itemsPerColumn);
-    for (let i = 0; i < this._columnCount; i++) {
-      columnItems[i] = slice(i);
-    }
-
     return html`
       <div class="columns-scroller" ref=${ref(this._rootRef)} style="display: grid">
-        <frdy-scrollable .fullScrollHeight=${(this.itemsCount - 1) * this.itemHeight} .fullScrollTop=${this._scrollTop} @scroll=${this.onScroll}>
+        <frdy-scrollable .fullScrollHeight=${(this.itemsCount - 1) * this.itemHeight} .fullScrollTop=${this._scrollTop} @scroll=${this._onScroll}>
           <div
             class="columns-scroller-fixed"
             ref=${ref(this._fixedRef)}
             style="display: grid; grid-template-columns: ${`repeat(${this._columnCount}, 1fr)`}; overflow: hidden"
           >
-            ${columnItems.map(
-              (items) => html`<div class="column-border">
+            ${map(
+              range(this._columnCount),
+              (column) => html`<div class="column-border">
                 ${repeat(
-                  items,
+                  range(
+                    Math.min(this.topmostIndex + column * this._itemsPerColumn, this.itemsCount),
+                    Math.min(this.topmostIndex + column * this._itemsPerColumn + this._itemsPerColumn, this.itemsCount)
+                  ),
                   (i) => i,
                   (i) =>
                     html`<div
                       class="item"
                       style="height:${this.itemHeight}px;"
-                      @activate=${(e: CustomEvent) => this.onActivate(e, i)}
+                      @activate=${(e: CustomEvent) => this._onActivate(e, i)}
                       @open=${(e: CustomEvent) => {
                         this.dispatchEvent(new CustomEvent("open", { detail: { index: i } }));
                         e.stopPropagation();
                       }}
                     >
-                      ${this.renderItem?.(i)}
+                      ${this.renderItem?.(i, this.activeIndex === i)}
                     </div>`
                 )}
               </div>`

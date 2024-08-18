@@ -1,27 +1,24 @@
-import { createComponent } from "@lit/react";
-import { LitElement, type PropertyValues, type TemplateResult, css, html } from "lit";
-import { customElement, property, state } from "lit/decorators.js";
-import { range } from "lit/directives/range.js";
-import { when } from "lit/directives/when.js";
-import { type Ref, createRef, ref } from "lit/directives/ref.js";
-import { repeat } from "lit/directives/repeat.js";
-import React from "react";
-import "./ScrollableContainer";
-import clsx from "clsx";
-import "../../../lit-contexts/GlyphSizeProvider";
 import { Dirent, FileSystemProvider, isDir } from "@frdy/sdk";
-import { TabFilesView } from "../../../types";
-import { createList, List } from "../../../utils/immutableList";
+import { ContextProvider } from "@lit/context";
+import { createComponent } from "@lit/react";
+import clsx from "clsx";
+import { LitElement, css, html } from "lit";
+import { customElement, property } from "lit/decorators.js";
+import { when } from "lit/directives/when.js";
+import React from "react";
 import { CursorPosition } from "../../../features/panels";
-import "./CondensedView";
-import { boolean } from "valibot";
-import { createSettingsContext, settingsContext } from "../../../lit-contexts/settingsContext";
-import { createExtensionRepoContext, extensionRepoContext } from "../../../lit-contexts/extensionRepoContext";
+import "../../../lit-contexts/GlyphSizeProvider";
 import { createExtensionsContext, extensionsContext } from "../../../lit-contexts/extensionContext";
+import { createExtensionRepoContext, extensionRepoContext } from "../../../lit-contexts/extensionRepoContext";
+import { fsContext } from "../../../lit-contexts/fsContext";
 import { createIconThemeContext, iconThemeContext } from "../../../lit-contexts/iconThemeContext";
 import { createIconsCache, iconsCacheContext } from "../../../lit-contexts/iconsCacheContext";
-import { ContextProvider } from "@lit/context";
-import { fsContext } from "../../../lit-contexts/fsContext";
+import { createSettingsContext, settingsContext } from "../../../lit-contexts/settingsContext";
+import { TabFilesView } from "../../../types";
+import { List, createList } from "../../../utils/immutableList";
+import "./ScrollableContainer";
+import "./views/CondensedView";
+import "./views/FullView";
 
 const TAG = "frdy-file-panel";
 
@@ -122,9 +119,19 @@ public setFs(fs: FileSystemProvider) {
           <frdy-is-touch-screen-provider>
             <div class="panel-content">
               <div class="panel-columns">
-                ${when(
+              ${when(
                   this.view?.type === "condensed",
                   () => html`<frdy-condensed-view
+                    .cursorStyle=${cursorStyle}
+                    .items=${this.items}
+                    .selectedItemNames=${this.selectedItemNames}
+                    @items-per-column-change=${this._onItemsPerColumnChange}
+                    @active-index-change=${this._onActiveIndexChange}
+                  ></frdy-condensed-view>`
+                )}
+                ${when(
+                  this.view?.type === "full",
+                  () => html`<frdy-full-view
                     .cursorStyle=${cursorStyle}
                     .items=${this.items}
                     .selectedItemNames=${this.selectedItemNames}

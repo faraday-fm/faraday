@@ -12,13 +12,7 @@ import { darkTheme, lightTheme } from "./features/themes/themes";
 import { useMediaQuery } from "./hooks/useMediaQuery";
 import type { FaradayProps } from "./types";
 
-export type {
-  FaradayConfig,
-  FaradayHost,
-  FaradayProps,
-  Terminal,
-  TerminalSession,
-} from "./types";
+export type { FaradayConfig, FaradayHost, FaradayProps, Terminal, TerminalSession } from "./types";
 
 export function Faraday({ host }: FaradayProps) {
   const dark = useMediaQuery("(prefers-color-scheme: dark)");
@@ -34,13 +28,7 @@ export function Faraday({ host }: FaradayProps) {
         <ThemeProvider theme={theme}>
           <FaradayHostProvider host={host}>
             <KeyBindingProvider>
-              <GlyphSizeProvider>
-                <FileIconsProvider>
-                  <App />
-                  {/* <Extensions root=".faraday/extensions" />
-                  <SettingsTracker path=".faraday/settings.json5" /> */}
-                </FileIconsProvider>
-              </GlyphSizeProvider>
+              <App />
             </KeyBindingProvider>
           </FaradayHostProvider>
         </ThemeProvider>

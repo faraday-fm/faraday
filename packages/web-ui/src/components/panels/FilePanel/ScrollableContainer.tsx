@@ -16,7 +16,6 @@ export class ScrollableLit extends LitElement {
     }
   `;
 
-  private scrollPaneRef: Ref<HTMLInputElement> = createRef();
   private containerRef: Ref<HTMLInputElement> = createRef();
 
   @property({ type: Number })
@@ -105,12 +104,6 @@ export class ScrollableLit extends LitElement {
     }
   };
 
-  protected updated(_changedProperties: PropertyValues): void {
-    if (this.scrollPaneRef.value && _changedProperties.has("fullScrollTop")) {
-      this.scrollPaneRef.value.scrollTop = this.fullScrollTop;
-    }
-  }
-
   private updateScrollTop(scrollDelta: number) {
     const currScrollTop = this.fullScrollTop;
     let newScrollTop = currScrollTop + scrollDelta;
@@ -131,12 +124,9 @@ export class ScrollableLit extends LitElement {
   render() {
     return html`
       <div style=${"overflow: hidden; position: relative; touch-action: none;"}>
-        <div ref=${ref(this.scrollPaneRef)} style="position: absolute; inset: 0; overflowY: scroll;">
-          <div style="height: ${this.fullScrollHeight + (this.scrollPaneRef.value?.clientHeight ?? 0)}px"></div>
-        </div>
         <div
           ref=${ref(this.containerRef)}
-          style="position: absolute; inset: 0; pointerEvents: auto"
+          style="position: absolute; inset: 0; pointer-events: auto"
           @wheel=${this.onWheel}
           @pointerdown=${this.onPointerDown}
           @pointermove=${this.onPointerMove}
