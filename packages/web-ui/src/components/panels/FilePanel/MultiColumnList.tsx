@@ -123,11 +123,10 @@ export class MultiColumnList extends LitElement {
   }
 
   private _updateDimentions = () => {
-    const { clientWidth, clientHeight } = this;
+    const { width, height } = this.getBoundingClientRect();
 
-    this._columnCount = this.minColumnWidth != null ? Math.max(1, Math.floor(clientWidth / this.minColumnWidth)) : 1;
-
-    const itemsPerColumn = Math.max(1, Math.floor(clientHeight / this._getItemHeight()));
+    this._columnCount = this.minColumnWidth != null ? Math.max(1, Math.floor(width / this.minColumnWidth)) : 1;
+    const itemsPerColumn = Math.max(1, Math.floor(height / this._getItemHeight()));
 
     if (this._itemsPerColumn !== itemsPerColumn) {
       this._itemsPerColumn = itemsPerColumn;
@@ -178,6 +177,14 @@ export class MultiColumnList extends LitElement {
     this.dispatchEvent(new CustomEvent("active-index-change", { detail: { activeIndex }, bubbles: true, composed: true }));
   }
 
+  private _onPointerDown(e: PointerEvent) {
+    // If user clicks of empty space beneath the last file, activate it.
+    const fullyPopulatedColumnCount = Math.floor((this.itemsCount - this.topmostIndex) / this._itemsPerColumn);
+    if (e.offsetX >= (this.getBoundingClientRect().width * fullyPopulatedColumnCount) / this._columnCount) {
+      this._updateActiveIndex(this.itemsCount - 1, false);
+    }
+  }
+
   protected render() {
     this._updateActiveIndex(this.activeIndex, false);
     return html`
@@ -187,7 +194,7 @@ export class MultiColumnList extends LitElement {
             class="columns-scroller-fixed"
             ref=${ref(this._fixedRef)}
             style="display: flex; flex-direction: column; flex-wrap: wrap; overflow: hidden"
-            @pointerdown=${() => this._updateActiveIndex(this.itemsCount - 1, false)}
+            @pointerdown=${this._onPointerDown}
           >
             ${repeat(
               range(this.topmostIndex, Math.min(this.itemsCount, this.topmostIndex + this._columnCount * this._itemsPerColumn)),
