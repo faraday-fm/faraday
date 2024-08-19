@@ -52,8 +52,9 @@ export class ColumnCell extends LitElement {
     this.isTouchscreen = false;
   }
 
-  private onPointerDown() {
+  private onPointerDown(e: PointerEvent) {
     if (!this.isTouchscreen) {
+      e.stopPropagation();
       this.dispatchEvent(
         new CustomEvent("activate", {
           bubbles: true,

@@ -183,9 +183,14 @@ export class MultiColumnList extends LitElement {
     return html`
       <div class="columns-scroller" ref=${ref(this._rootRef)} style="display: grid">
         <frdy-scrollable .fullScrollHeight=${(this.itemsCount - 1) * this._getItemHeight()} .fullScrollTop=${this._scrollTop} @scroll=${this._onScroll}>
-          <div class="columns-scroller-fixed" ref=${ref(this._fixedRef)} style="display: flex; flex-direction: column; flex-wrap: wrap; overflow: hidden">
+          <div
+            class="columns-scroller-fixed"
+            ref=${ref(this._fixedRef)}
+            style="display: flex; flex-direction: column; flex-wrap: wrap; overflow: hidden"
+            @pointerdown=${() => this._updateActiveIndex(this.itemsCount - 1, false)}
+          >
             ${repeat(
-              range(this.topmostIndex, this.topmostIndex + this._columnCount * this._itemsPerColumn),
+              range(this.topmostIndex, Math.min(this.itemsCount, this.topmostIndex + this._columnCount * this._itemsPerColumn)),
               (i) => i,
               (i) =>
                 html`<div
