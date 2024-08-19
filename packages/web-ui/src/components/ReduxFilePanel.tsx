@@ -1,9 +1,8 @@
-import { css } from "@css";
 import { ContextVariablesProvider, DebugContextVariables, useUpdateGlobalContext } from "@frdy/commands";
 import type { Dirent } from "@frdy/sdk";
 import { isDir, isHidden } from "@frdy/sdk";
 import { memo, useCallback, useEffect, useLayoutEffect, useRef } from "react";
-import { useDirListing, useFs } from "../features/fs/hooks";
+import { useDirListing } from "../features/fs/hooks";
 import { type CursorPosition, usePanelState, usePanels } from "../features/panels";
 import { useSettings } from "../features/settings/settings";
 import type { TabLayout } from "../types";
@@ -11,12 +10,13 @@ import { createList, empty } from "../utils/immutableList";
 import { combine } from "../utils/path";
 import { FilePanel, FilePanelReact } from "./panels/FilePanel/FilePanelLit";
 
-const reduxFilePanelRoot = css`
-  width: 100%;
-  height: 100%;
-  display: grid;
-  position: relative;
-`;
+const reduxFilePanelRoot = 'reduxFilePanelRoot'
+// css`
+//   width: 100%;
+//   height: 100%;
+//   display: grid;
+//   position: relative;
+// `;
 
 interface ReduxFilePanelProps {
   layout: TabLayout & { id: string };

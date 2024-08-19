@@ -1,15 +1,15 @@
-import { css } from "@css";
 import { memo } from "react";
 import { ActionButton } from "./ActionButton";
 import { useKeyCommand } from "@frdy/commands";
 
-const actionsBar = css`display: grid;
-    grid-auto-flow: column;
-    grid-auto-columns: 1fr;
-    overflow: hidden;
-    user-select: none;
-    -moz-user-select: none;
-    -webkit-user-select: none;`;
+const actionsBar = 'actionsBar'
+// css`display: grid;
+//     grid-auto-flow: column;
+//     grid-auto-columns: 1fr;
+//     overflow: hidden;
+//     user-select: none;
+//     -moz-user-select: none;
+//     -webkit-user-select: none;`;
 
 function ActionKey({ fnKey, header }: { fnKey: string; header: string }) {
   const r = useKeyCommand(`F${fnKey}`);

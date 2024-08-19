@@ -3,21 +3,24 @@ import type { NodeLayout, RowLayout } from "../types";
 import { RenderWhen } from "./RenderWhen";
 import { Tab } from "./Tabs/Tab";
 import { Tabs } from "./Tabs/Tabs";
-import { css } from "@css";
 
-const layoutSeparator = css`position: relative;
-    z-index: 1;`;
-const layoutSeparatorThumb = css`position: absolute;
-    left: -2px;
-    right: -2px;
-    top: -2px;
-    bottom: -2px;`;
-const layoutRow = css`width: 100%;
-    display: flex;`;
-const flexPanel = css`display: flex;
-    flex-shrink: 0;
-    flex-basis: 1px;
-    overflow: hidden;`;
+const layoutSeparator = "layoutSeparator";
+// css`position: relative;
+//     z-index: 1;`;
+const layoutSeparatorThumb = "layoutSeparatorThumb";
+// css`position: absolute;
+//     left: -2px;
+//     right: -2px;
+//     top: -2px;
+//     bottom: -2px;`;
+const layoutRow = "layoutRow";
+// css`width: 100%;
+//     display: flex;`;
+const flexPanel = "flexPanel";
+// css`display: flex;
+//     flex-shrink: 0;
+//     flex-basis: 1px;
+//     overflow: hidden;`;
 
 interface LayoutContainerProps<L> {
   layout: L;
@@ -70,7 +73,7 @@ function Separator({
       window.addEventListener("pointermove", handlePointerMove);
       window.addEventListener("pointerup", handlePointerUp, { once: true });
     },
-    [afterItem, beforeItem, direction, items, setLayout, layout, index],
+    [afterItem, beforeItem, direction, items, setLayout, layout, index]
   );
   return (
     <div className={layoutSeparator}>

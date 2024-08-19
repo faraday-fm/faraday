@@ -1,6 +1,6 @@
 import { createComponent } from "@lit/react";
 import { html } from "lit";
-import { customElement } from "lit/decorators.js";
+import { customElement, property } from "lit/decorators.js";
 import React from "react";
 import "../../../../lit-contexts/GlyphSizeProvider";
 import { TabFilesCondensedView } from "../../../../types";
@@ -8,11 +8,20 @@ import "../ColumnCell";
 import "../FileName";
 import "../MultiColumnList";
 import { View } from "./View";
+import { consume } from "@lit/context";
+import { IconsCache, iconsCacheContext } from "../../../../lit-contexts/iconsCacheContext";
+import { isTouchScreenContext } from "../../../../lit-contexts/IsTouchScreenProvider";
 
 const TAG = "frdy-condensed-view";
 
 @customElement(TAG)
 export class CondensedView extends View<TabFilesCondensedView> {
+  @consume({ context: iconsCacheContext })
+  accessor icons!: IconsCache;
+
+  @consume({ context: isTouchScreenContext, subscribe: true })
+  accessor isTouchscreen!: boolean;
+
   protected render() {
     const selectedNames = this.selectedItemNames.toSet();
     return html`
@@ -23,8 +32,9 @@ export class CondensedView extends View<TabFilesCondensedView> {
             <frdy-column-cell
               .selected=${selectedNames.has(this.items.get(i)?.filename ?? "")}
               .cursorStyle=${isActive && this.cursorStyle === "firm" ? "firm" : "hidden"}
+              .isTouchscreen=${this.isTouchscreen}
             >
-              <frdy-filename .dirent=${this.items.get(i)}></frdy-filename>
+              <frdy-filename .dirent=${this.items.get(i)} .icons=${this.icons}></frdy-filename>
             </frdy-column-cell>
           `}
           .itemsCount=${this.items.size()}

@@ -1,10 +1,6 @@
-import { ContextVariablesProvider, KeyBindingProvider } from "@frdy/commands";
+import { ContextVariablesProvider } from "@frdy/commands";
 import { App } from "./components/App";
-import { SettingsTracker } from "./components/SettingsTracker/SettingsTracker";
-import { Extensions } from "./components/extensions/Extensions";
 import { FaradayHostProvider } from "./contexts/faradayHostContext";
-import { FileIconsProvider } from "./contexts/fileIconsContext";
-import { GlyphSizeProvider } from "./contexts/glyphSizeContext";
 import { AppStoreProvider } from "./features/store";
 import { useStyles } from "./features/styles";
 import { ThemeProvider } from "./features/themes";
@@ -27,9 +23,9 @@ export function Faraday({ host }: FaradayProps) {
       <ContextVariablesProvider>
         <ThemeProvider theme={theme}>
           <FaradayHostProvider host={host}>
-            <KeyBindingProvider>
+            {/* <KeyBindingProvider> */}
               <App />
-            </KeyBindingProvider>
+            {/* </KeyBindingProvider> */}
           </FaradayHostProvider>
         </ThemeProvider>
       </ContextVariablesProvider>

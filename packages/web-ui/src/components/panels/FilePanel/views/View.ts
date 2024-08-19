@@ -17,25 +17,25 @@ export abstract class View<T extends TabFilesView> extends LitElement {
   ` as CSSResultGroup;
 
   @property({ attribute: false })
-  view?: T;
+  accessor view: T | undefined;
 
   @property()
-  cursorStyle: CursorStyle;
+  accessor cursorStyle: CursorStyle;
 
   @property({ attribute: false })
-  items: List<Dirent>;
+  accessor items: List<Dirent>;
 
   @property({ attribute: false })
-  selectedItemNames: List<string>;
+  accessor selectedItemNames: List<string>;
 
   @property({ type: Number })
-  topmostIndex: number;
+  accessor topmostIndex: number;
 
   @property({ type: Number })
-  activeIndex: number;
+  accessor activeIndex: number;
 
   @property({ type: Number })
-  columnCount: number;
+  accessor columnCount: number;
 
   constructor() {
     super();

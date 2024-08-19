@@ -4,7 +4,13 @@ import { zipFolderPlugin } from "./scripts/zipFolderPlugin";
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [react(), zipFolderPlugin()],
+  plugins: [
+    // react(),
+    zipFolderPlugin(),
+  ],
+  esbuild: {
+    target: "esnext",
+  },
   build: {
     target: "esnext",
     chunkSizeWarningLimit: 5000,

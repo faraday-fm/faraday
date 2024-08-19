@@ -37,13 +37,13 @@ export class ColumnCell extends LitElement {
   `;
 
   @property({ attribute: true, type: Boolean, reflect: true })
-  selected: boolean;
+  accessor selected: boolean;
 
   @property({ type: String })
-  cursorStyle: CursorStyle;
+  accessor cursorStyle: CursorStyle;
 
-  @consume({ context: isTouchScreenContext, subscribe: true })
-  isTouchscreen: boolean;
+  @property({ type: Boolean })
+  accessor isTouchscreen: boolean;
 
   constructor() {
     super();

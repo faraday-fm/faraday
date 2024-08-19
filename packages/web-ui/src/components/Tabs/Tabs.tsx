@@ -1,4 +1,3 @@
-import { css } from "@css";
 import { useCommandBinding } from "@frdy/commands";
 import clsx from "clsx";
 import { useEffect, useRef } from "react";
@@ -6,27 +5,30 @@ import { useFocused } from "../../hooks/useFocused";
 import type { TabSetLayout } from "../../types";
 import { Tab } from "./Tab";
 
-const tabName = css`cursor: pointer;
-    padding-left: 1ch;
-    &:hover {
-      color: var(--panel-header-foreground-focus);
-      background-color: var(--panel-header-background-focus);
-    }
-    &.-active {
-      color: var(--panel-header-foreground-focus);
-      background-color: var(--panel-header-background-focus);
-    }`;
-const tabs =css`box-sizing: border-box;
-    overflow: hidden;
-    width: 100%;
-    height: 100%;
-    border: 1px solid var(--panel-border);
-    display: grid;
-    grid-template-rows: auto 1fr;`;
-const tabsHeader = css`display: flex;
-    color: var(--panel-header-foreground);
-    background-color: var(--panel-header-background);
-    overflow: hidden;`;
+const tabName = "tabName";
+// css`cursor: pointer;
+//     padding-left: 1ch;
+//     &:hover {
+//       color: var(--panel-header-foreground-focus);
+//       background-color: var(--panel-header-background-focus);
+//     }
+//     &.-active {
+//       color: var(--panel-header-foreground-focus);
+//       background-color: var(--panel-header-background-focus);
+//     }`;
+const tabs = "tabs";
+// css`box-sizing: border-box;
+//     overflow: hidden;
+//     width: 100%;
+//     height: 100%;
+//     border: 1px solid var(--panel-border);
+//     display: grid;
+//     grid-template-rows: auto 1fr;`;
+const tabsHeader = "tabsHeader";
+// css`display: flex;
+//     color: var(--panel-header-foreground);
+//     background-color: var(--panel-header-background);
+//     overflow: hidden;`;
 
 export type TabsProps = {
   layout: TabSetLayout;

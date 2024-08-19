@@ -1,5 +1,5 @@
 import { useLayoutEffect, useState } from "react";
-import frdyStyles from "../../assets/styles.css";
+// import frdyStyles from "../../assets/index.css";
 import type { Theme } from "../../features/themes";
 
 export function useStyles(theme: Theme): boolean {
@@ -29,9 +29,9 @@ export function useStyles(theme: Theme): boolean {
       .concat([["fontFamily", theme.fontFamily]])
       .map(([key, val]) => `--${key.replaceAll(/[.:]/g, "-")}:${val};`)
       .join("\n");
-    const frdyColors = `.frdy{${colorVariables}}`;
+    const frdyColors = `body{${colorVariables}}`;
     colorsEl.innerHTML = frdyColors;
-    stylesEl.innerHTML = frdyStyles;
+    // stylesEl.innerHTML = frdyStyles;
   }, [colorsEl, stylesEl, theme]);
 
   return !!colorsEl && !!stylesEl;

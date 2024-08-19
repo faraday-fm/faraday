@@ -1,9 +1,10 @@
+import { command, context } from "@frdy/commands";
 import { Dirent, isDir } from "@frdy/sdk";
 import { createComponent } from "@lit/react";
 import clsx from "clsx";
-import { LitElement, css, html } from "lit";
+import { LitElement, PropertyValues, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
-import { when } from "lit/directives/when.js";
+import { choose } from "lit/directives/choose.js";
 import React from "react";
 import { CursorPosition } from "../../../features/panels";
 import "../../../lit-contexts/GlyphSizeProvider";
@@ -50,22 +51,41 @@ export class FilePanel extends LitElement {
   `;
 
   @property({ attribute: false })
-  items: List<Dirent>;
+  accessor items: List<Dirent>;
 
   @property({ attribute: false })
-  selectedItemNames: List<string>;
+  accessor selectedItemNames: List<string>;
 
   @property({ attribute: false })
-  view?: TabFilesView;
+  accessor view: TabFilesView | undefined;
 
   @property({ attribute: false })
-  fileCursor?: CursorPosition;
+  accessor fileCursor: CursorPosition | undefined;
 
   @property({ type: Boolean })
-  showCursorWhenBlurred: boolean;
+  accessor showCursorWhenBlurred: boolean;
 
   @property()
-  path?: string;
+  @context({ name: "filePanel.path", whenFocusWithin: true })
+  accessor path: string | undefined;
+
+  @context({ name: "filePanel.focus", whenFocusWithin: true })
+  accessor isFilePanelFocus = true;
+
+  @context({ name: "filePanel.firstItem", whenFocusWithin: true })
+  accessor isFirstItem = false; // cursor.activeIndex === 0
+
+  @context({ name: "filePanel.lastItem", whenFocusWithin: true })
+  accessor isLastItem = false; // cursor.activeIndex === items.size() - 1
+
+  @context({ name: "filePanel.activeItem", whenFocusWithin: true })
+  accessor activeItem = ""; // cursor.activeName
+
+  @context({ name: "filePanel.totalItemsCount", whenFocusWithin: true })
+  accessor totalItemsCount = 0; // items.size()
+
+  @context({ name: "filePanel.selectedItemsCount", whenFocusWithin: true })
+  accessor selectedItemsCount = 0; // selectedItemNames.size()
 
   constructor() {
     super();
@@ -79,8 +99,15 @@ export class FilePanel extends LitElement {
   };
 
   private _onActiveIndexChange = (e: CustomEvent) => {
-    // console.error("_onActiveIndexChange", e.detail);
+    this.isFirstItem = e.detail.activeIndex === 0;
+    this.isLastItem = e.detail.activeIndex === this.items.size() - 1;
   };
+
+  protected updated(_changedProperties: PropertyValues): void {
+    if (_changedProperties.has("items")) {
+      this.totalItemsCount = this.items.size();
+    }
+  }
 
   protected render() {
     const bytesCount = this.items.reduce((acc, item) => acc + ((!isDir(item) ? item.attrs.size : 0) ?? 0), 0);
@@ -93,30 +120,32 @@ export class FilePanel extends LitElement {
           <frdy-is-touch-screen-provider>
             <div class="panel-content">
               <div class="panel-columns">
-                ${when(
-                  this.view?.type === "condensed",
-                  () => html`<frdy-condensed-view
-                    tabIndex="0"
-                    .view=${this.view as any /* TODO: think how to get rid of any */}
-                    .cursorStyle=${cursorStyle}
-                    .items=${this.items}
-                    .selectedItemNames=${this.selectedItemNames}
-                    @items-per-column-change=${this._onItemsPerColumnChange}
-                    @active-index-change=${this._onActiveIndexChange}
-                  ></frdy-condensed-view>`
-                )}
-                ${when(
-                  this.view?.type === "full",
-                  () => html`<frdy-full-view
-                    tabIndex="0"
-                    .view=${this.view as any /* TODO: think how to get rid of any */}
-                    .cursorStyle=${cursorStyle}
-                    .items=${this.items}
-                    .selectedItemNames=${this.selectedItemNames}
-                    @items-per-column-change=${this._onItemsPerColumnChange}
-                    @active-index-change=${this._onActiveIndexChange}
-                  ></frdy-full-view>`
-                )}
+                ${choose(this.view?.type, [
+                  [
+                    "condensed",
+                    () => html`<frdy-condensed-view
+                      tabIndex="0"
+                      .view=${this.view as any /* TODO: think how to get rid of any */}
+                      .cursorStyle=${cursorStyle}
+                      .items=${this.items}
+                      .selectedItemNames=${this.selectedItemNames}
+                      @items-per-column-change=${this._onItemsPerColumnChange}
+                      @active-index-change=${this._onActiveIndexChange}
+                    ></frdy-condensed-view>`,
+                  ],
+                  [
+                    "full",
+                    () => html`<frdy-condensed-view
+                      tabIndex="0"
+                      .view=${this.view as any /* TODO: think how to get rid of any */}
+                      .cursorStyle=${cursorStyle}
+                      .items=${this.items}
+                      .selectedItemNames=${this.selectedItemNames}
+                      @items-per-column-change=${this._onItemsPerColumnChange}
+                      @active-index-change=${this._onActiveIndexChange}
+                    ></frdy-condensed-view>`,
+                  ],
+                ])}
               </div>
               <div class="file-info-panel"></div>
               <div class="panel-footer">${`${bytesCount.toLocaleString()} bytes in ${filesCount.toLocaleString()} files`}</div>

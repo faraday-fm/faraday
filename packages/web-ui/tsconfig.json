@@ -3,6 +3,6 @@
   "compilerOptions": {
     "outDir": "dist"
   },
-  "include": ["src", "scripts", "rollup.config.mjs", "../sdk/src/FileSystemError.ts", "../sdk/src/utils/utils.ts"],
+  "include": ["src", "scripts", "rollup.config.mjs"],
   "exclude": ["node_modules", "dist"]
 }

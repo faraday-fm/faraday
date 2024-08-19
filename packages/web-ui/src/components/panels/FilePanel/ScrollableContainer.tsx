@@ -1,6 +1,6 @@
 import { consume } from "@lit/context";
 import { createComponent } from "@lit/react";
-import { LitElement, type PropertyValues, css, html } from "lit";
+import { LitElement, css, html } from "lit";
 import { customElement, eventOptions, property } from "lit/decorators.js";
 import { type Ref, createRef, ref } from "lit/directives/ref.js";
 import React from "react";
@@ -19,20 +19,20 @@ export class ScrollableLit extends LitElement {
   private containerRef: Ref<HTMLInputElement> = createRef();
 
   @property({ type: Number })
-  fullScrollHeight: number;
+  accessor fullScrollHeight: number;
 
   @property({ type: Number })
-  fullScrollTop: number;
+  accessor fullScrollTop: number;
 
   @property({ type: Number })
-  velocityFactor: number;
+  accessor velocityFactor: number;
 
   @property({ type: Number })
-  frictionFactor: number;
+  accessor frictionFactor: number;
 
   @property({ type: Boolean })
   @consume({ context: isTouchScreenContext, subscribe: true })
-  isTouchscreen: boolean;
+  accessor isTouchscreen: boolean;
 
   constructor() {
     super();

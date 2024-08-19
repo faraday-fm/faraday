@@ -1,4 +1,3 @@
-import equal from "fast-deep-equal";
 import { produce } from "immer";
 import { atom, useAtom } from "jotai";
 import { useCallback, useMemo } from "react";

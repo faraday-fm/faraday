@@ -10,6 +10,7 @@ import "./ScrollableContainer";
 import { clamp } from "../../../utils/number";
 import { consume } from "@lit/context";
 import { glyphSizeContext } from "../../../lit-contexts/GlyphSizeProvider";
+import { command } from "@frdy/commands";
 
 const TAG = "frdy-multicolumn-list";
 
@@ -43,26 +44,38 @@ export class MultiColumnList extends LitElement {
     }
   `;
 
-  @property({ type: Number })
-  topmostIndex: number;
+  @property({ type: Number, attribute: false })
+  accessor topmostIndex = 0;
+
+  @property({ type: Number, attribute: false })
+  accessor activeIndex: number;
 
   @property({ type: Number })
-  activeIndex: number;
+  accessor minColumnWidth: number | undefined;
 
   @property({ type: Number })
-  minColumnWidth?: number;
+  accessor itemsCount: number;
 
   @property({ type: Number })
-  itemsCount: number;
-
-  @property({ type: Number })
-  lineHeight: number;
+  accessor lineHeight: number;
 
   @property({ attribute: false })
-  renderItem?: (index: number, isActive: boolean) => TemplateResult<1>;
+  accessor renderItem: ((index: number, isActive: boolean) => TemplateResult<1>) | undefined;
 
   @consume({ context: glyphSizeContext, subscribe: true })
-  glyph?: { w: number; h: number };
+  accessor glyph!: { w: number; h: number };
+
+  @command()
+  cursorLeft() {
+    const shiftTop = this.activeIndex < this.topmostIndex + this._itemsPerColumn;
+    this._updateActiveIndex(this.activeIndex - this._itemsPerColumn, shiftTop);
+  }
+
+  @command()
+  cursorRight() {
+    const shiftTop = this.activeIndex >= this.topmostIndex + this._itemsPerColumn * (this._columnCount - 1);
+    this._updateActiveIndex(this.activeIndex + this._itemsPerColumn, shiftTop);
+  }
 
   private _rootRef: Ref<HTMLInputElement> = createRef();
   private _fixedRef: Ref<HTMLInputElement> = createRef();
@@ -70,7 +83,6 @@ export class MultiColumnList extends LitElement {
 
   constructor() {
     super();
-    this.topmostIndex = 0;
     this.activeIndex = 0;
     this.itemsCount = 0;
     this.lineHeight = 1;
@@ -78,13 +90,13 @@ export class MultiColumnList extends LitElement {
   }
 
   @state()
-  private _scrollTop = 0;
+  private accessor _scrollTop = 0;
 
   @state()
-  private _itemsPerColumn = 10;
+  private accessor _itemsPerColumn = 10;
 
   @state()
-  private _columnCount = 1;
+  private accessor _columnCount = 1;
 
   connectedCallback() {
     super.connectedCallback();
@@ -167,14 +179,36 @@ export class MultiColumnList extends LitElement {
   }
 
   protected render() {
+    this._updateActiveIndex(this.activeIndex, false);
     return html`
       <div class="columns-scroller" ref=${ref(this._rootRef)} style="display: grid">
         <frdy-scrollable .fullScrollHeight=${(this.itemsCount - 1) * this._getItemHeight()} .fullScrollTop=${this._scrollTop} @scroll=${this._onScroll}>
-          <div
-            class="columns-scroller-fixed"
-            ref=${ref(this._fixedRef)}
-            style="display: grid; grid-template-columns: ${`repeat(${this._columnCount}, 1fr)`}; overflow: hidden"
-          >
+          <div class="columns-scroller-fixed" ref=${ref(this._fixedRef)} style="display: flex; flex-direction: column; flex-wrap: wrap; overflow: hidden">
+            ${repeat(
+              range(this.topmostIndex, this.topmostIndex + this._columnCount * this._itemsPerColumn),
+              (i) => i,
+              (i) =>
+                html`<div
+                  class="item"
+                  style="width:${100 / this._columnCount}%;height:${this._getItemHeight()}px;overflow:hidden"
+                  @activate=${(e: CustomEvent) => this._onActivate(e, i)}
+                  @open=${(e: CustomEvent) => {
+                    this.dispatchEvent(new CustomEvent("open", { detail: { index: i } }));
+                    e.stopPropagation();
+                  }}
+                >
+                  ${this.renderItem?.(i, this.activeIndex === i)}
+                </div>`
+            )}
+          </div>
+        </frdy-scrollable>
+      </div>
+    `;
+  }
+}
+
+/*
+
             ${map(
               range(this._columnCount),
               (column) => html`<div class="column-border">
@@ -199,12 +233,8 @@ export class MultiColumnList extends LitElement {
                 )}
               </div>`
             )}
-          </div>
-        </frdy-scrollable>
-      </div>
-    `;
-  }
-}
+
+*/
 
 declare global {
   interface HTMLElementTagNameMap {

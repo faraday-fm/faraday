@@ -6,8 +6,8 @@
   "module": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "dev": "rollup -c -w",
-    "build": "rollup -c"
+    "dev": "tsc --watch",
+    "build": "tsc"
   },
   "keywords": [],
   "author": "Mikhail Isupov",
@@ -21,12 +21,6 @@
     "eventemitter3": "^5.0.1"
   },
   "devDependencies": {
-    "@frdy/typescript-config": "workspace:*",
-    "@rollup/plugin-node-resolve": "^15.2.3",
-    "@rollup/plugin-terser": "^0.4.4",
-    "@rollup/pluginutils": "^5.1.0",
-    "rollup": "^4.20.0",
-    "rollup-plugin-typescript2": "^0.36.0",
-    "tsup": "~8.2.4"
+    "@frdy/typescript-config": "workspace:*"
   }
 }

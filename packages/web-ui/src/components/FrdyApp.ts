@@ -10,6 +10,7 @@ import { createExtensionsContext, extensionsContext } from "../lit-contexts/exte
 import { createIconThemeContext, iconThemeContext } from "../lit-contexts/iconThemeContext";
 import { createIconsCache, iconsCacheContext } from "../lit-contexts/iconsCacheContext";
 import { FileSystemProvider } from "@frdy/sdk";
+import { command, context, ContextVariablesProviderLit, CommandRegistry, KeyBindingsController } from "@frdy/commands";
 
 const TAG = "frdy-app";
 
@@ -20,13 +21,16 @@ export class FrdyApp extends LitElement {
       display: contents;
     }
   `;
-  
+
   private _fsProvider = new ContextProvider(this, { context: fsContext });
   private _settingsProvider = new ContextProvider(this, { context: settingsContext });
   private _extensionRepoProvider = new ContextProvider(this, { context: extensionRepoContext });
   private _extensionsProvider = new ContextProvider(this, { context: extensionsContext });
   private _iconThemeProvider = new ContextProvider(this, { context: iconThemeContext });
   private _iconsCacheProvider = new ContextProvider(this, { context: iconsCacheContext });
+  private CVP = new ContextVariablesProviderLit(this);
+  private CMD = new CommandRegistry(this);
+  private KBD = new KeyBindingsController(this);
 
   public setFs(fs: FileSystemProvider) {
     if (!this._fsProvider.value) {
@@ -37,6 +41,58 @@ export class FrdyApp extends LitElement {
       this._iconThemeProvider.setValue(createIconThemeContext(fs, this._settingsProvider.value, this._extensionsProvider.value));
       this._iconsCacheProvider.setValue(createIconsCache(fs, this._iconThemeProvider.value));
     }
+  }
+
+  @context({ name: "isDesktop" })
+  accessor isDesktop = false;
+
+  @context({ name: "devMode" })
+  accessor devMode = false;
+
+  @command()
+  togglePanels() {
+    // setPanelsOpen((p) => !p)
+  }
+
+  @command()
+  focusNextPanel() {
+    // focusNextPanel(false)
+  }
+
+  @command()
+  focusPrevPanel() {
+    // focusNextPanel(true)
+  }
+
+  @command()
+  open() {
+    // enterDir()
+  }
+
+  @command()
+  openShell() {
+    // setCopyDialogOpen(true)
+  }
+
+  @command()
+  copyFiles() {
+    // setCopyDialogOpen(true)
+  }
+
+  @command()
+  deleteFiles() {
+    // setDeleteDialogOpen(true)
+  }
+
+  @command()
+  switchDevMode() {
+    console.error("SWITCH");
+    this.devMode = !this.devMode;
+  }
+
+  @command()
+  switchShowHiddenFiles() {
+    // setShowHiddenFiles((d) => !d)
   }
 
   protected render() {

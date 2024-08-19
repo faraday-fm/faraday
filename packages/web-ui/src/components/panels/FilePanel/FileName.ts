@@ -4,6 +4,8 @@ import { LitElement, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import React from "react";
 import "./FileIcon";
+import { consume } from "@lit/context";
+import { IconsCache, iconsCacheContext } from "../../../lit-contexts/iconsCacheContext";
 
 @customElement("frdy-filename")
 export class FileName extends LitElement {
@@ -28,13 +30,16 @@ export class FileName extends LitElement {
   `;
 
   @property({ attribute: false })
-  dirent?: Dirent;
+  accessor dirent: Dirent | undefined;
+
+  @property({ attribute: false })
+  accessor icons!: IconsCache;
 
   protected render() {
     if (!this.dirent) return null;
     return html`
       <div style="display: flex; align-items: center; ${isHidden(this.dirent) && "opacity: 0.5"};">
-        <frdy-fileicon .filepath=${this.dirent.path} .isDir=${isDir(this.dirent)}></frdy-fileicon>
+        <frdy-fileicon .filepath=${this.dirent.path} .isDir=${isDir(this.dirent)} .icons=${this.icons}></frdy-fileicon>
         <span class="line-item">
           <span class="file-name"> ${this.dirent.filename} </span>
         </span>

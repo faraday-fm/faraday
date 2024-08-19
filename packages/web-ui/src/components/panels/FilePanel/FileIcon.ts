@@ -30,16 +30,16 @@ export class FileIcon extends LitElement {
   `;
 
   @property()
-  filepath?: string;
+  accessor filepath: string | undefined;
 
   @property({ type: Boolean })
-  isDir: boolean;
+  accessor isDir: boolean;
 
   @property({ type: Boolean })
-  isOpen: boolean;
+  accessor isOpen: boolean;
 
   @property({ type: Number })
-  size: number;
+  accessor size: number;
 
   constructor() {
     super();
@@ -48,9 +48,8 @@ export class FileIcon extends LitElement {
     this.isOpen = false;
   }
 
-  @consume({ context: iconsCacheContext })
   @property({ attribute: false })
-  icons?: IconsCache;
+  accessor icons!: IconsCache;
 
   private _task = new Task(this, {
     task: async ([filepath, isDir, isOpen]) => {

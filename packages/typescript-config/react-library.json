@@ -3,12 +3,12 @@
   "display": "React Library",
   "extends": "./base.json",
   "compilerOptions": {
-    "lib": ["ESNext", "DOM", "DOM.Iterable"],
-    "module": "ESNext",
-    "target": "ESNext",
+    "lib": ["ESNext", "Decorators", "DOM", "DOM.Iterable"],
+    "module": "Preserve",
+    "target": "ES2022",
     "moduleResolution": "Bundler",
     "jsx": "react-jsx",
-    "experimentalDecorators": true,
+    // "experimentalDecorators": true,
     "useDefineForClassFields": false,
   }
 }
