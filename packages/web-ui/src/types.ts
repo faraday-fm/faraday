@@ -5,7 +5,6 @@ export type NodeLayout = RowLayout | TabLayout | TabSetLayout;
 export type RowLayout = {
   type: "row";
   id: string;
-  when?: string;
   flex?: number;
   children: (TabSetLayout | RowLayout)[];
 };
@@ -13,7 +12,6 @@ export type RowLayout = {
 export type TabLayout = {
   type: "tab";
   id: string;
-  when?: string;
   flex?: number;
   name: string;
   path: string;
@@ -24,7 +22,6 @@ export type TabSetLayout = {
   type: "tab-set";
   id: string;
   activeTabId?: string;
-  when?: string;
   flex?: number;
   children: TabLayout[];
 };

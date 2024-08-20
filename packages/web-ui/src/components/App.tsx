@@ -1,4 +1,3 @@
-import { useCommandBinding, useSetContextVariable } from "@frdy/commands";
 import JSON5 from "json5";
 import { useEffect, useRef, useState } from "react";
 import defaultLayout from "../assets/layout.json";
@@ -107,18 +106,18 @@ export function App() {
     }
   }, [layoutContent, layoutLoadingError, setLayout]);
 
-  useSetContextVariable("isDesktop", true, host.config.isDesktop());
-  useSetContextVariable("devMode", true, devMode);
+  // useSetContextVariable("isDesktop", true, host.config.isDesktop());
+  // useSetContextVariable("devMode", true, devMode);
 
-  useCommandBinding("togglePanels", () => setPanelsOpen((p) => !p));
-  useCommandBinding("focusNextPanel", () => focusNextPanel(false));
-  useCommandBinding("focusPrevPanel", () => focusNextPanel(true));
-  useCommandBinding("open", () => enterDir());
-  useCommandBinding("openShell", () => setCopyDialogOpen(true));
-  useCommandBinding("copyFiles", () => setCopyDialogOpen(true));
-  useCommandBinding("deleteFiles", () => setDeleteDialogOpen(true));
-  useCommandBinding("switchDevMode", () => setDevMode((d) => !d));
-  useCommandBinding("switchShowHiddenFiles", () => setShowHiddenFiles((d) => !d));
+  // useCommandBinding("togglePanels", () => setPanelsOpen((p) => !p));
+  // useCommandBinding("focusNextPanel", () => focusNextPanel(false));
+  // useCommandBinding("focusPrevPanel", () => focusNextPanel(true));
+  // useCommandBinding("open", () => enterDir());
+  // useCommandBinding("openShell", () => setCopyDialogOpen(true));
+  // useCommandBinding("copyFiles", () => setCopyDialogOpen(true));
+  // useCommandBinding("deleteFiles", () => setDeleteDialogOpen(true));
+  // useCommandBinding("switchDevMode", () => setDevMode((d) => !d));
+  // useCommandBinding("switchShowHiddenFiles", () => setShowHiddenFiles((d) => !d));
 
   // const leftItems = useMemo(() => Array.from(Array(300).keys()).map((i) => ({ name: i.toString(), size: Math.round(Math.random() * 100000000) })), []);
   const { height: glyphHeight } = useGlyphSize();

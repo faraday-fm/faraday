@@ -1,18 +1,23 @@
-import { createComponent } from "@lit/react";
+import { command } from "@frdy/commands";
+import { consume } from "@lit/context";
+import { EventName, createComponent } from "@lit/react";
 import { LitElement, type PropertyValues, type TemplateResult, css, html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { range } from "lit/directives/range.js";
-import { map } from "lit/directives/map.js";
 import { type Ref, createRef, ref } from "lit/directives/ref.js";
 import { repeat } from "lit/directives/repeat.js";
 import React from "react";
-import "./ScrollableContainer";
-import { clamp } from "../../../utils/number";
-import { consume } from "@lit/context";
 import { glyphSizeContext } from "../../../lit-contexts/GlyphSizeProvider";
-import { command } from "@frdy/commands";
+import { clamp } from "../../../utils/number";
+import "./ScrollableContainer";
 
 const TAG = "frdy-multicolumn-list";
+
+export class MeasureChangeEvent extends Event {
+  constructor(public readonly columnCount: number, public readonly itemsPerColumn: number) {
+    super("measure-change", { bubbles: true, composed: true });
+  }
+}
 
 @customElement(TAG)
 export class MultiColumnList extends LitElement {
@@ -62,19 +67,52 @@ export class MultiColumnList extends LitElement {
   @property({ attribute: false })
   accessor renderItem: ((index: number, isActive: boolean) => TemplateResult<1>) | undefined;
 
+  @property({ type: Boolean })
+  accessor far = false;
+
   @consume({ context: glyphSizeContext, subscribe: true })
   accessor glyph!: { w: number; h: number };
 
   @command()
   cursorLeft() {
-    const shiftTop = this.activeIndex < this.topmostIndex + this._itemsPerColumn;
+    const shiftTop = this.far && this.activeIndex < this.topmostIndex + this._itemsPerColumn;
     this._updateActiveIndex(this.activeIndex - this._itemsPerColumn, shiftTop);
   }
 
   @command()
   cursorRight() {
-    const shiftTop = this.activeIndex >= this.topmostIndex + this._itemsPerColumn * (this._columnCount - 1);
+    const shiftTop = this.far && this.activeIndex >= this.topmostIndex + this._itemsPerColumn * (this._columnCount - 1);
     this._updateActiveIndex(this.activeIndex + this._itemsPerColumn, shiftTop);
+  }
+
+  @command()
+  cursorUp() {
+    this._updateActiveIndex(this.activeIndex - 1, false);
+  }
+
+  @command()
+  cursorDown() {
+    this._updateActiveIndex(this.activeIndex + 1, false);
+  }
+
+  @command()
+  cursorPageUp() {
+    this._updateActiveIndex(this.activeIndex - this._itemsPerColumn * this._columnCount + 1, this.far);
+  }
+
+  @command()
+  cursorPageDown() {
+    this._updateActiveIndex(this.activeIndex + this._itemsPerColumn * this._columnCount - 1, this.far);
+  }
+
+  @command()
+  cursorStart() {
+    this._updateActiveIndex(0, false);
+  }
+
+  @command()
+  cursorEnd() {
+    this._updateActiveIndex(this.itemsCount - 1, false);
   }
 
   private _rootRef: Ref<HTMLInputElement> = createRef();
@@ -124,21 +162,14 @@ export class MultiColumnList extends LitElement {
 
   private _updateDimentions = () => {
     const { width, height } = this.getBoundingClientRect();
-
-    this._columnCount = this.minColumnWidth != null ? Math.max(1, Math.floor(width / this.minColumnWidth)) : 1;
+    const oldColumnCount = this._columnCount;
+    const columnCount = this.minColumnWidth != null ? Math.max(1, Math.floor(width / this.minColumnWidth)) : 1;
     const itemsPerColumn = Math.max(1, Math.floor(height / this._getItemHeight()));
 
-    if (this._itemsPerColumn !== itemsPerColumn) {
+    if (this._itemsPerColumn !== itemsPerColumn || oldColumnCount) {
+      this._columnCount = columnCount;
       this._itemsPerColumn = itemsPerColumn;
-      this.dispatchEvent(
-        new CustomEvent("items-per-column-change", {
-          detail: {
-            itemsPerColumn,
-          },
-          bubbles: true,
-          composed: true,
-        })
-      );
+      this.dispatchEvent(new MeasureChangeEvent(columnCount, itemsPerColumn));
     }
     this._updateActiveIndex(this.activeIndex, false);
   };
@@ -148,7 +179,7 @@ export class MultiColumnList extends LitElement {
     this._scrollTop = scrollTop;
     const newActiveIndex = Math.round(scrollTop / this._getItemHeight());
     if (newActiveIndex !== this.activeIndex) {
-      this._updateActiveIndex(newActiveIndex, true);
+      this._updateActiveIndex(newActiveIndex, this.far);
     }
   }
 
@@ -259,7 +290,7 @@ export const MultiColumnListReact = createComponent({
   elementClass: MultiColumnList,
   react: React,
   events: {
-    onActiveIndexChange: "active-index-change",
-    onItemsPerColumnChange: "items-per-column-change",
+    onActiveIndexChange: "active-index-change" as EventName<CustomEvent<{ activeIndex: number }>>,
+    onMeasureChange: "measure-change" as EventName<MeasureChangeEvent>,
   },
 });

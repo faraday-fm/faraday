@@ -1,4 +1,3 @@
-import { ContextVariablesProvider } from "@frdy/commands";
 import { App } from "./components/App";
 import { FaradayHostProvider } from "./contexts/faradayHostContext";
 import { AppStoreProvider } from "./features/store";
@@ -20,15 +19,11 @@ export function Faraday({ host }: FaradayProps) {
 
   return (
     <AppStoreProvider>
-      <ContextVariablesProvider>
-        <ThemeProvider theme={theme}>
-          <FaradayHostProvider host={host}>
-            {/* <KeyBindingProvider> */}
-              <App />
-            {/* </KeyBindingProvider> */}
-          </FaradayHostProvider>
-        </ThemeProvider>
-      </ContextVariablesProvider>
+      <ThemeProvider theme={theme}>
+        <FaradayHostProvider host={host}>
+          <App />
+        </FaradayHostProvider>
+      </ThemeProvider>
     </AppStoreProvider>
   );
 }

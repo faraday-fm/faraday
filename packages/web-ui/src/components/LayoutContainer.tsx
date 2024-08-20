@@ -1,6 +1,5 @@
-import { type MutableRefObject, type ReactNode, useCallback, useRef } from "react";
+import { type MutableRefObject, useCallback, useRef } from "react";
 import type { NodeLayout, RowLayout } from "../types";
-import { RenderWhen } from "./RenderWhen";
 import { Tab } from "./Tabs/Tab";
 import { Tabs } from "./Tabs/Tabs";
 
@@ -95,7 +94,7 @@ function RowContainer({ layout, direction, setLayout }: LayoutContainerProps<Row
   return (
     <div className={layoutRow} style={{ flexDirection: direction === "h" ? "row" : "column" }}>
       {layout.children.map((l, idx) => (
-        <RenderWhen key={l.id} expression={l.when ?? "true"}>
+        <div key={l.id} style={{display: "contents"}}>
           {idx > 0 && <Separator layout={layout} setLayout={setLayout} direction={direction} items={items} index={idx - 1} />}
           <div ref={items[idx]} className={flexPanel} style={{ flexGrow: l.flex ?? 1 }}>
             <LayoutContainer
@@ -104,21 +103,20 @@ function RowContainer({ layout, direction, setLayout }: LayoutContainerProps<Row
               setLayout={(t: any) => setLayout({ ...layout, children: layout.children.toSpliced(idx, 1, t) })}
             />
           </div>
-        </RenderWhen>
+        </div>
       ))}
     </div>
   );
 }
 
 export function LayoutContainer({ layout, setLayout, direction }: LayoutContainerProps<NodeLayout>) {
-  const withWhenClause = (child: ReactNode) => (layout.when ? <RenderWhen expression={layout.when}>{child}</RenderWhen> : child);
   switch (layout.type) {
     case "row":
-      return withWhenClause(<RowContainer layout={layout} direction={direction} setLayout={setLayout} />);
+      return <RowContainer layout={layout} direction={direction} setLayout={setLayout} />;
     case "tab-set":
-      return withWhenClause(<Tabs layout={layout} setLayout={setLayout} />);
+      return <Tabs layout={layout} setLayout={setLayout} />;
     case "tab":
-      return withWhenClause(<Tab layout={layout} />);
+      return <Tab layout={layout} />;
     default:
       return null;
   }

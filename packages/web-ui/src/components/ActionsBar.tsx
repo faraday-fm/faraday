@@ -1,6 +1,5 @@
 import { memo } from "react";
 import { ActionButton } from "./ActionButton";
-import { useKeyCommand } from "@frdy/commands";
 
 const actionsBar = 'actionsBar'
 // css`display: grid;
@@ -12,8 +11,8 @@ const actionsBar = 'actionsBar'
 //     -webkit-user-select: none;`;
 
 function ActionKey({ fnKey, header }: { fnKey: string; header: string }) {
-  const r = useKeyCommand(`F${fnKey}`);
-  return <ActionButton fnKey={fnKey} header={r} />;
+  // const r = useKeyCommand(`F${fnKey}`);
+  return <ActionButton fnKey={fnKey} header={fnKey} />;
 }
 
 export const ActionsBar = memo(function ActionsBar() {

@@ -3,7 +3,7 @@ import { SetContextVariableEvent, UnsetContextVariableEvent } from "./events";
 import { ContextOptions } from "./types";
 
 export function context<T = any>(options?: ContextOptions) {
-  return function (target: ClassAccessorDecoratorTarget<ReactiveElement, T>, context: ClassAccessorDecoratorContext<ReactiveElement, T>) {
+  return (target: ClassAccessorDecoratorTarget<ReactiveElement, T>, context: ClassAccessorDecoratorContext<ReactiveElement, T>) => {
     const propertyName = String(context.name);
     let controller: ContextVariablesController<ReactiveElement> | undefined;
     context.addInitializer(function () {
@@ -30,48 +30,55 @@ export function context<T = any>(options?: ContextOptions) {
 }
 
 class ContextVariablesController<HostElement extends ReactiveControllerHost & HTMLElement> implements ReactiveController {
-  private isInsideFocus = false;
+  #isInsideFocus = false;
+  #host: HostElement;
+  #get: () => any;
+  #options: Required<ContextOptions>
 
-  constructor(private host: HostElement, private get: () => any, private options: Required<ContextOptions>) {
-    this.host.addController(this);
+  constructor(host: HostElement, get: () => any, options: Required<ContextOptions>) {
+    this.#host = host;
+    this.#get = get;
+    this.#options = options;
+    this.#host.addController(this);
   }
 
   hostConnected(): void {
-    this.isInsideFocus = document.hasFocus() && isFocusWithin(this.host, document.activeElement);
-    if (this.options.whenFocusWithin) {
-      this.host.addEventListener("focusin", this.onFocusIn, true);
-      this.host.addEventListener("focusout", this.onFocusOut, true);
+    this.#isInsideFocus = document.hasFocus() && isFocusWithin(this.#host, document.activeElement);
+    if (this.#options.whenFocusWithin) {
+      this.#host.addEventListener("focusin", this.#onFocusIn, true);
+      this.#host.addEventListener("focusout", this.#onFocusOut, true);
     }
-    if (!this.options.whenFocusWithin || this.isInsideFocus) {
-      this.host.dispatchEvent(new SetContextVariableEvent(this.host, this.options.name, this.get.call(this.host)));
+    if (!this.#options.whenFocusWithin || this.#isInsideFocus) {
+      this.#host.dispatchEvent(new SetContextVariableEvent(this.#host, this.#options.name, this.#get.call(this.#host)));
     }
   }
 
   hostDisconnected(): void {
-    if (this.options.whenFocusWithin) {
-      this.host.removeEventListener("focusin", this.onFocusIn);
-      this.host.removeEventListener("focusout", this.onFocusOut);
+    if (this.#options.whenFocusWithin) {
+      this.#host.removeEventListener("focusin", this.#onFocusIn);
+      this.#host.removeEventListener("focusout", this.#onFocusOut);
     }
-    this.host.dispatchEvent(new UnsetContextVariableEvent(this.host, this.options.name));
+    this.#host.dispatchEvent(new UnsetContextVariableEvent(this.#host, this.#options.name));
   }
 
   updateValue(value: any) {
-    if (this.isInsideFocus) {
-      this.host.dispatchEvent(new SetContextVariableEvent(this.host, this.options.name, value));
+    if (this.#isInsideFocus) {
+      this.#host.dispatchEvent(new SetContextVariableEvent(this.#host, this.#options.name, value));
     }
   }
 
-  private onFocusIn = (event: FocusEvent) => {
-    if (document.hasFocus() && !this.isInsideFocus) {
-      this.isInsideFocus = true;
-      this.host.dispatchEvent(new SetContextVariableEvent(this.host, this.options.name, this.get.call(this.host)));
+  #onFocusIn = () => {
+    if (document.hasFocus() && !this.#isInsideFocus) {
+      this.#isInsideFocus = true;
+      this.#host.dispatchEvent(new SetContextVariableEvent(this.#host, this.#options.name, this.#get.call(this.#host)));
     }
   };
-  private onFocusOut = (e: any) => {
+  
+  #onFocusOut = () => {
     setTimeout(() => {
-      if (!document.hasFocus() || !isFocusWithin(this.host, document.activeElement)) {
-        this.isInsideFocus = false;
-        this.host.dispatchEvent(new UnsetContextVariableEvent(this.host, this.options.name));
+      if (!document.hasFocus() || !isFocusWithin(this.#host, document.activeElement)) {
+        this.#isInsideFocus = false;
+        this.#host.dispatchEvent(new UnsetContextVariableEvent(this.#host, this.#options.name));
       }
     });
   };

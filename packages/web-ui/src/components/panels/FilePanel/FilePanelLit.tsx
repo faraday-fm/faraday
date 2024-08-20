@@ -1,6 +1,6 @@
 import { command, context } from "@frdy/commands";
 import { Dirent, isDir } from "@frdy/sdk";
-import { createComponent } from "@lit/react";
+import { createComponent, EventName } from "@lit/react";
 import clsx from "clsx";
 import { LitElement, PropertyValues, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
@@ -73,10 +73,10 @@ export class FilePanel extends LitElement {
   accessor isFilePanelFocus = true;
 
   @context({ name: "filePanel.firstItem", whenFocusWithin: true })
-  accessor isFirstItem = false; // cursor.activeIndex === 0
+  accessor isFirstItem = false;
 
   @context({ name: "filePanel.lastItem", whenFocusWithin: true })
-  accessor isLastItem = false; // cursor.activeIndex === items.size() - 1
+  accessor isLastItem = false;
 
   @context({ name: "filePanel.activeItem", whenFocusWithin: true })
   accessor activeItem = ""; // cursor.activeName
@@ -94,11 +94,7 @@ export class FilePanel extends LitElement {
     this.showCursorWhenBlurred = false;
   }
 
-  private _onItemsPerColumnChange = (e: CustomEvent) => {
-    // console.error("_onMaxItemsPerColumnChange", e.detail);
-  };
-
-  private _onActiveIndexChange = (e: CustomEvent) => {
+  private _onActiveIndexChange = (e: CustomEvent<{ activeIndex: number }>) => {
     this.isFirstItem = e.detail.activeIndex === 0;
     this.isLastItem = e.detail.activeIndex === this.items.size() - 1;
   };
@@ -129,21 +125,19 @@ export class FilePanel extends LitElement {
                       .cursorStyle=${cursorStyle}
                       .items=${this.items}
                       .selectedItemNames=${this.selectedItemNames}
-                      @items-per-column-change=${this._onItemsPerColumnChange}
                       @active-index-change=${this._onActiveIndexChange}
                     ></frdy-condensed-view>`,
                   ],
                   [
                     "full",
-                    () => html`<frdy-condensed-view
+                    () => html`<frdy-full-view
                       tabIndex="0"
                       .view=${this.view as any /* TODO: think how to get rid of any */}
                       .cursorStyle=${cursorStyle}
                       .items=${this.items}
                       .selectedItemNames=${this.selectedItemNames}
-                      @items-per-column-change=${this._onItemsPerColumnChange}
                       @active-index-change=${this._onActiveIndexChange}
-                    ></frdy-condensed-view>`,
+                    ></frdy-full-view>`,
                   ],
                 ])}
               </div>
@@ -168,7 +162,6 @@ export const FilePanelReact = createComponent({
   elementClass: FilePanel,
   react: React,
   events: {
-    onActiveIndexChange: "active-index-change",
-    onItemsPerColumnChange: "items-per-column-change",
+    onActiveIndexChange: "active-index-change" as EventName<CustomEvent<{ activeIndex: number }>>,
   },
 });

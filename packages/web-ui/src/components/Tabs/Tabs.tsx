@@ -1,4 +1,3 @@
-import { useCommandBinding } from "@frdy/commands";
 import clsx from "clsx";
 import { useEffect, useRef } from "react";
 import { useFocused } from "../../hooks/useFocused";
@@ -54,9 +53,9 @@ export function Tabs({ layout, setLayout }: TabsProps) {
       }
     }
   };
-  useCommandBinding("nextTab", () => setTab(1, true), focused);
-  useCommandBinding("prevTab", () => setTab(-1, true), focused);
-  useCommandBinding("setTab", (args) => setTab(args?.index ?? 1), focused);
+  // useCommandBinding("nextTab", () => setTab(1, true), focused);
+  // useCommandBinding("prevTab", () => setTab(-1, true), focused);
+  // useCommandBinding("setTab", (args) => setTab(args?.index ?? 1), focused);
 
   useEffect(() => {
     if (!layout.activeTabId && layout.children?.length > 0) {

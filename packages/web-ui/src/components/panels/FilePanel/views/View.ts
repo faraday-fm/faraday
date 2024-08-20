@@ -8,11 +8,16 @@ import "../FileName";
 import "../MultiColumnList";
 import type { CursorStyle } from "../types";
 import { TabFilesView } from "../../../../types";
+import { consume } from "@lit/context";
+import { isTouchScreenContext } from "../../../../lit-contexts/IsTouchScreenProvider";
+import { IconsCache, iconsCacheContext } from "../../../../lit-contexts/iconsCacheContext";
 
 export abstract class View<T extends TabFilesView> extends LitElement {
   static styles = css`
     :host {
       display: grid;
+      position: relative;
+      overflow: hidden;
     }
   ` as CSSResultGroup;
 
@@ -34,8 +39,11 @@ export abstract class View<T extends TabFilesView> extends LitElement {
   @property({ type: Number })
   accessor activeIndex: number;
 
-  @property({ type: Number })
-  accessor columnCount: number;
+  @consume({ context: iconsCacheContext })
+  accessor icons!: IconsCache;
+
+  @consume({ context: isTouchScreenContext, subscribe: true })
+  accessor isTouchscreen!: boolean;
 
   constructor() {
     super();
@@ -44,6 +52,5 @@ export abstract class View<T extends TabFilesView> extends LitElement {
     this.selectedItemNames = createList();
     this.topmostIndex = 0;
     this.activeIndex = 0;
-    this.columnCount = 1;
   }
 }

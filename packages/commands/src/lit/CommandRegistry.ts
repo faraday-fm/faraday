@@ -1,52 +1,55 @@
-import type { ReactiveController, ReactiveControllerHost } from "@lit/reactive-element";
+import type { ReactiveController, ReactiveControllerHost } from "lit";
 import { InvokeCommandEvent, RegisterCommandEvent, UnregisterCommandEvent } from "./decorators/events";
+import { InvokeCommandEventName, RegisterCommandEventName, UnregisterCommandEventName } from "../consts";
 
 export class CommandRegistry<HostElement extends ReactiveControllerHost & HTMLElement> implements ReactiveController {
-  private _commands = new Map<string, Set<any>>();
-  private _commandNames = new Map<any, string>();
+  #host: HostElement;
+  #commands = new Map<string, Set<any>>();
+  #commandNames = new Map<any, string>();
 
-  constructor(private readonly host: HostElement) {
+  constructor(host: HostElement) {
+    this.#host = host;
     host.addController(this);
   }
 
   hostConnected() {
-    this.host.addEventListener("register-command", this.onRegisterCommand);
-    this.host.addEventListener("unregister-command", this.onUnregisterCommand);
-    this.host.addEventListener("invoke-command", this.onInvokeCommand);
+    this.#host.addEventListener(RegisterCommandEventName, this.#onRegisterCommand);
+    this.#host.addEventListener(UnregisterCommandEventName, this.#onUnregisterCommand);
+    this.#host.addEventListener(InvokeCommandEventName, this.#onInvokeCommand);
   }
 
   hostDisconnected() {
-    this.host.removeEventListener("register-command", this.onRegisterCommand);
-    this.host.removeEventListener("unregister-command", this.onUnregisterCommand);
-    this.host.removeEventListener("invoke-command", this.onInvokeCommand);
+    this.#host.removeEventListener(RegisterCommandEventName, this.#onRegisterCommand);
+    this.#host.removeEventListener(UnregisterCommandEventName, this.#onUnregisterCommand);
+    this.#host.removeEventListener(InvokeCommandEventName, this.#onInvokeCommand);
   }
 
-  private onRegisterCommand = (e: RegisterCommandEvent) => {
-    let handlers = this._commands.get(e.options.name);
+  #onRegisterCommand = (e: RegisterCommandEvent) => {
+    let handlers = this.#commands.get(e.options.name);
     if (!handlers) {
       handlers = new Set();
-      this._commands.set(e.options.name, handlers);
+      this.#commands.set(e.options.name, handlers);
     }
     handlers.add(e.callback);
-    this._commandNames.set(e.callback, e.options.name);
+    this.#commandNames.set(e.callback, e.options.name);
   };
 
-  private onUnregisterCommand = (e: UnregisterCommandEvent) => {
-    let commandName = this._commandNames.get(e.callback);
+  #onUnregisterCommand = (e: UnregisterCommandEvent) => {
+    let commandName = this.#commandNames.get(e.callback);
     if (commandName) {
-      const handlers = this._commands.get(commandName);
+      const handlers = this.#commands.get(commandName);
       if (handlers) {
         handlers.delete(e.callback);
         if (handlers.size === 0) {
-          this._commands.delete(commandName);
+          this.#commands.delete(commandName);
         }
       }
-      this._commandNames.delete(e.callback);
+      this.#commandNames.delete(e.callback);
     }
   };
 
-  private onInvokeCommand = (e: InvokeCommandEvent) => {
-    const handlers = this._commands.get(e.name);
+  #onInvokeCommand = (e: InvokeCommandEvent) => {
+    const handlers = this.#commands.get(e.name);
     if (handlers && handlers.size === 1) {
       const [handler] = handlers;
       handler();

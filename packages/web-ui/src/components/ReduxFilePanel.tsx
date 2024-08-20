@@ -1,4 +1,3 @@
-import { ContextVariablesProvider, DebugContextVariables, useUpdateGlobalContext } from "@frdy/commands";
 import type { Dirent } from "@frdy/sdk";
 import { isDir, isHidden } from "@frdy/sdk";
 import { memo, useCallback, useEffect, useLayoutEffect, useRef } from "react";
@@ -10,7 +9,7 @@ import { createList, empty } from "../utils/immutableList";
 import { combine } from "../utils/path";
 import { FilePanel, FilePanelReact } from "./panels/FilePanel/FilePanelLit";
 
-const reduxFilePanelRoot = 'reduxFilePanelRoot'
+const reduxFilePanelRoot = "reduxFilePanelRoot";
 // css`
 //   width: 100%;
 //   height: 100%;
@@ -39,10 +38,10 @@ export const ReduxFilePanel = memo(function ReduxFilePanel({ layout }: ReduxFile
   const panelRef = useRef<FilePanel>(null);
   const { activeTab, initPanelState, setPanelItems, setPanelSelectedItems, setPanelCursorPos, setActiveTabId } = usePanels();
   const state = usePanelState(id);
-  const updateState = useUpdateGlobalContext();
+  // const updateState = useUpdateGlobalContext();
   const isActive = activeTab?.id === id;
   const { showHiddenFiles } = useSettings();
-  
+
   let items = state?.items ?? createList();
   if (!showHiddenFiles) {
     items = items.filter((i) => !isHidden(i));
@@ -53,15 +52,15 @@ export const ReduxFilePanel = memo(function ReduxFilePanel({ layout }: ReduxFile
 
   useEffect(() => {
     if (isActive && state?.pos.path && activeItem) {
-      updateState({
-        "filePanel.path": combine(state.pos.path, activeItem.filename),
-        "filePanel.activeName": activeItem.filename,
-        "filePanel.isFileActive": !isDir(activeItem),
-        "filePanel.isDirectoryActive": isDir(activeItem),
-      });
+      // updateState({
+      //   "filePanel.path": combine(state.pos.path, activeItem.filename),
+      //   "filePanel.activeName": activeItem.filename,
+      //   "filePanel.isFileActive": !isDir(activeItem),
+      //   "filePanel.isDirectoryActive": isDir(activeItem),
+      // });
       panelRef.current?.focus();
     }
-  }, [updateState, isActive, activeItem, state?.pos.path]);
+  }, [isActive, activeItem, state?.pos.path]);
 
   useLayoutEffect(() => {
     const { path, id } = layout;
@@ -127,21 +126,18 @@ export const ReduxFilePanel = memo(function ReduxFilePanel({ layout }: ReduxFile
         selectionType.current = undefined;
       }}
     >
-      <ContextVariablesProvider>
-        <FilePanelReact
-          ref={panelRef}
-          view={layout.component.view}
-          items={items}
-          selectedItemNames={selectedItems}
-          showCursorWhenBlurred={isActive}
-          // onFocus={onFocus}
-          // onActiveIndexChange={onCursorPositionChange}
-          // onSelectItems={onSelectItems}
-          fileCursor={cursor}
-          path={state ? state.pos.path : "/"}
-        />
-        <DebugContextVariables />
-      </ContextVariablesProvider>
+      <FilePanelReact
+        ref={panelRef}
+        view={layout.component.view}
+        items={items}
+        selectedItemNames={selectedItems}
+        showCursorWhenBlurred={isActive}
+        // onFocus={onFocus}
+        // onActiveIndexChange={onCursorPositionChange}
+        // onSelectItems={onSelectItems}
+        fileCursor={cursor}
+        path={state ? state.pos.path : "/"}
+      />
     </div>
   );
 });

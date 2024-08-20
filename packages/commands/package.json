@@ -40,12 +40,13 @@
     "access": "public"
   },
   "peerDependencies": {
-    "react": ">=18"
+    "lit": "^3.2.0"
   },
   "devDependencies": {
     "@biomejs/biome": "^1.8.3",
     "@frdy/typescript-config": "workspace:*",
     "@rollup/plugin-json": "^6.1.0",
+    "@rollup/plugin-terser": "^0.4.4",
     "@rollup/plugin-typescript": "^11.1.6",
     "@types/parsimmon": "^1.10.8",
     "@types/react": "^18.3.3",
@@ -55,13 +56,6 @@
     "typescript": "^5.5.4"
   },
   "dependencies": {
-    "@lit/reactive-element": "^2.0.4",
-    "deepmerge": "^4.3.1",
-    "fast-deep-equal": "^3.1.3",
-    "immer": "^10.0.3",
-    "jotai": "^2.9.1",
-    "list": "^2.0.19",
-    "lit": "^3.2.0",
     "parsimmon": "^1.18.1",
     "valibot": "^0.37.0"
   }
