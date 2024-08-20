@@ -1,7 +1,7 @@
 import { type MutableRefObject, useCallback, useRef } from "react";
 import type { NodeLayout, RowLayout } from "../types";
 import { Tab } from "./Tabs/Tab";
-import { Tabs } from "./Tabs/Tabs";
+import { TabsReact } from "./Tabs/TabsLit";
 
 const layoutSeparator = "layoutSeparator";
 // css`position: relative;
@@ -114,7 +114,7 @@ export function LayoutContainer({ layout, setLayout, direction }: LayoutContaine
     case "row":
       return <RowContainer layout={layout} direction={direction} setLayout={setLayout} />;
     case "tab-set":
-      return <Tabs layout={layout} setLayout={setLayout} />;
+      return <TabsReact layout={layout} setLayout={setLayout} />;
     case "tab":
       return <Tab layout={layout} />;
     default:

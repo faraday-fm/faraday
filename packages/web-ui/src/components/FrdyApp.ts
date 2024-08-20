@@ -10,7 +10,7 @@ import { createExtensionsContext, extensionsContext } from "../lit-contexts/exte
 import { createIconThemeContext, iconThemeContext } from "../lit-contexts/iconThemeContext";
 import { createIconsCache, iconsCacheContext } from "../lit-contexts/iconsCacheContext";
 import { FileSystemProvider } from "@frdy/sdk";
-import { command, context, ContextVariablesProvider, CommandRegistry, KeyBindingsController } from "@frdy/commands";
+import { command, context, CommandsProvider } from "@frdy/commands";
 import keybindings from "../assets/keybindings.json";
 
 const TAG = "frdy-app";
@@ -29,9 +29,7 @@ export class FrdyApp extends LitElement {
   private _extensionsProvider = new ContextProvider(this, { context: extensionsContext });
   private _iconThemeProvider = new ContextProvider(this, { context: iconThemeContext });
   private _iconsCacheProvider = new ContextProvider(this, { context: iconsCacheContext });
-  private CVP = new ContextVariablesProvider(this);
-  private CMD = new CommandRegistry(this);
-  private KBD = new KeyBindingsController(this, keybindings);
+  private _commandsProvider = new CommandsProvider(this, keybindings);
 
   public setFs(fs: FileSystemProvider) {
     if (!this._fsProvider.value) {

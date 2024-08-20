@@ -28,7 +28,7 @@ export class ColumnCell extends LitElement {
         border: 1px solid var(--files-file-border-focus);
       }
       &.inactive-cursor {
-        background-color: var(--files-file-background-selected);
+        background-color: var(--files-file-background-focus);
       }
       &.selected {
         background-color: var(--files-file-background-selected);

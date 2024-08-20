@@ -1,46 +1,111 @@
-import type { ReactiveController, ReactiveControllerHost } from "lit";
-import { SetContextVariableEvent, UnsetContextVariableEvent } from "./decorators/events";
+import type { ReactiveController } from "lit";
 import { SetContextVariableEventName, UnsetContextVariableEventName } from "../consts";
+import { parser, type Expression } from "../utils/whenClauseParser";
+import { SetContextVariableEvent, UnsetContextVariableEvent } from "./events";
+import { HostElement } from './types';
 
-type ReactiveElementHost = Partial<ReactiveControllerHost> & HTMLElement;
+type ContextVariables = Map<string, Map<HTMLElement, unknown>>;
 
-export class ContextVariablesProvider<HostElement extends ReactiveElementHost = ReactiveElementHost> implements ReactiveController {
+export class ContextVariablesProvider implements ReactiveController {
   readonly #host: HostElement;
-  #variables = new Map<string, Map<HTMLElement, any[]>>();
+  #variables: ContextVariables = new Map();
 
   constructor(host: HostElement) {
     this.#host = host;
-    this.#attachListeners();
     this.#host.addController?.(this);
   }
 
-  hostConnected() {}
+  hostConnected() {
+    const addEventListener = this.#host.addEventListener;
+    addEventListener(SetContextVariableEventName, this.#onSetContextVariable);
+    addEventListener(UnsetContextVariableEventName, this.#onUnsetContextVariable);
+  }
 
-  #attachListeners = () => {
-    this.#host.addEventListener(SetContextVariableEventName, this.#onSetContextVariable);
-    this.#host.addEventListener(UnsetContextVariableEventName, this.#onUnsetContextVariable);
-  };
-
-  // hostConnected(): void {
-  //   // emit an event to signal a provider is available for this context
-  //   // this.host.dispatchEvent(new ContextProviderEvent(this.context));
-  // }
+  hostDisconnected() {
+    const removeEventListener = this.#host.removeEventListener;
+    removeEventListener(SetContextVariableEventName, this.#onSetContextVariable);
+    removeEventListener(UnsetContextVariableEventName, this.#onUnsetContextVariable);
+  }
 
   #onSetContextVariable = (e: SetContextVariableEvent) => {
-    let vars = this.#variables.get(e.name);
+    e.stopPropagation();
+    const { host, name, value } = e;
+    let vars = this.#variables.get(name);
     if (vars == null) {
       vars = new Map();
-      this.#variables.set(e.name, vars);
+      this.#variables.set(name, vars);
     }
-    vars.set(e.host, e.value);
-    e.stopPropagation();
+    vars.set(host, value);
   };
 
   #onUnsetContextVariable = (e: UnsetContextVariableEvent) => {
-    let vars = this.#variables.get(e.name);
-    if (vars != null) {
-      vars.delete(e.host);
-    }
     e.stopPropagation();
+    const { host, name } = e;
+    let vars = this.#variables.get(name);
+    if (vars != null) {
+      vars.delete(host);
+    }
   };
+
+  isInContext(when: string) {
+    const ast = parser.parse(when);
+    if (ast.status) {
+      return evaluate(this.#variables, ast.value);
+    }
+    return false;
+  }
+}
+
+function getContextValue(ctx: ContextVariables, variable: string) {
+  let r: unknown;
+  const varEntries = ctx.get(variable);
+  if (!varEntries) {
+    return undefined;
+  }
+  for (const val of varEntries.values()) {
+    if (val !== undefined) {
+      if (r === undefined) {
+        r = val;
+      } else if (r !== val) {
+        return undefined;
+      }
+    }
+  }
+  return r;
+}
+
+function visitNode(ctx: ContextVariables, node: Expression, stack: unknown[]) {
+  switch (node._) {
+    case "c":
+      stack.push(node.val);
+      break;
+    case "v":
+      stack.push(getContextValue(ctx, node.val));
+      break;
+    case "!":
+      visitNode(ctx, node.node, stack);
+      stack.push(!stack.pop());
+      break;
+    case "==":
+    case "!=":
+    case "&&":
+    case "||":
+      {
+        visitNode(ctx, node.left, stack);
+        visitNode(ctx, node.right, stack);
+        const right = stack.pop();
+        const left = stack.pop();
+        if (node._ === "==") stack.push(left === right);
+        else if (node._ === "!=") stack.push(left !== right);
+        else if (node._ === "||") stack.push(!!left || !!right);
+        else if (node._ === "&&") stack.push(!!left && !!right);
+      }
+      break;
+  }
+}
+
+function evaluate(ctx: ContextVariables, expression: Expression) {
+  const stack: [] = [];
+  visitNode(ctx, expression, stack);
+  return !!stack.pop();
 }

@@ -21,16 +21,18 @@ export class CondensedView extends View<TabFilesCondensedView> {
 
   private _onMeasureChange = (e: MeasureChangeEvent) => {
     this.columnCount = e.columnCount;
-  }
+  };
 
   protected render() {
     const selectedNames = this.selectedItemNames.toSet();
+    // const emptyColumns = this.columnCount - Math.ceil((this.items.size() - this.topmostIndex) / this._itemsPerColumn);
     return html`
       <frdy-glyph-size-provider>
-        <div style="display:grid;position:absolute;inset:0;grid-template-columns: repeat(${this.columnCount}, 1fr)">
-          ${map(range(this.columnCount), (i) => html`<div style=${i < this.columnCount && "border-inline-end: 1px solid var(--panel-border);"}></div>`)}
-        </div>
+        <!-- <div style="display:grid;position:absolute;inset:0;grid-template-columns: repeat(${this.columnCount}, 1fr)">
+          ${map(range(this.columnCount), (i) => html`<div style=${i < this.columnCount - 1 && "border-inline-end: 1px solid var(--panel-border);"}></div>`)}
+        </div> -->
         <frdy-multicolumn-list
+          tabindex="0"
           .minColumnWidth=${250}
           .renderItem=${(i: number, isActive: boolean) => html`
             <frdy-column-cell

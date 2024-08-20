@@ -1,4 +1,5 @@
 import { ReactiveController, ReactiveControllerHost, ReactiveElement } from "lit";
+import { isFocusWithin } from "../utils/isFocusWithin";
 import { SetContextVariableEvent, UnsetContextVariableEvent } from "./events";
 import { ContextOptions } from "./types";
 
@@ -7,7 +8,7 @@ export function context<T = any>(options?: ContextOptions) {
     const propertyName = String(context.name);
     let controller: ContextVariablesController<ReactiveElement> | undefined;
     context.addInitializer(function () {
-      controller = new ContextVariablesController(this, target.get, { name: propertyName, whenFocus: false, whenFocusWithin: false, ...options });
+      controller = new ContextVariablesController(this, target.get, { name: propertyName, whenFocusWithin: false, ...options });
     });
     let v: any;
     return {
@@ -33,7 +34,7 @@ class ContextVariablesController<HostElement extends ReactiveControllerHost & HT
   #isInsideFocus = false;
   #host: HostElement;
   #get: () => any;
-  #options: Required<ContextOptions>
+  #options: Required<ContextOptions>;
 
   constructor(host: HostElement, get: () => any, options: Required<ContextOptions>) {
     this.#host = host;
@@ -73,7 +74,7 @@ class ContextVariablesController<HostElement extends ReactiveControllerHost & HT
       this.#host.dispatchEvent(new SetContextVariableEvent(this.#host, this.#options.name, this.#get.call(this.#host)));
     }
   };
-  
+
   #onFocusOut = () => {
     setTimeout(() => {
       if (!document.hasFocus() || !isFocusWithin(this.#host, document.activeElement)) {
@@ -82,14 +83,6 @@ class ContextVariablesController<HostElement extends ReactiveControllerHost & HT
       }
     });
   };
-}
-
-function isFocusWithin(host: Element, child: Element | null) {
-  let el = child;
-  while (el && el !== host) {
-    el = el.parentElement;
-  }
-  return el === host;
 }
 
 // class X extends ReactiveElement {

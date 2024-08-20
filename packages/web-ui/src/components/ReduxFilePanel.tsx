@@ -7,7 +7,7 @@ import { useSettings } from "../features/settings/settings";
 import type { TabLayout } from "../types";
 import { createList, empty } from "../utils/immutableList";
 import { combine } from "../utils/path";
-import { FilePanel, FilePanelReact } from "./panels/FilePanel/FilePanelLit";
+import { FilePanel, FilePanelReact } from "./panels/FilePanel/FilePanel";
 
 const reduxFilePanelRoot = "reduxFilePanelRoot";
 // css`

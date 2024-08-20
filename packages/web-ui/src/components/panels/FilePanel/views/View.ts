@@ -33,12 +33,6 @@ export abstract class View<T extends TabFilesView> extends LitElement {
   @property({ attribute: false })
   accessor selectedItemNames: List<string>;
 
-  @property({ type: Number })
-  accessor topmostIndex: number;
-
-  @property({ type: Number })
-  accessor activeIndex: number;
-
   @consume({ context: iconsCacheContext })
   accessor icons!: IconsCache;
 
@@ -50,7 +44,5 @@ export abstract class View<T extends TabFilesView> extends LitElement {
     this.cursorStyle = "firm";
     this.items = createList();
     this.selectedItemNames = createList();
-    this.topmostIndex = 0;
-    this.activeIndex = 0;
   }
 }

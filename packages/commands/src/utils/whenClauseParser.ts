@@ -10,38 +10,38 @@ interface Const {
 }
 interface Not {
   _: "!";
-  node: Node;
+  node: Expression;
 }
 interface Eq {
   _: "==" | "!=";
-  left: Node;
-  right: Node;
+  left: Expression;
+  right: Expression;
 }
 interface Or {
   _: "||";
-  left: Node;
-  right: Node;
+  left: Expression;
+  right: Expression;
 }
 interface And {
   _: "&&";
-  left: Node;
-  right: Node;
+  left: Expression;
+  right: Expression;
 }
-export type Node = Var | Const | Not | Eq | Or | And;
+export type Expression = Var | Const | Not | Eq | Or | And;
 
 const _ = optWhitespace;
 
 const lang = createLanguage<{
-  Var: Node;
-  Number: Node;
-  String: Node;
-  Const: Node;
-  Not: Node;
-  Eq: Node;
-  And: Node;
-  Or: Node;
-  List: Node;
-  Expr: Node;
+  Var: Expression;
+  Number: Expression;
+  String: Expression;
+  Const: Expression;
+  Not: Expression;
+  Eq: Expression;
+  And: Expression;
+  Or: Expression;
+  List: Expression;
+  Expr: Expression;
 }>({
   Var: () =>
     regexp(/[a-z][a-z0-9.:]*/i).map((val) => {
@@ -80,4 +80,4 @@ const lang = createLanguage<{
   Expr: (r) => r.Or,
 });
 
-export const parser: Parser<Node> = lang.Expr;
+export const parser: Parser<Expression> = lang.Expr;
