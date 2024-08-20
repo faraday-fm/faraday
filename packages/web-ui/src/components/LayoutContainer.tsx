@@ -114,7 +114,7 @@ export function LayoutContainer({ layout, setLayout, direction }: LayoutContaine
     case "row":
       return <RowContainer layout={layout} direction={direction} setLayout={setLayout} />;
     case "tab-set":
-      return <TabsReact layout={layout} setLayout={setLayout} />;
+      return <TabsReact tabIndex={0} layout={layout} setLayout={setLayout} />;
     case "tab":
       return <Tab layout={layout} />;
     default:

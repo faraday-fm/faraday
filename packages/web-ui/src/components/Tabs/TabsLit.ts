@@ -13,9 +13,6 @@ const TAG = "frdy-tabs";
 export class Tabs extends LitElement {
   static styles = css`
     :host {
-      display: contents;
-    }
-    .tabs {
       box-sizing: border-box;
       overflow: hidden;
       width: 100%;
@@ -56,16 +53,14 @@ export class Tabs extends LitElement {
     }
 
     return html`
-      <div class="tabs" tabindex="0">
-        <div class="tabsHeader">
-          ${repeat(
-            this.layout.children,
-            (tab) => tab.id,
-            (tab) => html`<div class=${clsx("tabName", this.layout?.activeTabId === tab.id && "-active")}>${tab.name}</div>`
-          )}
-        </div>
-        <frdy-tab .layout=${this.layout!.children[0]}></frdy-tab>
+      <div class="tabsHeader">
+        ${repeat(
+          this.layout.children,
+          (tab) => tab.id,
+          (tab) => html`<div class=${clsx("tabName", this.layout?.activeTabId === tab.id && "-active")}>${tab.name}</div>`
+        )}
       </div>
+      <frdy-tab .layout=${this.layout!.children[0]}></frdy-tab>
     `;
   }
 }

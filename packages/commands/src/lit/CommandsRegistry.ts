@@ -38,7 +38,6 @@ export class CommandsRegistry implements ReactiveController {
 
   #onRegisterCommand = (e: RegisterCommandEvent) => {
     const { name } = e.options;
-    console.info("REG:", name);
     let handlers = this.#commands.get(name);
     if (!handlers) {
       handlers = new Set();

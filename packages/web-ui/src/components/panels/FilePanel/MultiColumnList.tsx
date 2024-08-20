@@ -146,8 +146,8 @@ export class MultiColumnList extends LitElement {
   }
 
   disconnectedCallback() {
-    super.disconnectedCallback();
     this._observer.unobserve(this);
+    super.disconnectedCallback();
   }
 
   private _getItemHeight() {
@@ -196,24 +196,23 @@ export class MultiColumnList extends LitElement {
   private _updateActiveIndex = (newActiveIndex: number, shiftTop: boolean) => {
     const oldActiveIndex = this.activeIndex;
     newActiveIndex = clamp(0, newActiveIndex, this.itemsCount - 1);
-    if (newActiveIndex === oldActiveIndex) {
-      return;
-    }
-    this.activeIndex = newActiveIndex;
+    let newTopmostIndex = this.topmostIndex;
     if (shiftTop) {
-      const delta = this.activeIndex - oldActiveIndex;
-      this.topmostIndex += delta;
+      const delta = newActiveIndex - oldActiveIndex;
+      newTopmostIndex += delta;
     }
     const itemsVisible = this._columnCount * this._itemsPerColumn;
-    this.topmostIndex = clamp(this.activeIndex - itemsVisible + 1, this.topmostIndex, this.activeIndex);
-    this.topmostIndex = clamp(0, this.topmostIndex, this.itemsCount - itemsVisible);
-    if (oldActiveIndex !== this.activeIndex) {
-      this._fireActiveIndexChange(this.activeIndex);
+    newTopmostIndex = clamp(newActiveIndex - itemsVisible + 1, newTopmostIndex, newActiveIndex);
+    newTopmostIndex = clamp(0, newTopmostIndex, this.itemsCount - itemsVisible);
+    if (oldActiveIndex !== newActiveIndex || this.topmostIndex !== newTopmostIndex) {
+      this.topmostIndex = newTopmostIndex;
+      this.activeIndex = newActiveIndex;
+      this._fireActiveIndexChange(newTopmostIndex, newActiveIndex);
     }
   };
 
-  private _fireActiveIndexChange(activeIndex: number) {
-    this.dispatchEvent(new CustomEvent("active-index-change", { detail: { activeIndex }, bubbles: true, composed: true }));
+  private _fireActiveIndexChange(topmostIndex: number, activeIndex: number) {
+    this.dispatchEvent(new CustomEvent("active-index-change", { detail: { topmostIndex, activeIndex }, bubbles: true, composed: true }));
   }
 
   private _onPointerDown(e: PointerEvent) {
