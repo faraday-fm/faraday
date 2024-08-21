@@ -20,7 +20,7 @@ export class Tab extends LitElement {
 
   protected render() {
     return html`${choose(this.layout?.component.type, [
-      ["files", () => html` <frdy-file-panel-tab .view=${this.layout!.component.view} .path=${this.layout!.path}></frdy-file-panel-tab> `],
+      ["files", () => html`<frdy-file-panel-tab .view=${this.layout!.component.view} .path=${this.layout!.path}></frdy-file-panel-tab>`],
     ])}`;
   }
 }

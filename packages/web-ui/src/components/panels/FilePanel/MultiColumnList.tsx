@@ -26,6 +26,9 @@ export class MultiColumnList extends LitElement {
     :host {
       display: grid;
     }
+    /* .columns-scroller:focus {
+      border: 10px solid red;
+    } */
     .columns-scroller {
       position: relative;
       display: grid;
@@ -79,121 +82,121 @@ export class MultiColumnList extends LitElement {
 
   @command({ whenFocusWithin: true })
   cursorLeft() {
-    const shiftTop = this.far && this.activeIndex < this.topmostIndex + this._itemsPerColumn;
-    this._updateActiveIndex(this.activeIndex - this._itemsPerColumn, shiftTop);
+    const shiftTop = this.far && this.activeIndex < this.topmostIndex + this.#itemsPerColumn;
+    this.#updateActiveIndex(this.activeIndex - this.#itemsPerColumn, shiftTop);
   }
 
   @command({ whenFocusWithin: true })
   cursorRight() {
-    const shiftTop = this.far && this.activeIndex >= this.topmostIndex + this._itemsPerColumn * (this._columnCount - 1);
-    this._updateActiveIndex(this.activeIndex + this._itemsPerColumn, shiftTop);
+    const shiftTop = this.far && this.activeIndex >= this.topmostIndex + this.#itemsPerColumn * (this.#columnCount - 1);
+    this.#updateActiveIndex(this.activeIndex + this.#itemsPerColumn, shiftTop);
   }
 
   @command({ whenFocusWithin: true })
   cursorUp() {
-    this._updateActiveIndex(this.activeIndex - 1, false);
+    this.#updateActiveIndex(this.activeIndex - 1, false);
   }
 
   @command({ whenFocusWithin: true })
   cursorDown() {
-    this._updateActiveIndex(this.activeIndex + 1, false);
+    this.#updateActiveIndex(this.activeIndex + 1, false);
   }
 
   @command({ whenFocusWithin: true })
   cursorPageUp() {
-    this._updateActiveIndex(this.activeIndex - this._itemsPerColumn * this._columnCount + 1, this.far);
+    this.#updateActiveIndex(this.activeIndex - this.#itemsPerColumn * this.#columnCount + 1, this.far);
   }
 
   @command({ whenFocusWithin: true })
   cursorPageDown() {
-    this._updateActiveIndex(this.activeIndex + this._itemsPerColumn * this._columnCount - 1, this.far);
+    this.#updateActiveIndex(this.activeIndex + this.#itemsPerColumn * this.#columnCount - 1, this.far);
   }
 
   @command({ whenFocusWithin: true })
   cursorStart() {
-    this._updateActiveIndex(0, false);
+    this.#updateActiveIndex(0, false);
   }
 
   @command({ whenFocusWithin: true })
   cursorEnd() {
-    this._updateActiveIndex(this.itemsCount - 1, false);
+    this.#updateActiveIndex(this.itemsCount - 1, false);
   }
 
-  private _rootRef: Ref<HTMLInputElement> = createRef();
-  private _fixedRef: Ref<HTMLInputElement> = createRef();
-  private _observer: ResizeObserver;
+  #rootRef: Ref<HTMLInputElement> = createRef();
+  #fixedRef: Ref<HTMLInputElement> = createRef();
+  #observer: ResizeObserver;
 
   constructor() {
     super();
     this.activeIndex = 0;
     this.itemsCount = 0;
     this.lineHeight = 1;
-    this._observer = new ResizeObserver(this._updateDimensions);
+    this.#observer = new ResizeObserver(this.#updateDimensions);
   }
 
   @state()
-  private accessor _scrollTop = 0;
+  accessor #scrollTop = 0;
 
   @state()
-  private accessor _itemsPerColumn = 10;
+  accessor #itemsPerColumn = 10;
 
   @state()
-  private accessor _columnCount = 1;
+  accessor #columnCount = 1;
 
   connectedCallback() {
     super.connectedCallback();
-    this._observer.observe(this);
+    this.#observer.observe(this);
   }
 
   disconnectedCallback() {
-    this._observer.unobserve(this);
+    this.#observer.unobserve(this);
     super.disconnectedCallback();
   }
 
-  private _getItemHeight() {
+  #getItemHeight() {
     return (this.glyph?.h ?? 16) * this.lineHeight;
   }
 
-  protected update(_changedProperties: PropertyValues): void {
+  protected willUpdate(_changedProperties: PropertyValues): void {
     if (_changedProperties.has("glyph") || _changedProperties.has("lineHeight") || _changedProperties.has("minColumnWidth")) {
-      this._updateDimensions();
+      this.#updateDimensions();
     }
     if (_changedProperties.has("activeIndex") || _changedProperties.has("lineHeight") || _changedProperties.has("glyph")) {
-      this._scrollTop = this.activeIndex * this._getItemHeight();
+      this.#scrollTop = this.activeIndex * this.#getItemHeight();
     }
-    super.update(_changedProperties);
+    super.willUpdate(_changedProperties);
   }
 
-  private _updateDimensions = () => {
+  #updateDimensions = () => {
     const { width, height } = this.getBoundingClientRect();
-    const oldColumnCount = this._columnCount;
+    const oldColumnCount = this.#columnCount;
     const columnCount = this.minColumnWidth != null ? Math.max(1, Math.floor(width / this.minColumnWidth)) : 1;
-    const itemsPerColumn = Math.max(1, Math.floor(height / this._getItemHeight()));
+    const itemsPerColumn = Math.max(1, Math.floor(height / this.#getItemHeight()));
 
-    if (this._itemsPerColumn !== itemsPerColumn || oldColumnCount) {
-      this._columnCount = columnCount;
-      this._itemsPerColumn = itemsPerColumn;
+    if (this.#itemsPerColumn !== itemsPerColumn || oldColumnCount) {
+      this.#columnCount = columnCount;
+      this.#itemsPerColumn = itemsPerColumn;
       this.dispatchEvent(new MeasureChangeEvent(columnCount, itemsPerColumn));
     }
-    this._updateActiveIndex(this.activeIndex, false);
+    this.#updateActiveIndex(this.activeIndex, false);
   };
 
-  private _onScroll(e: CustomEvent) {
+  #onScroll(e: CustomEvent) {
     const scrollTop = e.detail.top as number;
-    this._scrollTop = scrollTop;
-    const newActiveIndex = Math.round(scrollTop / this._getItemHeight());
+    this.#scrollTop = scrollTop;
+    const newActiveIndex = Math.round(scrollTop / this.#getItemHeight());
     if (newActiveIndex !== this.activeIndex) {
-      this._updateActiveIndex(newActiveIndex, this.far);
+      this.#updateActiveIndex(newActiveIndex, this.far);
     }
   }
 
-  private _onActivate(e: CustomEvent, index: number) {
+  #onActivate(e: CustomEvent, index: number) {
     e.stopPropagation();
-    this._scrollTop = index * this._getItemHeight();
-    this._updateActiveIndex(index, false);
+    this.#scrollTop = index * this.#getItemHeight();
+    this.#updateActiveIndex(index, false);
   }
 
-  private _updateActiveIndex = (newActiveIndex: number, shiftTop: boolean) => {
+  #updateActiveIndex = (newActiveIndex: number, shiftTop: boolean) => {
     const oldActiveIndex = this.activeIndex;
     newActiveIndex = clamp(0, newActiveIndex, this.itemsCount - 1);
     let newTopmostIndex = this.topmostIndex;
@@ -201,52 +204,54 @@ export class MultiColumnList extends LitElement {
       const delta = newActiveIndex - oldActiveIndex;
       newTopmostIndex += delta;
     }
-    const itemsVisible = this._columnCount * this._itemsPerColumn;
+    const itemsVisible = this.#columnCount * this.#itemsPerColumn;
     newTopmostIndex = clamp(newActiveIndex - itemsVisible + 1, newTopmostIndex, newActiveIndex);
     newTopmostIndex = clamp(0, newTopmostIndex, this.itemsCount - itemsVisible);
     if (oldActiveIndex !== newActiveIndex || this.topmostIndex !== newTopmostIndex) {
       this.topmostIndex = newTopmostIndex;
       this.activeIndex = newActiveIndex;
-      this._fireActiveIndexChange(newTopmostIndex, newActiveIndex);
+      this.#fireActiveIndexChange(newTopmostIndex, newActiveIndex);
     }
   };
 
-  private _fireActiveIndexChange(topmostIndex: number, activeIndex: number) {
+  #fireActiveIndexChange(topmostIndex: number, activeIndex: number) {
     this.dispatchEvent(new CustomEvent("active-index-change", { detail: { topmostIndex, activeIndex }, bubbles: true, composed: true }));
   }
 
-  private _onPointerDown(e: PointerEvent) {
+  #onPointerDown(e: PointerEvent) {
     // If user clicks of empty space beneath the last file, activate it.
-    const fullyPopulatedColumnCount = Math.floor((this.itemsCount - this.topmostIndex) / this._itemsPerColumn);
-    if (e.offsetX >= (this.getBoundingClientRect().width * fullyPopulatedColumnCount) / this._columnCount) {
-      this._updateActiveIndex(this.itemsCount - 1, false);
+    const fullyPopulatedColumnCount = Math.floor((this.itemsCount - this.topmostIndex) / this.#itemsPerColumn);
+    if (e.offsetX >= (this.getBoundingClientRect().width * fullyPopulatedColumnCount) / this.#columnCount) {
+      this.#updateActiveIndex(this.itemsCount - 1, false);
     }
   }
 
   protected render() {
-    const emptyColumns = this._columnCount - Math.ceil((this.itemsCount - this.topmostIndex) / this._itemsPerColumn);
+    const emptyColumns = this.#columnCount - Math.ceil((this.itemsCount - this.topmostIndex) / this.#itemsPerColumn);
 
     return html`
       <frdy-scrollable
+        tabindex="0"
         class="columns-scroller"
-        ref=${ref(this._rootRef)}
-        .fullScrollHeight=${(this.itemsCount - 1) * this._getItemHeight()}
-        .fullScrollTop=${this._scrollTop}
-        @scroll=${this._onScroll}
+        aria-colcount=${this.#columnCount}
+        ref=${ref(this.#rootRef)}
+        .fullScrollHeight=${(this.itemsCount - 1) * this.#getItemHeight()}
+        .fullScrollTop=${this.#scrollTop}
+        @scroll=${this.#onScroll}
       >
-        <div style="display:grid;position:absolute;inset:0;grid-template-columns: repeat(${this._columnCount}, 1fr)">
-          ${map(range(this._columnCount), (i) => html`<div style=${i < this._columnCount - 1 && "border-inline-end: 1px solid var(--panel-border);"}></div>`)}
+        <div style="display:grid;position:absolute;inset:0;grid-template-columns: repeat(${this.#columnCount}, 1fr)">
+          ${map(range(this.#columnCount), (i) => html`<div style=${i < this.#columnCount - 1 && "border-inline-end: 1px solid var(--panel-border);"}></div>`)}
         </div>
 
-        <div class="columns-scroller-fixed" ref=${ref(this._fixedRef)} @pointerdown=${this._onPointerDown}>
+        <div class="columns-scroller-fixed" ref=${ref(this.#fixedRef)} @pointerdown=${this.#onPointerDown}>
           ${repeat(
-            range(this.topmostIndex, Math.min(this.itemsCount, this.topmostIndex + this._columnCount * this._itemsPerColumn)),
+            range(this.topmostIndex, Math.min(this.itemsCount, this.topmostIndex + this.#columnCount * this.#itemsPerColumn)),
             (i) => i,
             (i) =>
               html`<div
                 class="item"
-                style="width:${100 / this._columnCount}%;height:${this._getItemHeight()}px;overflow:hidden"
-                @activate=${(e: CustomEvent) => this._onActivate(e, i)}
+                style="width:${100 / this.#columnCount}%;height:${this.#getItemHeight()}px;overflow:hidden"
+                @activate=${(e: CustomEvent) => this.#onActivate(e, i)}
                 @open=${(e: CustomEvent) => {
                   this.dispatchEvent(new CustomEvent("open", { detail: { index: i } }));
                   e.stopPropagation();
@@ -255,7 +260,7 @@ export class MultiColumnList extends LitElement {
                 ${this.renderItem?.(i, this.activeIndex === i)}
               </div>`
           )}
-          ${map(range(emptyColumns), () => html`<div style="height:100%;width:${100 / this._columnCount}%" }></div>`)}
+          ${map(range(emptyColumns), () => html`<div style="height:100%;width:${100 / this.#columnCount}%" }></div>`)}
         </div>
       </frdy-scrollable>
     `;
@@ -296,13 +301,3 @@ declare global {
     [TAG]: MultiColumnList;
   }
 }
-
-export const MultiColumnListReact = createComponent({
-  tagName: TAG,
-  elementClass: MultiColumnList,
-  react: React,
-  events: {
-    onActiveIndexChange: "active-index-change" as EventName<CustomEvent<{ activeIndex: number }>>,
-    onMeasureChange: "measure-change" as EventName<MeasureChangeEvent>,
-  },
-});

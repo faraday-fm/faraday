@@ -1,7 +1,7 @@
 import { ReactiveController, ReactiveControllerHost, ReactiveElement } from "lit";
 import { RegisterCommandEvent, UnregisterCommandEvent } from "./events";
 import { CommandOptions } from "./types";
-import { isFocusWithin } from "../utils/isFocusWithin";
+import { isDescendant } from "../utils/isDescendant";
 
 export function command(options?: CommandOptions) {
   return (originalMethod: any, context: ClassMethodDecoratorContext<ReactiveElement>) => {
@@ -26,8 +26,9 @@ class CommandRegistration<HostElement extends ReactiveControllerHost & HTMLEleme
   }
 
   hostConnected(): void {
-    this.#isInsideFocus = document.hasFocus() && isFocusWithin(this.#host, document.activeElement);
+    this.#isInsideFocus = document.hasFocus() && isDescendant(this.#host, document.activeElement!);
     if (this.#options.whenFocusWithin) {
+      this.#host.addEventListener("focus", this.#onFocus, { capture: true });
       this.#host.addEventListener("focusin", this.#onFocusIn, true);
       this.#host.addEventListener("focusout", this.#onFocusOut, true);
     }
@@ -40,16 +41,23 @@ class CommandRegistration<HostElement extends ReactiveControllerHost & HTMLEleme
     this.#host.dispatchEvent(new UnregisterCommandEvent(this.#callback));
   }
 
-  #onFocusIn = () => {
-    if (document.hasFocus() && !this.#isInsideFocus) {
+  #onFocus = () => {
+    if (!this.#isInsideFocus) {
       this.#isInsideFocus = true;
       this.#host.dispatchEvent(new RegisterCommandEvent(this.#callback, this.#options));
     }
   };
 
+  #onFocusIn = () => {
+    // if (document.hasFocus() && !this.#isInsideFocus) {
+    //   this.#isInsideFocus = true;
+    //   this.#host.dispatchEvent(new RegisterCommandEvent(this.#callback, this.#options));
+    // }
+  };
+
   #onFocusOut = () => {
     setTimeout(() => {
-      if (!document.hasFocus() || !isFocusWithin(this.#host, document.activeElement)) {
+      if (!document.hasFocus() || !isDescendant(this.#host, document.activeElement!)) {
         this.#isInsideFocus = false;
         this.#host.dispatchEvent(new UnregisterCommandEvent(this.#callback));
       }

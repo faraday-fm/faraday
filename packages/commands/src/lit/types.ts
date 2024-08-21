@@ -9,6 +9,6 @@ export type CommandOptions = {
 };
 
 export type ContextOptions = {
-  name?: string;
+  name: string;
   whenFocusWithin?: boolean;
 };

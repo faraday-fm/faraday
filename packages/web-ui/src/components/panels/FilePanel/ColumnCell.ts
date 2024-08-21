@@ -52,7 +52,7 @@ export class ColumnCell extends LitElement {
     this.isTouchscreen = false;
   }
 
-  private onPointerDown(e: PointerEvent) {
+  #onPointerDown(e: PointerEvent) {
     if (!this.isTouchscreen) {
       e.stopPropagation();
       this.dispatchEvent(
@@ -64,7 +64,7 @@ export class ColumnCell extends LitElement {
     }
   }
 
-  private onOpen(isDoubleClick: boolean) {
+  #onOpen(isDoubleClick: boolean) {
     if (this.isTouchscreen && !isDoubleClick) {
       this.dispatchEvent(
         new CustomEvent("open", {
@@ -79,10 +79,10 @@ export class ColumnCell extends LitElement {
     return html`
       <div
         draggable="true"
-        class=${clsx("cell", this.cursorStyle !== 'hidden' && `${this.cursorStyle}-cursor`, this.selected && "selected")}
-        @pointerdown=${this.onPointerDown}
-        @click=${() => this.onOpen(false)}
-        @doubleclick=${() => this.onOpen(true)}
+        class=${clsx("cell", this.cursorStyle !== "hidden" && `${this.cursorStyle}-cursor`, this.selected && "selected")}
+        @pointerdown=${this.#onPointerDown}
+        @click=${() => this.#onOpen(false)}
+        @doubleclick=${() => this.#onOpen(true)}
       >
         <slot></slot>
       </div>

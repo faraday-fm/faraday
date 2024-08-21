@@ -45,7 +45,7 @@ export class ScrollableLit extends LitElement {
 
   @eventOptions({ passive: true })
   private onWheel(e: WheelEvent) {
-    this.updateScrollTop(e.deltaY);
+    this.#updateScrollTop(e.deltaY);
   }
 
   #touchStartY: number | undefined;
@@ -53,7 +53,7 @@ export class ScrollableLit extends LitElement {
   #velocity = 0;
   #isInertiaScrolling = false;
 
-  private onPointerDown = (event: PointerEvent) => {
+  #onPointerDown = (event: PointerEvent) => {
     if (!this.isTouchscreen) return;
 
     this.#touchStartY = event.clientY;
@@ -62,7 +62,7 @@ export class ScrollableLit extends LitElement {
     this.#velocity = 0;
   };
 
-  private onPointerMove = (event: PointerEvent) => {
+  #onPointerMove = (event: PointerEvent) => {
     if (!this.isTouchscreen || this.#touchStartY == null) return;
 
     const touchCurrentY = event.clientY;
@@ -72,7 +72,7 @@ export class ScrollableLit extends LitElement {
     }
 
     this.containerRef.value?.setPointerCapture(event.pointerId);
-    this.updateScrollTop(deltaY);
+    this.#updateScrollTop(deltaY);
     this.#touchStartY = touchCurrentY;
     const currentTime = performance.now();
     const timeDelta = currentTime - this.#touchStartTime;
@@ -83,19 +83,20 @@ export class ScrollableLit extends LitElement {
     event.preventDefault();
   };
 
-  private onPointerUp = (event: PointerEvent) => {
+  #onPointerUp = (event: PointerEvent) => {
     if (!this.isTouchscreen || this.#touchStartY == null) return;
 
     this.#touchStartY = undefined;
     this.containerRef.value?.releasePointerCapture(event.pointerId);
     const inertiaScroll = () => {
       if (Math.abs(this.#velocity) > 0.1) {
-        this.updateScrollTop(this.#velocity * this.velocityFactor);
+        this.#updateScrollTop(this.#velocity * this.velocityFactor);
         this.#velocity *= this.frictionFactor;
         requestAnimationFrame(inertiaScroll);
       } else {
         this.#isInertiaScrolling = false;
-        this.updateScrollTop(0);
+        this.#velocity = 0;
+        this.#updateScrollTop(0);
       }
     };
     if (!this.#isInertiaScrolling) {
@@ -104,7 +105,7 @@ export class ScrollableLit extends LitElement {
     }
   };
 
-  private updateScrollTop(scrollDelta: number) {
+  #updateScrollTop(scrollDelta: number) {
     const currScrollTop = this.fullScrollTop;
     let newScrollTop = currScrollTop + scrollDelta;
     newScrollTop = Math.min(newScrollTop, this.fullScrollHeight);
@@ -126,12 +127,12 @@ export class ScrollableLit extends LitElement {
       <div style=${"overflow: hidden; position: relative; touch-action: none;"}>
         <div
           ref=${ref(this.containerRef)}
-          style="position: absolute; inset: 0; pointer-events: auto"
+          style="position: absolute; inset: 0; pointer-events: auto;"
           @wheel=${this.onWheel}
-          @pointerdown=${this.onPointerDown}
-          @pointermove=${this.onPointerMove}
-          @pointerup=${this.onPointerUp}
-          @pointercancel=${this.onPointerUp}
+          @pointerdown=${this.#onPointerDown}
+          @pointermove=${this.#onPointerMove}
+          @pointerup=${this.#onPointerUp}
+          @pointercancel=${this.#onPointerUp}
         >
           <slot></slot>
         </div>

@@ -11,5 +11,5 @@ export default defineConfig({
     dir: "./dist",
   },
   external: ["parsimmon"],
-  plugins: [json(), commonjs(), typescript(), terser()],
+  plugins: [json(), commonjs(), typescript()],
 });

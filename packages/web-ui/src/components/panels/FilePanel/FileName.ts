@@ -3,9 +3,8 @@ import { createComponent } from "@lit/react";
 import { LitElement, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import React from "react";
+import { IconsCache } from "../../../lit-contexts/iconsCacheContext";
 import "./FileIcon";
-import { consume } from "@lit/context";
-import { IconsCache, iconsCacheContext } from "../../../lit-contexts/iconsCacheContext";
 
 @customElement("frdy-filename")
 export class FileName extends LitElement {

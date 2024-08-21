@@ -1,11 +1,8 @@
-import { command, context } from "@frdy/commands";
+import { context } from "@frdy/commands";
 import { Dirent, isDir } from "@frdy/sdk";
-import { createComponent, EventName } from "@lit/react";
-import clsx from "clsx";
 import { LitElement, PropertyValues, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { choose } from "lit/directives/choose.js";
-import React from "react";
 import { CursorPosition } from "../../../features/panels";
 import "../../../lit-contexts/GlyphSizeProvider";
 import { TabFilesView } from "../../../types";
@@ -18,11 +15,14 @@ const TAG = "frdy-file-panel";
 
 @customElement(TAG)
 export class FilePanel extends LitElement {
+  static shadowRootOptions: ShadowRootInit = {
+    ...LitElement.shadowRootOptions,
+    delegatesFocus: true,
+  };
+
   static styles = css`
     :host {
       display: grid;
-    }
-    .panel-root {
       width: 100%;
       height: 100%;
       position: relative;
@@ -31,10 +31,6 @@ export class FilePanel extends LitElement {
       display: grid;
       overflow: hidden;
       outline: none;
-      user-select: none;
-      &.-focused {
-        background-color: var(--panel-background-focus);
-      }
     }
     .panel-content {
       display: grid;
@@ -94,15 +90,16 @@ export class FilePanel extends LitElement {
     this.showCursorWhenBlurred = false;
   }
 
-  private _onActiveIndexChange = (e: CustomEvent<{ activeIndex: number }>) => {
+  #onActiveIndexChange = (e: CustomEvent<{ activeIndex: number }>) => {
     this.isFirstItem = e.detail.activeIndex === 0;
     this.isLastItem = e.detail.activeIndex === this.items.size() - 1;
   };
 
-  protected updated(_changedProperties: PropertyValues): void {
+  protected willUpdate(_changedProperties: PropertyValues): void {
     if (_changedProperties.has("items")) {
       this.totalItemsCount = this.items.size();
     }
+    super.willUpdate(_changedProperties);
   }
 
   protected render() {
@@ -111,40 +108,38 @@ export class FilePanel extends LitElement {
     const cursorStyle = "firm";
 
     return html`
-      <div class=${clsx("panel-root")}>
-        <frdy-glyph-size-provider>
-          <frdy-is-touch-screen-provider>
-            <div class="panel-content">
-              <div class="panel-columns">
-                ${choose(this.view?.type, [
-                  [
-                    "condensed",
-                    () => html`<frdy-condensed-view
-                      .view=${this.view as any /* TODO: think how to get rid of any */}
-                      .cursorStyle=${cursorStyle}
-                      .items=${this.items}
-                      .selectedItemNames=${this.selectedItemNames}
-                      @active-index-change=${this._onActiveIndexChange}
-                    ></frdy-condensed-view>`,
-                  ],
-                  [
-                    "full",
-                    () => html`<frdy-full-view
-                      .view=${this.view as any /* TODO: think how to get rid of any */}
-                      .cursorStyle=${cursorStyle}
-                      .items=${this.items}
-                      .selectedItemNames=${this.selectedItemNames}
-                      @active-index-change=${this._onActiveIndexChange}
-                    ></frdy-full-view>`,
-                  ],
-                ])}
-              </div>
-              <div class="file-info-panel"></div>
-              <div class="panel-footer">${`${bytesCount.toLocaleString()} bytes in ${filesCount.toLocaleString()} files`}</div>
+      <frdy-glyph-size-provider>
+        <frdy-is-touch-screen-provider>
+          <div class="panel-content" tabindex="0">
+            <div class="panel-columns">
+              ${choose(this.view?.type, [
+                [
+                  "condensed",
+                  () => html`<frdy-condensed-view
+                    .view=${this.view as any /* TODO: think how to get rid of any */}
+                    .cursorStyle=${cursorStyle}
+                    .items=${this.items}
+                    .selectedItemNames=${this.selectedItemNames}
+                    @active-index-change=${this.#onActiveIndexChange}
+                  ></frdy-condensed-view>`,
+                ],
+                [
+                  "full",
+                  () => html`<frdy-full-view
+                    .view=${this.view as any /* TODO: think how to get rid of any */}
+                    .cursorStyle=${cursorStyle}
+                    .items=${this.items}
+                    .selectedItemNames=${this.selectedItemNames}
+                    @active-index-change=${this.#onActiveIndexChange}
+                  ></frdy-full-view>`,
+                ],
+              ])}
             </div>
-          </frdy-is-touch-screen-provider>
-        </frdy-glyph-size-provider>
-      </div>
+            <div class="file-info-panel"></div>
+            <div class="panel-footer">${`${bytesCount.toLocaleString()} bytes in ${filesCount.toLocaleString()} files`}</div>
+          </div>
+        </frdy-is-touch-screen-provider>
+      </frdy-glyph-size-provider>
     `;
   }
 }
@@ -154,12 +149,3 @@ declare global {
     [TAG]: FilePanel;
   }
 }
-
-export const FilePanelReact = createComponent({
-  tagName: TAG,
-  elementClass: FilePanel,
-  react: React,
-  events: {
-    onActiveIndexChange: "active-index-change" as EventName<CustomEvent<{ activeIndex: number }>>,
-  },
-});

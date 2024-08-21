@@ -27,7 +27,6 @@ export class FullView extends View<TabFilesFullView> {
             ${map(range(columnDefs.length + 1), (i) => html`<div style=${i < columnDefs.length && "border-inline-end: 1px solid var(--panel-border);"}></div>`)}
           </div>
           <frdy-multicolumn-list
-            tabindex="0"
             .renderItem=${(i: number, isActive: boolean) => html`
               <frdy-column-cell
                 style="overflow:hidden;text-overflow: ellipsis;"

@@ -51,7 +51,7 @@ export class FileIcon extends LitElement {
   @property({ attribute: false })
   accessor icons!: IconsCache;
 
-  private _task = new Task(this, {
+  #task = new Task(this, {
     task: async ([filepath, isDir, isOpen]) => {
       if (!filepath) {
         return getDefaultIcon(isDir, isOpen);
@@ -62,7 +62,7 @@ export class FileIcon extends LitElement {
   });
 
   protected render() {
-    return this._task.render({
+    return this.#task.render({
       initial: () =>
         html`<img
           style="width:${this.size}px;height:${this.size}px"
