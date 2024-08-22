@@ -3,8 +3,6 @@ import { css, html, LitElement, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { repeat } from "lit/directives/repeat.js";
 import type { TabSetLayout } from "../../types";
-import React from "react";
-import { createComponent } from "@lit/react";
 import "./Tab";
 
 const TAG = "frdy-tabs";
@@ -21,7 +19,7 @@ export class Tabs extends LitElement {
       display: grid;
       grid-template-rows: auto 1fr;
     }
-    .tabsHeader {
+    .header {
       display: flex;
       color: var(--panel-header-foreground);
       background-color: var(--panel-header-background);
@@ -54,7 +52,7 @@ export class Tabs extends LitElement {
     }
 
     return html`
-      <div class="tabsHeader">
+      <div class="header">
         ${repeat(
           this.layout.children,
           (tab) => tab.id,
@@ -72,8 +70,8 @@ declare global {
   }
 }
 
-export const TabsReact = createComponent({
-  tagName: TAG,
-  elementClass: Tabs,
-  react: React,
-});
+// export const TabsReact = createComponent({
+//   tagName: TAG,
+//   elementClass: Tabs,
+//   react: React,
+// });

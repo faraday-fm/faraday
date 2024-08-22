@@ -2,5 +2,11 @@
   "files.associations": {
     "**/package.json": "json",
     "**/*.json": "jsonc"
+  },
+  "search.exclude": {
+    "**/.git": true,
+    "**/node_modules": true,
+    "**/dist": true,
+    "**/tmp": true
   }
 }

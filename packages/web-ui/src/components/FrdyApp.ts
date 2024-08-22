@@ -3,15 +3,20 @@ import { ContextProvider } from "@lit/context";
 import { createComponent } from "@lit/react";
 import { css, html, LitElement, PropertyValues } from "lit";
 import { customElement, property } from "lit/decorators.js";
+import { when } from "lit/directives/when.js";
 import React from "react";
 import keybindings from "../assets/keybindings.json";
+import { darkTheme } from "../features/themes/themes";
+import { CssVarsProvider } from "../lit-contexts/CssVarsProvider";
 import { createExtensionsContext, extensionsContext } from "../lit-contexts/extensionContext";
 import { createExtensionRepoContext, extensionRepoContext } from "../lit-contexts/extensionRepoContext";
 import { fsContext } from "../lit-contexts/fsContext";
 import { createIconThemeContext, iconThemeContext } from "../lit-contexts/iconThemeContext";
 import { createIconsCache, iconsCacheContext } from "../lit-contexts/iconsCacheContext";
 import { createSettingsContext, settingsContext } from "../lit-contexts/settingsContext";
-import { FaradayHost } from "../types";
+import { FaradayHost, NodeLayout } from "../types";
+import "./ActionBar";
+import "./Tabs/LayoutContainer";
 
 const TAG = "frdy-app";
 
@@ -20,6 +25,59 @@ export class FrdyApp extends LitElement {
   static styles = css`
     :host {
       display: contents;
+    }
+
+    .app {
+      -webkit-font-smoothing: antialiased;
+
+      ::-webkit-scrollbar {
+        display: none;
+      }
+
+      & :is(button, input) {
+        font-family: inherit;
+        text-rendering: inherit;
+        font-size: inherit;
+      }
+
+      font-family: var(--fontFamily);
+      text-rendering: geometricPrecision;
+      background-color: #172637;
+      height: 100%;
+      display: grid;
+      grid-template-rows: minmax(0, 1fr) auto;
+      flex-direction: column;
+      user-select: none;
+      -moz-user-select: none;
+      -webkit-user-select: none;
+      cursor: default;
+    }
+
+    .mainDiv {
+      grid-row: 1;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .terminalContainer {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+    }
+    .tabs {
+      display: grid;
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 0;
+      bottom: 17px;
+      grid-auto-flow: column;
+      grid-auto-columns: 1fr;
+      z-index: 0;
+    }
+    .footerDiv {
+      grid-row: 2;
+      overflow: hidden;
     }
   `;
 
@@ -30,9 +88,16 @@ export class FrdyApp extends LitElement {
   private _iconThemeProvider = new ContextProvider(this, { context: iconThemeContext });
   private _iconsCacheProvider = new ContextProvider(this, { context: iconsCacheContext });
   private _commandsProvider = new CommandsProvider(this, keybindings);
+  private _css = new CssVarsProvider(this);
 
   @property({ attribute: false })
   accessor host: FaradayHost | undefined;
+
+  @property({ attribute: false })
+  accessor layout: NodeLayout | undefined;
+
+  @property({ attribute: false })
+  accessor setLayout: ((layout: NodeLayout) => void) | undefined;
 
   @context({ name: "isDesktop" })
   accessor isDesktop = false;
@@ -86,6 +151,11 @@ export class FrdyApp extends LitElement {
     // setShowHiddenFiles((d) => !d)
   }
 
+  constructor() {
+    super();
+    this._css.setTheme(darkTheme);
+  }
+
   protected willUpdate(_changedProperties: PropertyValues): void {
     if (_changedProperties.has("host")) {
       const fs = this.host?.rootFs;
@@ -101,7 +171,19 @@ export class FrdyApp extends LitElement {
   }
 
   protected render() {
-    return html`<slot></slot>`;
+    return html`
+      <div class="app">
+        <div class="mainDiv">
+          <div class="terminalContainer"></div>
+          <div class="tabs">
+            ${when(this.layout, () => html`<frdy-layout-container .layout=${this.layout} direction="h" .setLayout=${this.setLayout}></frdy-layout-container>`)}
+          </div>
+        </div>
+        <div class="footerDiv">
+          <frdy-action-bar></frdy-action-bar>
+        </div>
+      </div>
+    `;
   }
 }
 

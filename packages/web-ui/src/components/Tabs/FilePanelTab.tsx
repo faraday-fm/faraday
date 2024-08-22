@@ -1,15 +1,13 @@
-import { createComponent, EventName } from "@lit/react";
+import { Dirent, FileSystemProvider, isDir, isHidden, readDir } from "@frdy/sdk";
+import { consume } from "@lit/context";
+import { Task } from "@lit/task";
 import { css, html, LitElement } from "lit";
 import { customElement, property } from "lit/decorators.js";
-import React from "react";
-import "../../lit-contexts/GlyphSizeProvider";
-import "../panels/FilePanel/FilePanel";
-import { TabFilesView } from "../../types";
-import { consume } from "@lit/context";
 import { fsContext } from "../../lit-contexts/fsContext";
-import { Dirent, FileSystemProvider, isDir, isHidden, readDir, readFile } from "@frdy/sdk";
-import { Task } from "@lit/task";
+import "../../lit-contexts/GlyphSizeProvider";
+import { TabFilesView } from "../../types";
 import { createList } from "../../utils/immutableList";
+import "../panels/FilePanel/FilePanel";
 
 const TAG = "frdy-file-panel-tab";
 
@@ -77,8 +75,8 @@ declare global {
   }
 }
 
-export const FilePanelTabReact = createComponent({
-  tagName: TAG,
-  elementClass: FilePanelTab,
-  react: React,
-});
+// export const FilePanelTabReact = createComponent({
+//   tagName: TAG,
+//   elementClass: FilePanelTab,
+//   react: React,
+// });

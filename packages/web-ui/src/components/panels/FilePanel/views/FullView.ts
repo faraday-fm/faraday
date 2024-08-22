@@ -1,9 +1,7 @@
-import { createComponent, EventName } from "@lit/react";
 import { html } from "lit";
 import { customElement } from "lit/decorators.js";
 import { map } from "lit/directives/map.js";
 import { range } from "lit/directives/range.js";
-import React from "react";
 import "../../../../lit-contexts/GlyphSizeProvider";
 import { TabFilesFullView } from "../../../../types";
 import "../ColumnCell";
@@ -56,11 +54,11 @@ declare global {
   }
 }
 
-export const FullViewReact = createComponent({
-  tagName: TAG,
-  elementClass: FullView,
-  react: React,
-  events: {
-    onActiveIndexChange: "active-index-change" as EventName<CustomEvent<{ activeIndex: number }>>,
-  },
-});
+// export const FullViewReact = createComponent({
+//   tagName: TAG,
+//   elementClass: FullView,
+//   react: React,
+//   events: {
+//     onActiveIndexChange: "active-index-change" as EventName<CustomEvent<{ activeIndex: number }>>,
+//   },
+// });

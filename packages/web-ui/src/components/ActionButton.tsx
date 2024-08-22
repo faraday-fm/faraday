@@ -1,7 +1,5 @@
-import { createComponent } from "@lit/react";
 import { css, html, LitElement } from "lit";
 import { customElement, property } from "lit/decorators.js";
-import React from "react";
 
 const TAG = "frdy-action-button";
 
@@ -55,8 +53,8 @@ declare global {
   }
 }
 
-export const ActionButtonReact = createComponent({
-  tagName: TAG,
-  elementClass: ActionButton,
-  react: React,
-});
+// export const ActionButtonReact = createComponent({
+//   tagName: TAG,
+//   elementClass: ActionButton,
+//   react: React,
+// });

@@ -1,9 +1,7 @@
 import { consume } from "@lit/context";
-import { createComponent } from "@lit/react";
-import { LitElement, css, html } from "lit";
+import { LitElement, html } from "lit";
 import { customElement, eventOptions, property } from "lit/decorators.js";
 import { type Ref, createRef, ref } from "lit/directives/ref.js";
-import React from "react";
 import { isTouchScreenContext } from "../../../lit-contexts/IsTouchScreenProvider";
 
 const TAG = "frdy-scrollable";
@@ -142,11 +140,11 @@ declare global {
   }
 }
 
-export const ScrollableReact = createComponent({
-  tagName: TAG,
-  elementClass: ScrollableLit,
-  react: React,
-  events: {
-    onScroll: "scroll",
-  },
-});
+// export const ScrollableReact = createComponent({
+//   tagName: TAG,
+//   elementClass: ScrollableLit,
+//   react: React,
+//   events: {
+//     onScroll: "scroll",
+//   },
+// });

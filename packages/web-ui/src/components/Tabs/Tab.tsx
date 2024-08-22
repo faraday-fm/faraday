@@ -1,8 +1,6 @@
-import { createComponent } from "@lit/react";
 import { css, html, LitElement } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { choose } from "lit/directives/choose.js";
-import React from "react";
 import type { TabLayout } from "../../types";
 import "./FilePanelTab";
 
@@ -31,8 +29,8 @@ declare global {
   }
 }
 
-export const TabReact = createComponent({
-  tagName: TAG,
-  elementClass: Tab,
-  react: React,
-});
+// export const TabReact = createComponent({
+//   tagName: TAG,
+//   elementClass: Tab,
+//   react: React,
+// });

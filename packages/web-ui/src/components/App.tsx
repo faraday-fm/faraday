@@ -1,17 +1,13 @@
 import JSON5 from "json5";
 import { useEffect, useRef, useState } from "react";
 import defaultLayout from "../assets/layout.json";
-import { LayoutContainer } from "../components/LayoutContainer";
 import { useFaradayHost } from "../contexts/faradayHostContext";
 import { useFileContent, useFs } from "../features/fs/hooks";
 import { usePanels } from "../features/panels";
 import type { TabLayout } from "../types";
-import { ActionBarReact } from "./ActionBar";
-import CopyDialog from "./dialogs/CopyDialog";
-import DeleteDialog from "./dialogs/DeleteDialog";
 import { FrdyAppReact } from "./FrdyApp";
 
-const app = 'app'
+const app = "app";
 // css`
 //   -webkit-font-smoothing: antialiased;
 
@@ -39,13 +35,13 @@ const app = 'app'
 //   -webkit-user-select: none;
 //   cursor: default;
 // `;
-const mainDiv = 'mainDiv'
+const mainDiv = "mainDiv";
 // css`
 //   grid-row: 1;
 //   position: relative;
 //   overflow: hidden;
 // `;
-const terminalContainer = 'terminalContainer'
+const terminalContainer = "terminalContainer";
 // css`
 //   position: absolute;
 //   top: 0;
@@ -54,7 +50,7 @@ const terminalContainer = 'terminalContainer'
 //   right: 0;
 //   z-index: 0;
 // `;
-const tabsContainer = 'tabsContainer'
+const tabsContainer = "tabsContainer";
 // css`
 //   display: grid;
 //   position: absolute;
@@ -66,7 +62,7 @@ const tabsContainer = 'tabsContainer'
 //   grid-auto-columns: 1fr;
 //   z-index: 0;
 // `;
-const footerDiv = 'footerDiv'
+const footerDiv = "footerDiv";
 // css`
 //   grid-row: 2;
 //   overflow: hidden;
@@ -80,7 +76,6 @@ export function App() {
   const rootRef = useRef<HTMLDivElement>(null);
   const [copyDialogOpen, setCopyDialogOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-  const [panelsOpen, setPanelsOpen] = useState(true);
   const [executing] = useState(false);
   const { layout, setLayout, focusNextPanel, enterDir } = usePanels();
   const host = useFaradayHost();
@@ -124,33 +119,5 @@ export function App() {
     return null;
   }
 
-  return (
-    <FrdyAppReact host={host}>
-      <style>@import "/frdy.css"</style>
-      <div className={app} ref={rootRef}>
-        <div className={mainDiv}>
-          <div className={terminalContainer}>
-            {/* <Suspense fallback={<div />}>
-              <Terminal fullScreen={!panelsOpen} onRunStart={onRunStart} onRunEnd={onRunEnd} />
-            </Suspense> */}
-          </div>
-          <div
-            className={tabsContainer}
-            style={{
-              opacity: !executing && panelsOpen ? 1 : 0,
-              pointerEvents: !executing && panelsOpen ? "all" : "none",
-            }}
-          >
-            {layout && <LayoutContainer layout={layout} direction="h" setLayout={setLayout} />}
-          </div>
-        </div>
-        <div className={footerDiv}>
-          <ActionBarReact />
-        </div>
-        <CopyDialog open={copyDialogOpen} onClose={() => setCopyDialogOpen(false)} />
-        <DeleteDialog open={deleteDialogOpen} onClose={() => setDeleteDialogOpen(false)} />
-        {/* <TopMenu /> */}
-      </div>
-    </FrdyAppReact>
-  );
+  return <FrdyAppReact host={host} layout={layout} setLayout={setLayout} />;
 }

@@ -1,16 +1,14 @@
 import { command } from "@frdy/commands";
 import { consume } from "@lit/context";
-import { EventName, createComponent } from "@lit/react";
 import { LitElement, type PropertyValues, type TemplateResult, css, html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
+import { map } from "lit/directives/map.js";
 import { range } from "lit/directives/range.js";
 import { type Ref, createRef, ref } from "lit/directives/ref.js";
 import { repeat } from "lit/directives/repeat.js";
-import React from "react";
 import { glyphSizeContext } from "../../../lit-contexts/GlyphSizeProvider";
 import { clamp } from "../../../utils/number";
 import "./ScrollableContainer";
-import { map } from "lit/directives/map.js";
 
 const TAG = "frdy-multicolumn-list";
 

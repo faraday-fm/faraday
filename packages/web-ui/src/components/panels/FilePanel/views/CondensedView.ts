@@ -1,7 +1,5 @@
-import { createComponent, EventName } from "@lit/react";
 import { html } from "lit";
 import { customElement } from "lit/decorators.js";
-import React from "react";
 import "../../../../lit-contexts/GlyphSizeProvider";
 import { TabFilesCondensedView } from "../../../../types";
 import "../ColumnCell";
@@ -43,11 +41,11 @@ declare global {
   }
 }
 
-export const CondensedViewReact = createComponent({
-  tagName: TAG,
-  elementClass: CondensedView,
-  react: React,
-  events: {
-    onActiveIndexChange: "active-index-change" as EventName<CustomEvent<{ activeIndex: number }>>,
-  },
-});
+// export const CondensedViewReact = createComponent({
+//   tagName: TAG,
+//   elementClass: CondensedView,
+//   react: React,
+//   events: {
+//     onActiveIndexChange: "active-index-change" as EventName<CustomEvent<{ activeIndex: number }>>,
+//   },
+// });

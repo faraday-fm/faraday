@@ -1,8 +1,6 @@
 import { type Dirent, isDir, isHidden } from "@frdy/sdk";
-import { createComponent } from "@lit/react";
 import { LitElement, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
-import React from "react";
 import { IconsCache } from "../../../lit-contexts/iconsCacheContext";
 import "./FileIcon";
 
@@ -50,8 +48,8 @@ declare global {
   }
 }
 
-export const FileNameReact = createComponent({
-  tagName: "frdy-filename",
-  elementClass: FileName,
-  react: React,
-});
+// export const FileNameReact = createComponent({
+//   tagName: "frdy-filename",
+//   elementClass: FileName,
+//   react: React,
+// });

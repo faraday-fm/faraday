@@ -1,12 +1,10 @@
 import type { Dirent } from "@frdy/sdk";
-import { isDir } from "@frdy/sdk";
 import { produce } from "immer";
 import { atom, useAtom } from "jotai";
 import { useCallback } from "react";
-import type {  NodeLayout, TabLayout, TabSetLayout } from "../../types";
+import type { NodeLayout, TabLayout } from "../../types";
 import { type List, createList } from "../../utils/immutableList";
 import { traverseLayout, traverseLayoutRows } from "../../utils/layout";
-import { combine, truncateLastDir } from "../../utils/path";
 import type { CursorPosition, PanelState } from "./types";
 
 const activeTabAtom = atom<TabLayout>();
