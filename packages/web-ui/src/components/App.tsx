@@ -1,16 +1,15 @@
 import JSON5 from "json5";
 import { useEffect, useRef, useState } from "react";
 import defaultLayout from "../assets/layout.json";
-import { ActionsBar } from "../components/ActionsBar";
 import { LayoutContainer } from "../components/LayoutContainer";
 import { useFaradayHost } from "../contexts/faradayHostContext";
-import { useGlyphSize } from "../contexts/glyphSizeContext";
 import { useFileContent, useFs } from "../features/fs/hooks";
 import { usePanels } from "../features/panels";
+import { useSettings } from "../features/settings/settings";
 import type { TabLayout } from "../types";
+import { ActionBarReact } from "./ActionBar";
 import CopyDialog from "./dialogs/CopyDialog";
 import DeleteDialog from "./dialogs/DeleteDialog";
-import { useSettings } from "../features/settings/settings";
 import { FrdyAppReact } from "./FrdyApp";
 
 const app = 'app'
@@ -120,7 +119,6 @@ export function App() {
   // useCommandBinding("switchShowHiddenFiles", () => setShowHiddenFiles((d) => !d));
 
   // const leftItems = useMemo(() => Array.from(Array(300).keys()).map((i) => ({ name: i.toString(), size: Math.round(Math.random() * 100000000) })), []);
-  const { height: glyphHeight } = useGlyphSize();
 
   // const onRunStart = useCallback(() => setExecuting(true), []);
   // const onRunEnd = useCallback(() => setExecuting(false), []);
@@ -144,14 +142,13 @@ export function App() {
             style={{
               opacity: !executing && panelsOpen ? 1 : 0,
               pointerEvents: !executing && panelsOpen ? "all" : "none",
-              bottom: glyphHeight,
             }}
           >
             {layout && <LayoutContainer layout={layout} direction="h" setLayout={setLayout} />}
           </div>
         </div>
         <div className={footerDiv}>
-          <ActionsBar />
+          <ActionBarReact />
         </div>
         <CopyDialog open={copyDialogOpen} onClose={() => setCopyDialogOpen(false)} />
         <DeleteDialog open={deleteDialogOpen} onClose={() => setDeleteDialogOpen(false)} />

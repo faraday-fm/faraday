@@ -1,19 +1,62 @@
-import { memo } from "react";
+import { createComponent } from "@lit/react";
+import { css, html, LitElement } from "lit";
+import { customElement, property } from "lit/decorators.js";
+import React from "react";
 
-const actionButton = "actionButton"; //css`display: flex; flex-wrap: nowrap; align-items: stretch; padding-right: 0.5rem; &:last-child { padding-right: 0; }`;
-const fnKeyClass = "fnKeyClass"; // css`color: var(--actionBar-keyForeground); background-color: var(--actionBar-keyBackground);`;
-const headerButton = "headerButton"; // css`text-align: left; width: 100%; background-color: var(--actionBar-buttonBackground); color: var(--actionBar-buttonForeground); padding: 0; cursor: pointer;`;
+const TAG = "frdy-action-button";
 
-interface ActionButtonProps {
-  fnKey: string;
-  header: string;
+@customElement(TAG)
+export class ActionButton extends LitElement {
+  static styles = css`
+    :host {
+      display: contents;
+    }
+    .actionButton {
+      display: flex;
+      flex-wrap: nowrap;
+      align-items: stretch;
+      &:last-child {
+        padding-right: 0;
+      }
+    }
+    .fnKeyClass {
+      color: var(--actionBar-keyForeground);
+      background-color: var(--actionBar-keyBackground);
+    }
+    .headerButton {
+      text-align: left;
+      width: 100%;
+      background-color: var(--actionBar-buttonBackground);
+      color: var(--actionBar-buttonForeground);
+      padding: 0;
+      cursor: pointer;
+    }
+  `;
+
+  @property()
+  accessor fnKey: string = "";
+
+  @property()
+  accessor header: string = "";
+
+  protected render() {
+    return html`
+      <span class="actionButton" @pointerdown=${(e: PointerEvent) => e.preventDefault()}>
+        <span class="fnKeyClass">${this.fnKey}</span>
+        <div class="headerButton">${this.header}</div>
+      </span>
+    `;
+  }
 }
 
-export const ActionButton = memo(function ActionButton({ fnKey, header }: ActionButtonProps) {
-  return (
-    <span className={actionButton} onMouseDown={(e) => e.preventDefault()}>
-      <span className={fnKeyClass}>{fnKey}</span>
-      <div className={headerButton}>{header}</div>
-    </span>
-  );
+declare global {
+  interface HTMLElementTagNameMap {
+    [TAG]: ActionButton;
+  }
+}
+
+export const ActionButtonReact = createComponent({
+  tagName: TAG,
+  elementClass: ActionButton,
+  react: React,
 });

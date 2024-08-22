@@ -1,6 +1,6 @@
 import { type MutableRefObject, useCallback, useRef } from "react";
 import type { NodeLayout, RowLayout } from "../types";
-import { TabsReact } from "./Tabs/TabsLit";
+import { TabsReact } from "./Tabs/Tabs";
 
 const layoutSeparator = "layoutSeparator";
 // css`position: relative;

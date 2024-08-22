@@ -1,9 +1,9 @@
-import type { ReactNode } from "react";
+// import type { ReactNode } from "react";
 
-interface HotKeyProps {
-  children: (hotKey: string) => ReactNode;
-}
+// interface HotKeyProps {
+//   children: (hotKey: string) => ReactNode;
+// }
 
-export function HotKey({ children }: HotKeyProps) {
-  return <>{children("1")}</>;
-}
+// export function HotKey({ children }: HotKeyProps) {
+//   return <>{children("1")}</>;
+// }

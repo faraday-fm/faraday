@@ -1,10 +1,10 @@
+import { ContextProvider, createContext } from "@lit/context";
 import type { ReactiveController } from "lit";
 import { SetContextVariableEventName, UnsetContextVariableEventName } from "../consts";
+import { isDescendant } from "../utils/isDescendant";
 import { parser, type Expression } from "../utils/whenClauseParser";
 import { SetContextVariableEvent, UnsetContextVariableEvent } from "./events";
 import { ContextOptions, HostElement } from "./types";
-import { ContextProvider, createContext } from "@lit/context";
-import { isDescendant } from "../utils/isDescendant";
 
 type ContextVariables = Map<string, Map<HTMLElement, { options: ContextOptions; value: unknown }>>;
 

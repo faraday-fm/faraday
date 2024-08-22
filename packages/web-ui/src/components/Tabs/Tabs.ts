@@ -5,7 +5,7 @@ import { repeat } from "lit/directives/repeat.js";
 import type { TabSetLayout } from "../../types";
 import React from "react";
 import { createComponent } from "@lit/react";
-import "./TabLit";
+import "./Tab";
 
 const TAG = "frdy-tabs";
 
