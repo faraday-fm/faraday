@@ -10,11 +10,6 @@ const TAG = "frdy-scrollable";
 
 @customElement(TAG)
 export class ScrollableLit extends LitElement {
-  static styles = css`
-    :host {
-      display: grid;
-    }
-  `;
 
   private containerRef: Ref<HTMLInputElement> = createRef();
 

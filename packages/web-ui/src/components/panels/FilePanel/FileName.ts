@@ -12,19 +12,18 @@ export class FileName extends LitElement {
     :host {
       display: flex;
       align-items: center;
+      overflow: hidden;
     }
-    .line-item {
+    .root {
+      display: flex;
+      align-items: center;
+      overflow: hidden;
+    }
+    .name {
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
       padding: 0 calc(0.25rem - 1px);
-      flex-grow: 1;
-      display: flex;
-    }
-    .file-name {
-      flex-grow: 1;
-      overflow: hidden;
-      text-overflow: ellipsis;
     }
   `;
 
@@ -37,11 +36,9 @@ export class FileName extends LitElement {
   protected render() {
     if (!this.dirent) return null;
     return html`
-      <div style="display: flex; align-items: center; ${isHidden(this.dirent) && "opacity: 0.5"};">
+      <div class="root" style=${isHidden(this.dirent) && "opacity: 0.5"}>
         <frdy-fileicon .filepath=${this.dirent.path} .isDir=${isDir(this.dirent)} .icons=${this.icons}></frdy-fileicon>
-        <span class="line-item">
-          <span class="file-name"> ${this.dirent.filename} </span>
-        </span>
+        <span class="name">${this.dirent.filename}</span>
       </div>
     `;
   }

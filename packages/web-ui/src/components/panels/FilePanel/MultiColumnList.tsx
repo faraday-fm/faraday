@@ -52,7 +52,7 @@ export class MultiColumnList extends LitElement {
     .item {
       display: grid;
       overflow: hidden;
-      box-sizing: border-box˝;
+      box-sizing: border-box;
     }
   `;
 
@@ -250,7 +250,7 @@ export class MultiColumnList extends LitElement {
             (i) =>
               html`<div
                 class="item"
-                style="width:${100 / this.#columnCount}%;height:${this.#getItemHeight()}px;overflow:hidden"
+                style="width:${100 / this.#columnCount}%;height:${this.#getItemHeight()}px"
                 @activate=${(e: CustomEvent) => this.#onActivate(e, i)}
                 @open=${(e: CustomEvent) => {
                   this.dispatchEvent(new CustomEvent("open", { detail: { index: i } }));
