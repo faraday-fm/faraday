@@ -1,10 +1,8 @@
 // import { memo } from "react";
 // import { ActionButtonReact } from "./ActionButton";
 
-import { createComponent } from "@lit/react";
 import { css, html, LitElement } from "lit";
 import { customElement } from "lit/decorators.js";
-import React from "react";
 import "./ActionButton";
 
 const TAG = "frdy-action-bar";
@@ -53,8 +51,8 @@ declare global {
   }
 }
 
-export const ActionBarReact = createComponent({
-  tagName: TAG,
-  elementClass: ActionBar,
-  react: React,
-});
+// export const ActionBarReact = createComponent({
+//   tagName: TAG,
+//   elementClass: ActionBar,
+//   react: React,
+// });

@@ -1,16 +1,17 @@
 import { command, CommandsProvider, context } from "@frdy/commands";
 import { ContextProvider } from "@lit/context";
-import { createComponent } from "@lit/react";
+import { Task } from "@lit/task";
+import JSON5 from "json5";
 import { css, html, LitElement, PropertyValues } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import { customElement, property, state } from "lit/decorators.js";
 import { when } from "lit/directives/when.js";
-import React from "react";
 import keybindings from "../assets/keybindings.json";
 import { darkTheme } from "../features/themes/themes";
 import { CssVarsProvider } from "../lit-contexts/CssVarsProvider";
 import { createExtensionsContext, extensionsContext } from "../lit-contexts/extensionContext";
 import { createExtensionRepoContext, extensionRepoContext } from "../lit-contexts/extensionRepoContext";
 import { fsContext } from "../lit-contexts/fsContext";
+import { readFileString } from "../lit-contexts/fsUtils";
 import { createIconThemeContext, iconThemeContext } from "../lit-contexts/iconThemeContext";
 import { createIconsCache, iconsCacheContext } from "../lit-contexts/iconsCacheContext";
 import { createSettingsContext, settingsContext } from "../lit-contexts/settingsContext";
@@ -93,12 +94,6 @@ export class FrdyApp extends LitElement {
   @property({ attribute: false })
   accessor host: FaradayHost | undefined;
 
-  @property({ attribute: false })
-  accessor layout: NodeLayout | undefined;
-
-  @property({ attribute: false })
-  accessor setLayout: ((layout: NodeLayout) => void) | undefined;
-
   @context({ name: "isDesktop" })
   accessor isDesktop = false;
 
@@ -151,6 +146,9 @@ export class FrdyApp extends LitElement {
     // setShowHiddenFiles((d) => !d)
   }
 
+  @state()
+  private accessor layout: NodeLayout | undefined;
+
   constructor() {
     super();
     this._css.setTheme(darkTheme);
@@ -170,20 +168,41 @@ export class FrdyApp extends LitElement {
     }
   }
 
+  #layoutTask = new Task(this, {
+    task: async ([fs]) => {
+      const layout: NodeLayout = JSON5.parse(await readFileString(fs, ".faraday/layout.json")) as any;
+      this.layout = layout;
+      return layout;
+    },
+    args: () => [this._fsProvider.value] as const,
+  });
+
   protected render() {
-    return html`
-      <div class="app">
-        <div class="mainDiv">
-          <div class="terminalContainer"></div>
-          <div class="tabs">
-            ${when(this.layout, () => html`<frdy-layout-container .layout=${this.layout} direction="h" .setLayout=${this.setLayout}></frdy-layout-container>`)}
+    return this.#layoutTask.render({
+      complete: () => html`
+        <div class="app">
+          <div class="mainDiv">
+            <div class="terminalContainer"></div>
+            <div class="tabs">
+              ${when(
+                this.layout,
+                () =>
+                  html`<frdy-layout-container
+                    .layout=${this.layout}
+                    direction="h"
+                    .setLayout=${(l: NodeLayout) => {
+                      this.layout = l;
+                    }}
+                  ></frdy-layout-container>`
+              )}
+            </div>
+          </div>
+          <div class="footerDiv">
+            <frdy-action-bar></frdy-action-bar>
           </div>
         </div>
-        <div class="footerDiv">
-          <frdy-action-bar></frdy-action-bar>
-        </div>
-      </div>
-    `;
+      `,
+    });
   }
 }
 
@@ -193,8 +212,8 @@ declare global {
   }
 }
 
-export const FrdyAppReact = createComponent({
-  tagName: TAG,
-  elementClass: FrdyApp,
-  react: React,
-});
+// export const FrdyAppReact = createComponent({
+//   tagName: TAG,
+//   elementClass: FrdyApp,
+//   react: React,
+// });

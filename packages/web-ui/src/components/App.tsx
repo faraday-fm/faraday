@@ -1,123 +1,26 @@
-import JSON5 from "json5";
-import { useEffect, useRef, useState } from "react";
-import defaultLayout from "../assets/layout.json";
-import { useFaradayHost } from "../contexts/faradayHostContext";
-import { useFileContent, useFs } from "../features/fs/hooks";
-import { usePanels } from "../features/panels";
-import type { TabLayout } from "../types";
-import { FrdyAppReact } from "./FrdyApp";
+// import { useFaradayHost } from "../contexts/faradayHostContext";
+// import { FrdyAppReact } from "./FrdyApp";
 
-const app = "app";
-// css`
-//   -webkit-font-smoothing: antialiased;
+// export function App() {
+//   const host = useFaradayHost();
 
-//   ::-webkit-scrollbar {
-//     display: none;
-//   }
+//   // useSetContextVariable("isDesktop", true, host.config.isDesktop());
+//   // useSetContextVariable("devMode", true, devMode);
 
-//   /* font-size: 13.5px; */
+//   // useCommandBinding("togglePanels", () => setPanelsOpen((p) => !p));
+//   // useCommandBinding("focusNextPanel", () => focusNextPanel(false));
+//   // useCommandBinding("focusPrevPanel", () => focusNextPanel(true));
+//   // useCommandBinding("open", () => enterDir());
+//   // useCommandBinding("openShell", () => setCopyDialogOpen(true));
+//   // useCommandBinding("copyFiles", () => setCopyDialogOpen(true));
+//   // useCommandBinding("deleteFiles", () => setDeleteDialogOpen(true));
+//   // useCommandBinding("switchDevMode", () => setDevMode((d) => !d));
+//   // useCommandBinding("switchShowHiddenFiles", () => setShowHiddenFiles((d) => !d));
 
-//   & :is(button, input) {
-//     font-family: inherit;
-//     text-rendering: inherit;
-//     font-size: inherit;
-//   }
+//   // const leftItems = useMemo(() => Array.from(Array(300).keys()).map((i) => ({ name: i.toString(), size: Math.round(Math.random() * 100000000) })), []);
 
-//   font-family: var(--fontFamily);
-//   text-rendering: geometricPrecision;
-//   background-color: #172637;
-//   height: 100%;
-//   display: grid;
-//   grid-template-rows: minmax(0, 1fr) auto;
-//   flex-direction: column;
-//   user-select: none;
-//   -moz-user-select: none;
-//   -webkit-user-select: none;
-//   cursor: default;
-// `;
-const mainDiv = "mainDiv";
-// css`
-//   grid-row: 1;
-//   position: relative;
-//   overflow: hidden;
-// `;
-const terminalContainer = "terminalContainer";
-// css`
-//   position: absolute;
-//   top: 0;
-//   bottom: 0;
-//   left: 0;
-//   right: 0;
-//   z-index: 0;
-// `;
-const tabsContainer = "tabsContainer";
-// css`
-//   display: grid;
-//   position: absolute;
-//   left: 0;
-//   right: 0;
-//   top: 0;
-//   bottom: 17px;
-//   grid-auto-flow: column;
-//   grid-auto-columns: 1fr;
-//   z-index: 0;
-// `;
-const footerDiv = "footerDiv";
-// css`
-//   grid-row: 2;
-//   overflow: hidden;
-// `;
+//   // const onRunStart = useCallback(() => setExecuting(true), []);
+//   // const onRunEnd = useCallback(() => setExecuting(false), []);
 
-// const Terminal = lazy(() => import("@components/Terminal/Terminal"));
-
-const decoder = new TextDecoder();
-
-export function App() {
-  const rootRef = useRef<HTMLDivElement>(null);
-  const [copyDialogOpen, setCopyDialogOpen] = useState(false);
-  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-  const [executing] = useState(false);
-  const { layout, setLayout, focusNextPanel, enterDir } = usePanels();
-  const host = useFaradayHost();
-  const fs = useFs();
-
-  const { content: layoutContent, error: layoutLoadingError } = useFileContent(".faraday/layout.json");
-  useEffect(() => {
-    if (layoutContent) {
-      try {
-        console.info("Loading layout...");
-        const layout: TabLayout = JSON5.parse(decoder.decode(layoutContent));
-        console.info("Loaded layout.");
-        setLayout(layout);
-      } catch {
-        setLayout(defaultLayout as any);
-      }
-    } else if (layoutLoadingError) {
-      setLayout(defaultLayout as any);
-    }
-  }, [layoutContent, layoutLoadingError, setLayout]);
-
-  // useSetContextVariable("isDesktop", true, host.config.isDesktop());
-  // useSetContextVariable("devMode", true, devMode);
-
-  // useCommandBinding("togglePanels", () => setPanelsOpen((p) => !p));
-  // useCommandBinding("focusNextPanel", () => focusNextPanel(false));
-  // useCommandBinding("focusPrevPanel", () => focusNextPanel(true));
-  // useCommandBinding("open", () => enterDir());
-  // useCommandBinding("openShell", () => setCopyDialogOpen(true));
-  // useCommandBinding("copyFiles", () => setCopyDialogOpen(true));
-  // useCommandBinding("deleteFiles", () => setDeleteDialogOpen(true));
-  // useCommandBinding("switchDevMode", () => setDevMode((d) => !d));
-  // useCommandBinding("switchShowHiddenFiles", () => setShowHiddenFiles((d) => !d));
-
-  // const leftItems = useMemo(() => Array.from(Array(300).keys()).map((i) => ({ name: i.toString(), size: Math.round(Math.random() * 100000000) })), []);
-
-  // const onRunStart = useCallback(() => setExecuting(true), []);
-  // const onRunEnd = useCallback(() => setExecuting(false), []);
-
-  if (!layout) {
-    return null;
-  }
-
-  return <FrdyAppReact host={host} layout={layout} setLayout={setLayout} />;
-}
+//   return <FrdyAppReact host={host} />;
+// }

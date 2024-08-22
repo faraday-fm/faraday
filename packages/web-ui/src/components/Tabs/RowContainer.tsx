@@ -3,7 +3,7 @@ import { customElement, property } from "lit/decorators.js";
 import { createRef, ref, Ref } from "lit/directives/ref.js";
 import { when } from "lit/directives/when.js";
 import type { RowLayout } from "../../types";
-import "./LayoutContainer";
+// import "./LayoutContainer";
 import "./Separator";
 import "./Tabs";
 
