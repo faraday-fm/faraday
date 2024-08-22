@@ -7,7 +7,7 @@ import "../panels/FilePanel/FilePanel";
 import { TabFilesView } from "../../types";
 import { consume } from "@lit/context";
 import { fsContext } from "../../lit-contexts/fsContext";
-import { Dirent, FileSystemProvider, isDir, isHidden } from "@frdy/sdk";
+import { Dirent, FileSystemProvider, isDir, isHidden, readDir, readFile } from "@frdy/sdk";
 import { Task } from "@lit/task";
 import { createList } from "../../utils/immutableList";
 
@@ -54,14 +54,11 @@ export class FilePanelTab extends LitElement {
       if (!path) {
         return [];
       }
-      const handle = await this.fs.openDir(path, options);
-      const dir = await this.fs.readDir(handle, options);
-      await this.fs.close(handle);
-      let files = dir.files;
+      let files = await readDir(this.fs, path, options);
       if (!showHidden) {
         files = files.filter((f) => !isHidden(f));
       }
-      files = files.sort(fsCompare);
+      files.sort(fsCompare);
       return files;
     },
     args: () => [this.path, this.showHidden] as const,

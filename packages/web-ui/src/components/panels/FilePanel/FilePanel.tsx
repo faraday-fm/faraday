@@ -3,13 +3,13 @@ import { Dirent, isDir } from "@frdy/sdk";
 import { LitElement, PropertyValues, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { choose } from "lit/directives/choose.js";
-import { CursorPosition } from "../../../features/panels";
 import "../../../lit-contexts/GlyphSizeProvider";
 import { TabFilesView } from "../../../types";
 import { List, createList } from "../../../utils/immutableList";
 import "./ScrollableContainer";
 import "./views/CondensedView";
 import "./views/FullView";
+import "./FileInfo";
 
 const TAG = "frdy-file-panel";
 
@@ -55,11 +55,14 @@ export class FilePanel extends LitElement {
   @property({ attribute: false })
   accessor view: TabFilesView | undefined;
 
-  @property({ attribute: false })
-  accessor fileCursor: CursorPosition | undefined;
-
   @property({ type: Boolean })
   accessor showCursorWhenBlurred: boolean;
+
+  @property({ attribute: false })
+  accessor activeIndex = 0;
+
+  @property({ attribute: false })
+  accessor activeItem: Dirent | undefined;
 
   @property()
   @context({ name: "filePanel.path", whenFocusWithin: true })
@@ -75,10 +78,10 @@ export class FilePanel extends LitElement {
   accessor isLastItem = false;
 
   @context({ name: "filePanel.activeItem", whenFocusWithin: true })
-  accessor activeItem = ""; // cursor.activeName
+  accessor activeItemName: string | undefined;
 
   @context({ name: "filePanel.totalItemsCount", whenFocusWithin: true })
-  accessor totalItemsCount = 0; // items.size()
+  accessor totalItemsCount = 0;
 
   @context({ name: "filePanel.selectedItemsCount", whenFocusWithin: true })
   accessor selectedItemsCount = 0; // selectedItemNames.size()
@@ -91,13 +94,21 @@ export class FilePanel extends LitElement {
   }
 
   #onActiveIndexChange = (e: CustomEvent<{ activeIndex: number }>) => {
-    this.isFirstItem = e.detail.activeIndex === 0;
-    this.isLastItem = e.detail.activeIndex === this.items.size() - 1;
+    this.activeIndex = e.detail.activeIndex;
+    this.#updateActiveItem();
+  };
+
+  #updateActiveItem = () => {
+    this.totalItemsCount = this.items.size();
+    this.activeItem = this.items.get(this.activeIndex);
+    this.activeItemName = this.activeItem?.filename;
+    this.isFirstItem = this.activeIndex === 0;
+    this.isLastItem = this.activeIndex === this.items.size() - 1;
   };
 
   protected willUpdate(_changedProperties: PropertyValues): void {
     if (_changedProperties.has("items")) {
-      this.totalItemsCount = this.items.size();
+      this.#updateActiveItem();
     }
     super.willUpdate(_changedProperties);
   }
@@ -135,7 +146,7 @@ export class FilePanel extends LitElement {
                 ],
               ])}
             </div>
-            <div class="file-info-panel"></div>
+            <frdy-file-info .file=${this.activeItem}></frdy-file-info>
             <div class="panel-footer">${`${bytesCount.toLocaleString()} bytes in ${filesCount.toLocaleString()} files`}</div>
           </div>
         </frdy-is-touch-screen-provider>

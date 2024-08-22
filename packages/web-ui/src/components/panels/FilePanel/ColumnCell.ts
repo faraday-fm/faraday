@@ -2,8 +2,6 @@ import clsx from "clsx";
 import { LitElement, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import type { CursorStyle } from "./types";
-import { consume } from "@lit/context";
-import { isTouchScreenContext } from "../../../lit-contexts/IsTouchScreenProvider";
 
 const TAG = "frdy-column-cell";
 

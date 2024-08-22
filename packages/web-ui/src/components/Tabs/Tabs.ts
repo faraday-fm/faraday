@@ -30,6 +30,7 @@ export class Tabs extends LitElement {
     .tabName {
       cursor: pointer;
       padding-left: 1ch;
+      white-space: nowrap;
       &:hover {
         color: var(--panel-header-foreground-focus);
         background-color: var(--panel-header-background-focus);
