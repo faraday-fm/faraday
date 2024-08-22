@@ -4,11 +4,12 @@ import { choose } from "lit/directives/choose.js";
 import type { NodeLayout, RowLayout, TabSetLayout } from "../../types";
 import "./RowContainer";
 import "./Tabs";
+import { FrdyElement } from "../FrdyElement";
 
 const TAG = "frdy-layout-container";
 
 @customElement(TAG)
-export class LayoutContainer extends LitElement {
+export class LayoutContainer extends FrdyElement {
   static styles = css`
     :host {
       display: grid;

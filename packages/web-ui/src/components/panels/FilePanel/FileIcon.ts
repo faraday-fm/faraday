@@ -4,6 +4,7 @@ import { LitElement, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 import { type IconsCache, iconsCacheContext } from "../../../lit-contexts/iconsCacheContext";
+import { FrdyElement } from "../../FrdyElement";
 
 const TAG = "frdy-fileicon";
 
@@ -22,7 +23,7 @@ function getDefaultIcon(isDir: boolean, isOpen: boolean) {
 }
 
 @customElement(TAG)
-export class FileIcon extends LitElement {
+export class FileIcon extends FrdyElement {
   static styles = css`
     :host {
       display: flex;

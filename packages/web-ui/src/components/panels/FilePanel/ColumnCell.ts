@@ -2,11 +2,12 @@ import clsx from "clsx";
 import { LitElement, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import type { CursorStyle } from "./types";
+import { FrdyElement } from "../../FrdyElement";
 
 const TAG = "frdy-column-cell";
 
 @customElement(TAG)
-export class ColumnCell extends LitElement {
+export class ColumnCell extends FrdyElement {
   static styles = css`
     :host {
       display: grid;

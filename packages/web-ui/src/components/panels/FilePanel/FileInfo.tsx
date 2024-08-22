@@ -3,11 +3,12 @@ import { LitElement, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { formatDateTime } from "../../../utils/date";
 import { bytesToSize } from "../../../utils/number";
+import { FrdyElement } from "../../FrdyElement";
 
 const TAG = "frdy-file-info";
 
 @customElement(TAG)
-export class FileInfo extends LitElement {
+export class FileInfo extends FrdyElement {
   static styles = css`
     :host {
       display: flex;

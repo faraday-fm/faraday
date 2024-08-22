@@ -30,6 +30,7 @@ export class KeyBindingsController implements ReactiveController {
   }
 
   #onKeyDown = (e: KeyboardEvent) => {
+    const target = e.composedPath()[0] as Node;
     const bindings = this.bindings;
     const modifiers = getModifiers(e);
     const keyCombination = modifiers ? `${modifiers}+${e.code}` : e.code;
@@ -37,17 +38,18 @@ export class KeyBindingsController implements ReactiveController {
     for (let i = bindings.length - 1; i >= 0; i -= 1) {
       const { key, command, args, when } = bindings[i]!;
 
-      if (key === keyCombination && (!when || this.#vars.isInContext(when))) {
+      if (key === keyCombination && (!when || this.#vars.isInContext(target, when))) {
         if (args != null) {
           console.debug(command, "(", JSON.stringify(args), ")");
         } else {
           console.debug(command, "()");
         }
-        this.#commands.invokeCommand(command, args);
+        this.#commands.invokeCommand(target, command, args);
         e.stopPropagation();
         e.preventDefault();
         break;
       }
     }
+    // this.#vars.dump();
   };
 }

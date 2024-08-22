@@ -10,16 +10,12 @@ import "./ScrollableContainer";
 import "./views/CondensedView";
 import "./views/FullView";
 import "./FileInfo";
+import { FrdyElement } from "../../FrdyElement";
 
 const TAG = "frdy-file-panel";
 
 @customElement(TAG)
-export class FilePanel extends LitElement {
-  static shadowRootOptions: ShadowRootInit = {
-    ...LitElement.shadowRootOptions,
-    delegatesFocus: true,
-  };
-
+export class FilePanel extends FrdyElement {
   static styles = css`
     :host {
       display: grid;
@@ -124,7 +120,7 @@ export class FilePanel extends LitElement {
     return html`
       <frdy-glyph-size-provider>
         <frdy-is-touch-screen-provider>
-          <div class="panel-content" tabindex="0">
+          <div class="panel-content">
             <div class="panel-columns">
               ${choose(this.view?.type, [
                 [

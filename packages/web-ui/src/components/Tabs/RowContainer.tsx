@@ -1,16 +1,17 @@
-import { css, html, LitElement, nothing } from "lit";
+import { css, html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { createRef, ref, Ref } from "lit/directives/ref.js";
 import { when } from "lit/directives/when.js";
 import type { RowLayout } from "../../types";
 // import "./LayoutContainer";
+import { FrdyElement } from "../FrdyElement";
 import "./Separator";
 import "./Tabs";
 
 const TAG = "frdy-row-container";
 
 @customElement(TAG)
-export class RowContainer extends LitElement {
+export class RowContainer extends FrdyElement {
   static styles = css`
     :host {
       display: grid;

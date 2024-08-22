@@ -2,7 +2,7 @@ import { RegisterCommandEventName, SetContextVariableEventName, UnregisterComman
 import { CommandOptions, ContextOptions } from "./types";
 
 export class RegisterCommandEvent extends Event {
-  constructor(public readonly callback: () => void, public readonly options: Required<CommandOptions>) {
+  constructor(public readonly host: HTMLElement, public readonly callback: () => void, public readonly options: Required<CommandOptions>) {
     super(RegisterCommandEventName, { bubbles: true, composed: true });
   }
 }

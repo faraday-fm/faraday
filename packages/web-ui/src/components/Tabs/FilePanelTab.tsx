@@ -8,6 +8,7 @@ import "../../lit-contexts/GlyphSizeProvider";
 import { TabFilesView } from "../../types";
 import { createList } from "../../utils/immutableList";
 import "../panels/FilePanel/FilePanel";
+import { FrdyElement } from "../FrdyElement";
 
 const TAG = "frdy-file-panel-tab";
 
@@ -24,7 +25,7 @@ function fsCompare(a: Dirent, b: Dirent) {
 }
 
 @customElement(TAG)
-export class FilePanelTab extends LitElement {
+export class FilePanelTab extends FrdyElement {
   static styles = css`
     :host {
       display: contents;

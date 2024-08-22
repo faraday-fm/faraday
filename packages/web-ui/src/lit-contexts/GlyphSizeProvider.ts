@@ -1,14 +1,14 @@
 import { ContextProvider, createContext } from "@lit/context";
-import { LitElement, css, html } from "lit";
+import { css, html } from "lit";
 import { customElement, query } from "lit/decorators.js";
-import { ref } from "lit/directives/ref.js";
+import { FrdyElement } from "../components/FrdyElement";
 
 const TAG = "frdy-glyph-size-provider";
 
 export const glyphSizeContext = createContext<{ w: number; h: number }>(Symbol("glyph-size"));
 
 @customElement(TAG)
-export class GlyphSizeProvider extends LitElement {
+export class GlyphSizeProvider extends FrdyElement {
   static styles = css`
     :host {
       display: contents;

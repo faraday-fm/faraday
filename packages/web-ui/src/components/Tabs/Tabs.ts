@@ -4,11 +4,12 @@ import { customElement, property } from "lit/decorators.js";
 import { repeat } from "lit/directives/repeat.js";
 import type { TabSetLayout } from "../../types";
 import "./Tab";
+import { FrdyElement } from "../FrdyElement";
 
 const TAG = "frdy-tabs";
 
 @customElement(TAG)
-export class Tabs extends LitElement {
+export class Tabs extends FrdyElement {
   static styles = css`
     :host {
       box-sizing: border-box;

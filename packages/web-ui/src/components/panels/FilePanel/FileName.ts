@@ -3,9 +3,10 @@ import { LitElement, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { IconsCache } from "../../../lit-contexts/iconsCacheContext";
 import "./FileIcon";
+import { FrdyElement } from "../../FrdyElement";
 
 @customElement("frdy-filename")
-export class FileName extends LitElement {
+export class FileName extends FrdyElement {
   static styles = css`
     :host {
       display: flex;

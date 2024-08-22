@@ -4,11 +4,12 @@
 import { css, html, LitElement } from "lit";
 import { customElement } from "lit/decorators.js";
 import "./ActionButton";
+import { FrdyElement } from "./FrdyElement";
 
 const TAG = "frdy-action-bar";
 
 @customElement(TAG)
-export class ActionBar extends LitElement {
+export class ActionBar extends FrdyElement {
   static styles = css`
     :host {
       display: contents;

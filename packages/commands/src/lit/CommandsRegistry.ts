@@ -1,11 +1,12 @@
 import type { ReactiveController } from "lit";
 import { RegisterCommandEventName, UnregisterCommandEventName } from "../consts";
 import { RegisterCommandEvent, UnregisterCommandEvent } from "./events";
-import { HostElement } from "./types";
+import { CommandOptions, HostElement } from "./types";
+import { isDescendant } from "../utils/isDescendant";
 
 export class CommandsRegistry implements ReactiveController {
   #host: HostElement;
-  #commands = new Map<string, Set<any>>();
+  #commands = new Map<string, Map<(args: any) => void, { host: HTMLElement; options: CommandOptions }>>();
   #commandNames = new Map<any, string>();
   #subscribed = false;
 
@@ -17,18 +18,16 @@ export class CommandsRegistry implements ReactiveController {
 
   #subscribe() {
     if (!this.#subscribed) {
-      const addEventListener = this.#host.addEventListener;
-      addEventListener(RegisterCommandEventName, this.#onRegisterCommand);
-      addEventListener(UnregisterCommandEventName, this.#onUnregisterCommand);
+      this.#host.addEventListener(RegisterCommandEventName, this.#onRegisterCommand);
+      this.#host.addEventListener(UnregisterCommandEventName, this.#onUnregisterCommand);
       this.#subscribed = true;
     }
   }
 
   #unsubscribe() {
     if (this.#subscribed) {
-      const removeEventListener = this.#host.removeEventListener;
-      removeEventListener(RegisterCommandEventName, this.#onRegisterCommand);
-      removeEventListener(UnregisterCommandEventName, this.#onUnregisterCommand);
+      this.#host.removeEventListener(RegisterCommandEventName, this.#onRegisterCommand);
+      this.#host.removeEventListener(UnregisterCommandEventName, this.#onUnregisterCommand);
       this.#subscribed = false;
     }
   }
@@ -40,10 +39,10 @@ export class CommandsRegistry implements ReactiveController {
     const { name } = e.options;
     let handlers = this.#commands.get(name);
     if (!handlers) {
-      handlers = new Set();
+      handlers = new Map();
       this.#commands.set(name, handlers);
     }
-    handlers.add(e.callback);
+    handlers.set(e.callback, { host: e.host, options: e.options });
     this.#commandNames.set(e.callback, name);
   };
 
@@ -62,11 +61,13 @@ export class CommandsRegistry implements ReactiveController {
     }
   };
 
-  invokeCommand = (name: string, args: any) => {
+  invokeCommand = (target: Node, name: string, args: any) => {
     const handlers = this.#commands.get(name);
     if (handlers) {
-      handlers.forEach((handler) => {
-        handler(args);
+      handlers.forEach((h, handler) => {
+        if (!h.options.whenFocusWithin || isDescendant(h.host, target)) {
+          handler(args);
+        }
       });
     }
     // if (handlers && handlers.size === 1) {

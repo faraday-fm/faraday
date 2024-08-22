@@ -9,6 +9,7 @@ import { repeat } from "lit/directives/repeat.js";
 import { glyphSizeContext } from "../../../lit-contexts/GlyphSizeProvider";
 import { clamp } from "../../../utils/number";
 import "./ScrollableContainer";
+import { FrdyElement } from "../../FrdyElement";
 
 const TAG = "frdy-multicolumn-list";
 
@@ -19,7 +20,7 @@ export class MeasureChangeEvent extends Event {
 }
 
 @customElement(TAG)
-export class MultiColumnList extends LitElement {
+export class MultiColumnList extends FrdyElement {
   static styles = css`
     :host {
       display: grid;
@@ -144,6 +145,8 @@ export class MultiColumnList extends LitElement {
   connectedCallback() {
     super.connectedCallback();
     this.#observer.observe(this);
+    // this.tabIndex = 0;
+    // this.addEventListener("pointerdown", ()=> this.focus(), true)
   }
 
   disconnectedCallback() {

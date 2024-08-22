@@ -3,11 +3,12 @@ import { customElement, property } from "lit/decorators.js";
 import { choose } from "lit/directives/choose.js";
 import type { TabLayout } from "../../types";
 import "./FilePanelTab";
+import { FrdyElement } from "../FrdyElement";
 
 const TAG = "frdy-tab";
 
 @customElement(TAG)
-export class Tab extends LitElement {
+export class Tab extends FrdyElement {
   static styles = css`
     :host {
       display: contents;

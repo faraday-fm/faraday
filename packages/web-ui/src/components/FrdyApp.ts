@@ -18,11 +18,12 @@ import { createSettingsContext, settingsContext } from "../lit-contexts/settings
 import { FaradayHost, NodeLayout } from "../types";
 import "./ActionBar";
 import "./Tabs/LayoutContainer";
+import { FrdyElement } from "./FrdyElement";
 
 const TAG = "frdy-app";
 
 @customElement(TAG)
-export class FrdyApp extends LitElement {
+export class FrdyApp extends FrdyElement {
   static styles = css`
     :host {
       display: contents;
@@ -180,7 +181,7 @@ export class FrdyApp extends LitElement {
   protected render() {
     return this.#layoutTask.render({
       complete: () => html`
-        <div class="app">
+        <div class="app" tabindex="0">
           <div class="mainDiv">
             <div class="terminalContainer"></div>
             <div class="tabs">

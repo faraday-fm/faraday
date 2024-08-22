@@ -11,8 +11,9 @@ import { TabFilesView } from "../../../../types";
 import { consume } from "@lit/context";
 import { isTouchScreenContext } from "../../../../lit-contexts/IsTouchScreenProvider";
 import { IconsCache, iconsCacheContext } from "../../../../lit-contexts/iconsCacheContext";
+import { FrdyElement } from "../../../FrdyElement";
 
-export abstract class View<T extends TabFilesView> extends LitElement {
+export abstract class View<T extends TabFilesView> extends FrdyElement {
   static styles = css`
     :host {
       display: grid;

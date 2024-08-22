@@ -1,13 +1,14 @@
 import { ContextProvider, createContext } from "@lit/context";
 import { LitElement, css, html } from "lit";
 import { customElement } from "lit/decorators.js";
+import { FrdyElement } from "../components/FrdyElement";
 
 export const isTouchScreenContext = createContext<boolean>(Symbol("is-touch-screen"));
 
 const TAG = "frdy-is-touch-screen-provider";
 
 @customElement(TAG)
-export class IsTouchScreenProvider extends LitElement {
+export class IsTouchScreenProvider extends FrdyElement {
   static styles = css`
     :host {
       display: contents;

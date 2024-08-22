@@ -1,14 +1,14 @@
-import { css, html, LitElement, nothing } from "lit";
+import { css, html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { createRef, ref, Ref } from "lit/directives/ref.js";
-import { when } from "lit/directives/when.js";
 import type { RowLayout } from "../../types";
+import { FrdyElement } from "../FrdyElement";
 import "./Tabs";
 
 const TAG = "frdy-separator";
 
 @customElement(TAG)
-export class Separator extends LitElement {
+export class Separator extends FrdyElement {
   static styles = css`
     :host {
       position: relative;
