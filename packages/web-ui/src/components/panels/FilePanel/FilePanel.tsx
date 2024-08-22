@@ -16,6 +16,7 @@ const TAG = "frdy-file-panel";
 
 @customElement(TAG)
 export class FilePanel extends FrdyElement {
+  static shadowRootOptions: ShadowRootInit = { ...FrdyElement.shadowRootOptions, delegatesFocus: true };
   static styles = css`
     :host {
       display: grid;

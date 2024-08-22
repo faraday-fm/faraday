@@ -6,11 +6,13 @@ import "../ColumnCell";
 import "../FileName";
 import "../MultiColumnList";
 import { View } from "./View";
+import { FrdyElement } from "../../../FrdyElement";
 
 const TAG = "frdy-condensed-view";
 
 @customElement(TAG)
 export class CondensedView extends View<TabFilesCondensedView> {
+  static shadowRootOptions: ShadowRootInit = { ...FrdyElement.shadowRootOptions, delegatesFocus: true };
   protected render() {
     const selectedNames = this.selectedItemNames.toSet();
     return html`

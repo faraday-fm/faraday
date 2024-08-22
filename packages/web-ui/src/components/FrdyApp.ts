@@ -181,7 +181,7 @@ export class FrdyApp extends FrdyElement {
   protected render() {
     return this.#layoutTask.render({
       complete: () => html`
-        <div class="app" tabindex="0">
+        <div class="app">
           <div class="mainDiv">
             <div class="terminalContainer"></div>
             <div class="tabs">

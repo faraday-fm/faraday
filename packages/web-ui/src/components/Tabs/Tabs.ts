@@ -1,10 +1,12 @@
 import clsx from "clsx";
-import { css, html, LitElement, nothing } from "lit";
+import { css, html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { repeat } from "lit/directives/repeat.js";
 import type { TabSetLayout } from "../../types";
-import "./Tab";
 import { FrdyElement } from "../FrdyElement";
+import "./Tab";
+import { createRef, ref } from "lit/directives/ref.js";
+import { Tab } from "./Tab";
 
 const TAG = "frdy-tabs";
 
@@ -47,6 +49,8 @@ export class Tabs extends FrdyElement {
   @property({ attribute: false })
   accessor setLayout: ((newLayout: TabSetLayout) => void) | undefined;
 
+  #tabRef = createRef<HTMLElement>();
+
   protected render() {
     if (!this.layout) {
       return nothing;
@@ -57,10 +61,12 @@ export class Tabs extends FrdyElement {
         ${repeat(
           this.layout.children,
           (tab) => tab.id,
-          (tab) => html`<div class=${clsx("tabName", this.layout?.activeTabId === tab.id && "-active")}>${tab.name}</div>`
+          (tab) => html`<div class=${clsx("tabName", this.layout?.activeTabId === tab.id && "-active")} @click=${() => this.#tabRef.value?.focus()}>
+            ${tab.name}
+          </div>`
         )}
       </div>
-      <frdy-tab .layout=${this.layout!.children[0]}></frdy-tab>
+      <frdy-tab ref=${ref(this.#tabRef)} .layout=${this.layout!.children[0]}></frdy-tab>
     `;
   }
 }

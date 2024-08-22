@@ -21,6 +21,7 @@ export class MeasureChangeEvent extends Event {
 
 @customElement(TAG)
 export class MultiColumnList extends FrdyElement {
+  static shadowRootOptions: ShadowRootInit = { ...FrdyElement.shadowRootOptions, delegatesFocus: true };
   static styles = css`
     :host {
       display: grid;
@@ -145,8 +146,6 @@ export class MultiColumnList extends FrdyElement {
   connectedCallback() {
     super.connectedCallback();
     this.#observer.observe(this);
-    // this.tabIndex = 0;
-    // this.addEventListener("pointerdown", ()=> this.focus(), true)
   }
 
   disconnectedCallback() {

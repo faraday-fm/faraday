@@ -26,6 +26,7 @@ function fsCompare(a: Dirent, b: Dirent) {
 
 @customElement(TAG)
 export class FilePanelTab extends FrdyElement {
+  static shadowRootOptions: ShadowRootInit = { ...FrdyElement.shadowRootOptions, delegatesFocus: true };
   static styles = css`
     :host {
       display: contents;

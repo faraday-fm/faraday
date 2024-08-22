@@ -9,6 +9,7 @@ const TAG = "frdy-tab";
 
 @customElement(TAG)
 export class Tab extends FrdyElement {
+  static shadowRootOptions: ShadowRootInit = { ...FrdyElement.shadowRootOptions, delegatesFocus: true };
   static styles = css`
     :host {
       display: contents;
