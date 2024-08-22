@@ -1,5 +1,5 @@
 import { readFile, RealPathControlByte, type FileSystemProvider } from "@frdy/sdk";
-import JSON5 from "json5";
+import { parse as jsonParse } from "jsonc-parser";
 import { BaseIssue, BaseSchema, InferOutput, parse } from "valibot";
 
 export async function readFileString(fs: FileSystemProvider, path: string) {
@@ -13,7 +13,7 @@ export async function readFileJson<TSchema extends BaseSchema<unknown, unknown, 
   schema: TSchema
 ): Promise<InferOutput<typeof schema>> {
   const content = await readFileString(fs, path);
-  return parse(schema, JSON5.parse(content));
+  return parse(schema, jsonParse(content));
 }
 
 export async function realpath(fs: FileSystemProvider, originalPath: string, ...composePath: string[]): Promise<string> {

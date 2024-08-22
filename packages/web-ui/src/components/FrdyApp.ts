@@ -1,7 +1,7 @@
 import { command, CommandsProvider, context } from "@frdy/commands";
 import { ContextProvider } from "@lit/context";
 import { Task } from "@lit/task";
-import JSON5 from "json5";
+import { parse as jsonParse } from "jsonc-parser";
 import { css, html, LitElement, PropertyValues } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { when } from "lit/directives/when.js";
@@ -170,7 +170,7 @@ export class FrdyApp extends LitElement {
 
   #layoutTask = new Task(this, {
     task: async ([fs]) => {
-      const layout: NodeLayout = JSON5.parse(await readFileString(fs, ".faraday/layout.json")) as any;
+      const layout: NodeLayout = jsonParse(await readFileString(fs, ".faraday/layout.json")) as any;
       this.layout = layout;
       return layout;
     },

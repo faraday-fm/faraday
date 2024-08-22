@@ -1,10 +1,23 @@
 import { ContextProvider, createContext } from "@lit/context";
+import jsep, { CoreExpression } from "jsep";
 import type { ReactiveController } from "lit";
 import { SetContextVariableEventName, UnsetContextVariableEventName } from "../consts";
 import { isDescendant } from "../utils/isDescendant";
-import { parser, type Expression } from "../utils/whenClauseParser";
 import { SetContextVariableEvent, UnsetContextVariableEvent } from "./events";
 import { ContextOptions, HostElement } from "./types";
+
+jsep.addIdentifierChar(".");
+jsep.addIdentifierChar(":");
+jsep.removeUnaryOp("~");
+const removeBinaryOp = jsep.removeBinaryOp;
+removeBinaryOp("|");
+removeBinaryOp("^");
+removeBinaryOp("&");
+removeBinaryOp("===");
+removeBinaryOp("!==");
+removeBinaryOp("<<");
+removeBinaryOp(">>");
+removeBinaryOp(">>>");
 
 type ContextVariables = Map<string, Map<HTMLElement, { options: ContextOptions; value: unknown }>>;
 
@@ -62,11 +75,12 @@ export class ContextVariablesProvider implements ReactiveController {
   };
 
   isInContext(when: string) {
-    const ast = parser.parse(when);
-    if (ast.status) {
-      return evaluate(this.#focusedNode, this.#variables.value, ast.value);
+    const ast = jsep(when);
+    try {
+      return evaluate(this.#focusedNode, this.#variables.value, ast as CoreExpression);
+    } catch {
+      return false;
     }
-    return false;
   }
 
   // dump() {
@@ -101,37 +115,52 @@ function getContextValue(focusedNode: Node, ctx: ContextVariables, variable: str
   return r;
 }
 
-function visitNode(focusedNode: Node, ctx: ContextVariables, node: Expression, stack: unknown[]) {
-  switch (node._) {
-    case "c":
-      stack.push(node.val);
+function visitNode(focusedNode: Node, ctx: ContextVariables, node: CoreExpression, stack: unknown[]) {
+  switch (node.type) {
+    case "Literal":
+      stack.push(node.value);
       break;
-    case "v":
-      stack.push(getContextValue(focusedNode, ctx, node.val));
+    case "Identifier":
+      stack.push(getContextValue(focusedNode, ctx, node.name));
       break;
-    case "!":
-      visitNode(focusedNode, ctx, node.node, stack);
-      stack.push(!stack.pop());
+    case "UnaryExpression": {
+      visitNode(focusedNode, ctx, node.argument as CoreExpression, stack);
+      const val = stack.pop();
+      switch (node.operator) {
+        case "!":
+          stack.push(!val);
+          break;
+        case "-":
+          stack.push(-Number(val));
+          break;
+        case "+":
+          stack.push(Number(val));
+          break;
+      }
       break;
-    case "==":
-    case "!=":
-    case "&&":
-    case "||":
+    }
+    case "BinaryExpression":
       {
-        visitNode(focusedNode, ctx, node.left, stack);
-        visitNode(focusedNode, ctx, node.right, stack);
+        visitNode(focusedNode, ctx, node.left as CoreExpression, stack);
+        visitNode(focusedNode, ctx, node.right as CoreExpression, stack);
         const right = stack.pop();
         const left = stack.pop();
-        if (node._ === "==") stack.push(left === right);
-        else if (node._ === "!=") stack.push(left !== right);
-        else if (node._ === "||") stack.push(!!left || !!right);
-        else if (node._ === "&&") stack.push(!!left && !!right);
+        const op = node.operator;
+        const push = stack.push;
+        if (op === "==") push(left === right);
+        else if (op === "!=") push(left !== right);
+        else if (op === "||") push(!!left || !!right);
+        else if (op === "&&") push(!!left && !!right);
+        else if (op === "+") push((left as any) + right);
+        else if (op === "-") push(Number(left) - Number(right));
+        else if (op === "*") push(Number(left) * Number(right));
+        else if (op === "/") push(Number(left) / Number(right));
       }
       break;
   }
 }
 
-function evaluate(focusedNode: Node, ctx: ContextVariables, expression: Expression) {
+function evaluate(focusedNode: Node, ctx: ContextVariables, expression: CoreExpression) {
   const stack: [] = [];
   visitNode(focusedNode, ctx, expression, stack);
   return !!stack.pop();

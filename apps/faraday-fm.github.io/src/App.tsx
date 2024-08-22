@@ -1,9 +1,9 @@
 import { FaradayHost, FrdyApp } from "@frdy/web-ui";
 import { wsfs } from "./services/wsfs";
-import { buildFaradayFs } from "./services/fs";
+// import { buildFaradayFs } from "./services/fs";
 import { useEffect, useRef } from "react";
 
-const faradayFs = await buildFaradayFs();
+// const faradayFs = await buildFaradayFs();
 
 const host: FaradayHost = {
   config: {

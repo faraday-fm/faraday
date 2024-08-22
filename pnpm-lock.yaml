@@ -213,12 +213,12 @@ importers:
       '@lit/context':
         specifier: ^1.1.2
         version: 1.1.2
+      jsep:
+        specifier: ^1.3.9
+        version: 1.3.9
       lit:
         specifier: ^3.2.0
         version: 3.2.0
-      parsimmon:
-        specifier: ^1.18.1
-        version: 1.18.1
       valibot:
         specifier: ^0.37.0
         version: 0.37.0(typescript@5.5.4)
@@ -244,9 +244,6 @@ importers:
       '@rollup/plugin-typescript':
         specifier: ^11.1.6
         version: 11.1.6(rollup@4.21.0)(tslib@2.6.3)(typescript@5.5.4)
-      '@types/parsimmon':
-        specifier: ^1.10.8
-        version: 1.10.9
       '@types/react':
         specifier: ^18.3.3
         version: 18.3.3
@@ -359,9 +356,9 @@ importers:
       jotai:
         specifier: ^2.9.1
         version: 2.9.2(@types/react@18.3.3)(react@18.3.1)
-      json5:
-        specifier: ^2.2.3
-        version: 2.2.3
+      jsonc-parser:
+        specifier: ^3.3.1
+        version: 3.3.1
       list:
         specifier: ^2.0.19
         version: 2.0.19
@@ -381,9 +378,18 @@ importers:
       '@frdy/typescript-config':
         specifier: workspace:*
         version: link:../typescript-config
+      '@rollup/plugin-commonjs':
+        specifier: ^26.0.1
+        version: 26.0.1(rollup@4.21.0)
       '@rollup/plugin-json':
         specifier: ^6.1.0
         version: 6.1.0(rollup@4.21.0)
+      '@rollup/plugin-node-resolve':
+        specifier: ^15.2.3
+        version: 15.2.3(rollup@4.21.0)
+      '@rollup/plugin-terser':
+        specifier: ^0.4.4
+        version: 0.4.4(rollup@4.21.0)
       '@rollup/plugin-typescript':
         specifier: ^11.1.6
         version: 11.1.6(rollup@4.21.0)(tslib@2.6.3)(typescript@5.5.4)
@@ -1863,6 +1869,10 @@ packages:
     resolution: {integrity: sha512-okMH7OXXJ7YrN9Ok3/SXrnu4iX9yOk+25nqX4imS2npuvTYDmo/QEZoqwZkYaIDk3jVvBOTOIEgEhaLOynBS9g==}
     hasBin: true
 
+  jsep@1.3.9:
+    resolution: {integrity: sha512-i1rBX5N7VPl0eYb6+mHNp52sEuaS2Wi8CDYx1X5sn9naevL78+265XJqy1qENEk7mRKwS06NHpUqiBwR7qeodw==}
+    engines: {node: '>= 10.16.0'}
+
   jsesc@2.5.2:
     resolution: {integrity: sha512-OYu7XEzjkCQ3C5Ps3QIZsQfNpqoJyZZA99wd9aWd05NCtC5pWOkShK2mkL6HXQR6/Cy2lbNdPlZBpuQHXE63gA==}
     engines: {node: '>=4'}
@@ -1872,6 +1882,9 @@ packages:
     resolution: {integrity: sha512-XmOWe7eyHYH14cLdVPoyg+GOH3rYX++KpzrylJwSW98t3Nk+U8XOl8FWKOgwtzdb8lXGf6zYwDUzeHMWfxasyg==}
     engines: {node: '>=6'}
     hasBin: true
+
+  jsonc-parser@3.3.1:
+    resolution: {integrity: sha512-HUgH65KyejrUFPvHFPbqOY0rsFip3Bo5wb4ngvdi1EpCYWUQDC5V+Y7mZws+DLkr4M//zQJoanu1SP+87Dv1oQ==}
 
   jsonfile@4.0.0:
     resolution: {integrity: sha512-m6F1R3z8jjlf2imQHS2Qez5sjKWQzbuuhuJ/FKYFRZvPE3PuHcSMVZzfsLhGVOkfd20obL5SWEBew5ShlquNxg==}
@@ -4113,9 +4126,13 @@ snapshots:
       argparse: 1.0.10
       esprima: 4.0.1
 
+  jsep@1.3.9: {}
+
   jsesc@2.5.2: {}
 
   json5@2.2.3: {}
+
+  jsonc-parser@3.3.1: {}
 
   jsonfile@4.0.0:
     optionalDependencies:
