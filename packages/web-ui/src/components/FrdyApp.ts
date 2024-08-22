@@ -1,17 +1,17 @@
+import { command, CommandsProvider, context } from "@frdy/commands";
 import { ContextProvider } from "@lit/context";
 import { createComponent } from "@lit/react";
-import { css, html, LitElement } from "lit";
-import { customElement } from "lit/decorators.js";
+import { css, html, LitElement, PropertyValues } from "lit";
+import { customElement, property } from "lit/decorators.js";
 import React from "react";
-import { fsContext } from "../lit-contexts/fsContext";
-import { createSettingsContext, settingsContext } from "../lit-contexts/settingsContext";
-import { createExtensionRepoContext, extensionRepoContext } from "../lit-contexts/extensionRepoContext";
+import keybindings from "../assets/keybindings.json";
 import { createExtensionsContext, extensionsContext } from "../lit-contexts/extensionContext";
+import { createExtensionRepoContext, extensionRepoContext } from "../lit-contexts/extensionRepoContext";
+import { fsContext } from "../lit-contexts/fsContext";
 import { createIconThemeContext, iconThemeContext } from "../lit-contexts/iconThemeContext";
 import { createIconsCache, iconsCacheContext } from "../lit-contexts/iconsCacheContext";
-import { FileSystemProvider } from "@frdy/sdk";
-import { command, context, CommandsProvider } from "@frdy/commands";
-import keybindings from "../assets/keybindings.json";
+import { createSettingsContext, settingsContext } from "../lit-contexts/settingsContext";
+import { FaradayHost } from "../types";
 
 const TAG = "frdy-app";
 
@@ -31,16 +31,8 @@ export class FrdyApp extends LitElement {
   private _iconsCacheProvider = new ContextProvider(this, { context: iconsCacheContext });
   private _commandsProvider = new CommandsProvider(this, keybindings);
 
-  public setFs(fs: FileSystemProvider) {
-    if (!this._fsProvider.value) {
-      this._fsProvider.setValue(fs);
-      this._settingsProvider.setValue(createSettingsContext(fs));
-      this._extensionRepoProvider.setValue(createExtensionRepoContext(fs));
-      this._extensionsProvider.setValue(createExtensionsContext(fs, this._extensionRepoProvider.value));
-      this._iconThemeProvider.setValue(createIconThemeContext(fs, this._settingsProvider.value, this._extensionsProvider.value));
-      this._iconsCacheProvider.setValue(createIconsCache(fs, this._iconThemeProvider.value));
-    }
-  }
+  @property({ attribute: false })
+  accessor host: FaradayHost | undefined;
 
   @context({ name: "isDesktop" })
   accessor isDesktop = false;
@@ -92,6 +84,20 @@ export class FrdyApp extends LitElement {
   @command()
   switchShowHiddenFiles() {
     // setShowHiddenFiles((d) => !d)
+  }
+
+  protected willUpdate(_changedProperties: PropertyValues): void {
+    if (_changedProperties.has("host")) {
+      const fs = this.host?.rootFs;
+      if (fs) {
+        this._fsProvider.setValue(fs);
+        this._settingsProvider.setValue(createSettingsContext(fs));
+        this._extensionRepoProvider.setValue(createExtensionRepoContext(fs));
+        this._extensionsProvider.setValue(createExtensionsContext(fs, this._extensionRepoProvider.value));
+        this._iconThemeProvider.setValue(createIconThemeContext(fs, this._settingsProvider.value, this._extensionsProvider.value));
+        this._iconsCacheProvider.setValue(createIconsCache(fs, this._iconThemeProvider.value));
+      }
+    }
   }
 
   protected render() {

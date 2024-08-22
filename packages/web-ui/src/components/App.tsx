@@ -5,7 +5,6 @@ import { LayoutContainer } from "../components/LayoutContainer";
 import { useFaradayHost } from "../contexts/faradayHostContext";
 import { useFileContent, useFs } from "../features/fs/hooks";
 import { usePanels } from "../features/panels";
-import { useSettings } from "../features/settings/settings";
 import type { TabLayout } from "../types";
 import { ActionBarReact } from "./ActionBar";
 import CopyDialog from "./dialogs/CopyDialog";
@@ -85,8 +84,6 @@ export function App() {
   const [executing] = useState(false);
   const { layout, setLayout, focusNextPanel, enterDir } = usePanels();
   const host = useFaradayHost();
-  const [devMode, setDevMode] = useState(false);
-  const { setShowHiddenFiles } = useSettings();
   const fs = useFs();
 
   const { content: layoutContent, error: layoutLoadingError } = useFileContent(".faraday/layout.json");
@@ -128,7 +125,7 @@ export function App() {
   }
 
   return (
-    <FrdyAppReact ref={(r) => r?.setFs(fs)}>
+    <FrdyAppReact host={host}>
       <style>@import "/frdy.css"</style>
       <div className={app} ref={rootRef}>
         <div className={mainDiv}>

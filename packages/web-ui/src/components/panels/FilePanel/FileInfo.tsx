@@ -13,6 +13,7 @@ export class FileInfo extends LitElement {
       display: flex;
       overflow: hidden;
       padding: 0.5rem 0;
+      border-block-start: 1px solid var(--panel-border);
     }
 
     .name {

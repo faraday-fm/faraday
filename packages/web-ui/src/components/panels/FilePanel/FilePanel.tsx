@@ -44,6 +44,9 @@ export class FilePanel extends LitElement {
         outline: none;
       }
     }
+    .panel-footer {
+      border-block-start: 1px solid var(--panel-border);
+    }
   `;
 
   @property({ attribute: false })
