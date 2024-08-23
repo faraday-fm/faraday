@@ -2,7 +2,7 @@ import { consume } from "@lit/context";
 import { html } from "lit";
 import { customElement, eventOptions, property } from "lit/decorators.js";
 import { type Ref, createRef, ref } from "lit/directives/ref.js";
-import { isTouchScreenContext } from "../../../lit-contexts/IsTouchScreenProvider";
+import { isTouchScreenContext } from "../../../lit-contexts/isTouchScreenContext";
 import { FrdyElement } from "../../FrdyElement";
 
 const TAG = "frdy-scrollable";

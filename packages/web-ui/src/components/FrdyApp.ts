@@ -19,6 +19,7 @@ import { FaradayHost, NodeLayout } from "../types";
 import "./ActionBar";
 import "./Tabs/LayoutContainer";
 import { FrdyElement } from "./FrdyElement";
+import { IsTouchScreenContext } from "../lit-contexts/isTouchScreenContext";
 
 const TAG = "frdy-app";
 
@@ -91,6 +92,7 @@ export class FrdyApp extends FrdyElement {
   private _iconsCacheProvider = new ContextProvider(this, { context: iconsCacheContext });
   private _commandsProvider = new CommandsProvider(this, keybindings);
   private _css = new CssVarsProvider(this);
+  private _isTouchScreenProvider = new IsTouchScreenContext(this);
 
   @property({ attribute: false })
   accessor host: FaradayHost | undefined;

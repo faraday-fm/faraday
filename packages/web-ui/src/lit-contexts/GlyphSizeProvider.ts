@@ -24,12 +24,10 @@ export class GlyphSizeProvider extends FrdyElement {
   `;
 
   @query("#w", true)
-  accessor w!: HTMLDivElement;
+  private accessor w!: HTMLDivElement;
 
   private _glyphSizeProvider = new ContextProvider(this, { context: glyphSizeContext, initialValue: { w: 8, h: 16 } });
-  private _observer = new ResizeObserver(() => {
-    this._glyphSizeProvider.setValue({ w: this.w.clientWidth, h: this.w.clientHeight });
-  });
+  private _observer = new ResizeObserver(() => this._glyphSizeProvider.setValue({ w: this.w.clientWidth, h: this.w.clientHeight }));
 
   disconnectedCallback(): void {
     super.disconnectedCallback();

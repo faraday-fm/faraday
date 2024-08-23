@@ -143,36 +143,34 @@ export class FilePanel extends FrdyElement {
 
     return html`
       <frdy-glyph-size-provider>
-        <frdy-is-touch-screen-provider>
-          <div class="panel-content">
-            <div class="panel-columns">
-              ${choose(this.view?.type, [
-                [
-                  "condensed",
-                  () => html`<frdy-condensed-view
-                    .view=${this.view as any /* TODO: think how to get rid of any */}
-                    .cursorStyle=${cursorStyle}
-                    .items=${this.items}
-                    .selectedItemNames=${this.selectedItemNames}
-                    @active-index-change=${this.#onActiveIndexChange}
-                  ></frdy-condensed-view>`,
-                ],
-                [
-                  "full",
-                  () => html`<frdy-full-view
-                    .view=${this.view as any /* TODO: think how to get rid of any */}
-                    .cursorStyle=${cursorStyle}
-                    .items=${this.items}
-                    .selectedItemNames=${this.selectedItemNames}
-                    @active-index-change=${this.#onActiveIndexChange}
-                  ></frdy-full-view>`,
-                ],
-              ])}
-            </div>
-            <frdy-file-info .file=${this.activeItem}></frdy-file-info>
-            <div class="panel-footer">${`${bytesCount.toLocaleString()} bytes in ${filesCount.toLocaleString()} files`}</div>
+        <div class="panel-content">
+          <div class="panel-columns">
+            ${choose(this.view?.type, [
+              [
+                "condensed",
+                () => html`<frdy-condensed-view
+                  .view=${this.view as any /* TODO: think how to get rid of any */}
+                  .cursorStyle=${cursorStyle}
+                  .items=${this.items}
+                  .selectedItemNames=${this.selectedItemNames}
+                  @active-index-change=${this.#onActiveIndexChange}
+                ></frdy-condensed-view>`,
+              ],
+              [
+                "full",
+                () => html`<frdy-full-view
+                  .view=${this.view as any /* TODO: think how to get rid of any */}
+                  .cursorStyle=${cursorStyle}
+                  .items=${this.items}
+                  .selectedItemNames=${this.selectedItemNames}
+                  @active-index-change=${this.#onActiveIndexChange}
+                ></frdy-full-view>`,
+              ],
+            ])}
           </div>
-        </frdy-is-touch-screen-provider>
+          <frdy-file-info .file=${this.activeItem}></frdy-file-info>
+          <div class="panel-footer">${`${bytesCount.toLocaleString()} bytes in ${filesCount.toLocaleString()} files`}</div>
+        </div>
       </frdy-glyph-size-provider>
     `;
   }

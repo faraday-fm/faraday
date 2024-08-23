@@ -4,7 +4,7 @@ import { css, CSSResultGroup, html, nothing, render } from "lit";
 import { property } from "lit/decorators.js";
 import { map } from "lit/directives/map.js";
 import "../../../../lit-contexts/GlyphSizeProvider";
-import { isTouchScreenContext } from "../../../../lit-contexts/IsTouchScreenProvider";
+import { isTouchScreenContext } from "../../../../lit-contexts/isTouchScreenContext";
 import { IconsCache, iconsCacheContext } from "../../../../lit-contexts/iconsCacheContext";
 import { TabFilesView } from "../../../../types";
 import { createList, type List } from "../../../../utils/list/createList";
