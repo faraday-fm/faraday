@@ -7,7 +7,7 @@ import { customElement, property, state } from "lit/decorators.js";
 import { when } from "lit/directives/when.js";
 import keybindings from "../assets/keybindings.json";
 import { darkTheme } from "../features/themes/themes";
-import { CssVarsProvider } from "../lit-contexts/CssVarsProvider";
+import { CssVarsProvider } from "../lit-contexts/cssVarsProvider";
 import { createExtensionsContext, extensionsContext } from "../lit-contexts/extensionContext";
 import { createExtensionRepoContext, extensionRepoContext } from "../lit-contexts/extensionRepoContext";
 import { fsContext } from "../lit-contexts/fsContext";
