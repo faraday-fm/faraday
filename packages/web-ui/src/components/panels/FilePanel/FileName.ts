@@ -32,6 +32,7 @@ export class FileName extends FrdyElement {
   @property({ attribute: false })
   accessor icons!: IconsCache;
 
+  // TODO: carefully handle right-to-left characters. See: https://levelup.gitconnected.com/spoofing-file-extensions-ethical-hacking-bd128189738b
   protected render() {
     if (!this.dirent) return null;
     return html`

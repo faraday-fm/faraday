@@ -7,7 +7,6 @@ import { TabFilesFullView } from "../../../../types";
 import "../ColumnCell";
 import "../FileName";
 import "../MultiColumnList";
-import { get } from "../utils";
 import { View } from "./View";
 
 const TAG = "frdy-full-view";
@@ -25,19 +24,7 @@ export class FullView extends View<TabFilesFullView> {
             ${map(range(columnDefs.length + 1), (i) => html`<div style=${i < columnDefs.length && "border-inline-end: 1px solid var(--panel-border);"}></div>`)}
           </div>
           <frdy-multicolumn-list
-            .renderItem=${(i: number, isActive: boolean) => html`
-              <frdy-column-cell
-                style="overflow:hidden;text-overflow: ellipsis;"
-                .selected=${selectedNames.has(this.items.get(i)?.filename ?? "")}
-                .cursorStyle=${isActive && this.cursorStyle === "firm" ? "firm" : "hidden"}
-                .isTouchscreen=${this.isTouchscreen}
-              >
-                <div style="display: grid; grid-template-columns: ${columnWidths}">
-                  <frdy-filename .dirent=${this.items.get(i)} .icons=${this.icons}></frdy-filename>
-                  ${map(columnDefs, (d) => html`<div style="overflow:hidden;text-overflow: ellipsis;">${String(get(this.items.get(i), d.field))}</div>`)}
-                </div>
-              </frdy-column-cell>
-            `}
+            .renderItem=${(index: number, isActive: boolean) => this.renderItem(index, isActive, selectedNames)}
             .itemsCount=${this.items.size()}
             .lineHeight=${1.2}
             .far=${true}

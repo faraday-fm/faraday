@@ -30,7 +30,6 @@ export class KeyBindingsController implements ReactiveController {
   }
 
   #onKeyDown = (e: KeyboardEvent) => {
-    const target = e.composedPath()[0] as Node;
     const bindings = this.bindings;
     const modifiers = getModifiers(e);
     const keyCombination = modifiers ? `${modifiers}+${e.code}` : e.code;

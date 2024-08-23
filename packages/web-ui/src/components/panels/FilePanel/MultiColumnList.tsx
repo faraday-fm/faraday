@@ -1,6 +1,6 @@
 import { command } from "@frdy/commands";
 import { consume } from "@lit/context";
-import { LitElement, type PropertyValues, type TemplateResult, css, html } from "lit";
+import { type PropertyValues, type TemplateResult, css, html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { map } from "lit/directives/map.js";
 import { range } from "lit/directives/range.js";
@@ -8,16 +8,20 @@ import { type Ref, createRef, ref } from "lit/directives/ref.js";
 import { repeat } from "lit/directives/repeat.js";
 import { glyphSizeContext } from "../../../lit-contexts/GlyphSizeProvider";
 import { clamp } from "../../../utils/number";
-import "./ScrollableContainer";
 import { FrdyElement } from "../../FrdyElement";
+import "./views/DragGhost";
+import "./ScrollableContainer";
+import { DragGhost } from "./views/DragGhost";
 
 const TAG = "frdy-multicolumn-list";
 
-export class MeasureChangeEvent extends Event {
-  constructor(public readonly columnCount: number, public readonly itemsPerColumn: number) {
-    super("measure-change", { bubbles: true, composed: true });
-  }
-}
+export type SelectionType = "none" | "include-active" | "exclude-active";
+
+// export class MeasureChangeEvent extends Event {
+//   constructor(public readonly columnCount: number, public readonly itemsPerColumn: number) {
+//     super("measure-change", { bubbles: true, composed: true });
+//   }
+// }
 
 @customElement(TAG)
 export class MultiColumnList extends FrdyElement {
@@ -53,10 +57,10 @@ export class MultiColumnList extends FrdyElement {
     }
   `;
 
-  @property({ type: Number, attribute: false })
+  @property({ type: Number })
   accessor topmostIndex = 0;
 
-  @property({ type: Number, attribute: false })
+  @property({ type: Number })
   accessor activeIndex: number;
 
   @property({ type: Number })
@@ -79,19 +83,46 @@ export class MultiColumnList extends FrdyElement {
 
   @command({ whenFocusWithin: true })
   cursorLeft() {
+    this.#moveLeft();
+  }
+
+  @command({ whenFocusWithin: true })
+  selectLeft() {
+    this.#moveLeft("include-active");
+  }
+
+  #moveLeft(select?: SelectionType) {
     const shiftTop = this.far && this.activeIndex < this.topmostIndex + this.#itemsPerColumn;
-    this.#updateActiveIndex(this.activeIndex - this.#itemsPerColumn, shiftTop);
+    this.#updateActiveIndex(this.activeIndex - this.#itemsPerColumn, shiftTop, select);
   }
 
   @command({ whenFocusWithin: true })
   cursorRight() {
+    this.#moveRight();
+  }
+
+  @command({ whenFocusWithin: true })
+  selectRight() {
+    this.#moveRight("include-active");
+  }
+
+  #moveRight(select?: SelectionType) {
     const shiftTop = this.far && this.activeIndex >= this.topmostIndex + this.#itemsPerColumn * (this.#columnCount - 1);
-    this.#updateActiveIndex(this.activeIndex + this.#itemsPerColumn, shiftTop);
+    this.#updateActiveIndex(this.activeIndex + this.#itemsPerColumn, shiftTop, select);
   }
 
   @command({ whenFocusWithin: true })
   cursorUp() {
-    this.#updateActiveIndex(this.activeIndex - 1, false);
+    this.#moveUp();
+  }
+
+  @command({ whenFocusWithin: true })
+  selectUp() {
+    this.#moveUp(this.activeIndex > 0 ? "exclude-active" : "include-active");
+  }
+
+  #moveUp(select?: SelectionType) {
+    this.#updateActiveIndex(this.activeIndex - 1, false, select);
   }
 
   @command({ whenFocusWithin: true })
@@ -100,23 +131,68 @@ export class MultiColumnList extends FrdyElement {
   }
 
   @command({ whenFocusWithin: true })
+  selectDown() {
+    this.#moveDown(this.activeIndex < this.itemsCount - 1 ? "exclude-active" : "include-active");
+  }
+
+  #moveDown(select?: SelectionType) {
+    this.#updateActiveIndex(this.activeIndex + 1, false, select);
+  }
+
+  @command({ whenFocusWithin: true })
   cursorPageUp() {
-    this.#updateActiveIndex(this.activeIndex - this.#itemsPerColumn * this.#columnCount + 1, this.far);
+    this.#movePageUp();
+  }
+
+  @command({ whenFocusWithin: true })
+  selectPageUp() {
+    this.#movePageUp(this.activeIndex - this.#itemsPerColumn * this.#columnCount >= 0 ? "exclude-active" : "include-active");
+  }
+
+  #movePageUp(select?: SelectionType) {
+    this.#updateActiveIndex(this.activeIndex - this.#itemsPerColumn * this.#columnCount + 1, this.far && select === undefined, select);
   }
 
   @command({ whenFocusWithin: true })
   cursorPageDown() {
-    this.#updateActiveIndex(this.activeIndex + this.#itemsPerColumn * this.#columnCount - 1, this.far);
+    this.#movePageDown();
+  }
+
+  @command({ whenFocusWithin: true })
+  selectPageDown() {
+    this.#movePageDown(this.activeIndex + this.#itemsPerColumn * this.#columnCount < this.itemsCount ? "exclude-active" : "include-active");
+  }
+
+  #movePageDown(select?: SelectionType) {
+    this.#updateActiveIndex(this.activeIndex + this.#itemsPerColumn * this.#columnCount - 1, this.far && select === undefined, select);
   }
 
   @command({ whenFocusWithin: true })
   cursorStart() {
-    this.#updateActiveIndex(0, false);
+    this.#moveStart();
+  }
+
+  @command({ whenFocusWithin: true })
+  selectStart() {
+    this.#moveStart("include-active");
+  }
+
+  #moveStart(select?: SelectionType) {
+    this.#updateActiveIndex(0, false, select);
   }
 
   @command({ whenFocusWithin: true })
   cursorEnd() {
-    this.#updateActiveIndex(this.itemsCount - 1, false);
+    this.#moveEnd();
+  }
+
+  @command({ whenFocusWithin: true })
+  selectEnd() {
+    this.#moveEnd("include-active");
+  }
+
+  #moveEnd(select?: SelectionType) {
+    this.#updateActiveIndex(this.itemsCount - 1, false, select);
   }
 
   #rootRef: Ref<HTMLInputElement> = createRef();
@@ -143,6 +219,15 @@ export class MultiColumnList extends FrdyElement {
   connectedCallback() {
     super.connectedCallback();
     this.#observer.observe(this);
+    this.addEventListener(
+      "keyup",
+      (e) => {
+        if (e.key === "Shift" && !e.shiftKey) {
+          this.#updateActiveIndex(this.activeIndex, false, "none");
+        }
+      },
+      true
+    );
   }
 
   disconnectedCallback() {
@@ -173,7 +258,7 @@ export class MultiColumnList extends FrdyElement {
     if (this.#itemsPerColumn !== itemsPerColumn || oldColumnCount) {
       this.#columnCount = columnCount;
       this.#itemsPerColumn = itemsPerColumn;
-      this.dispatchEvent(new MeasureChangeEvent(columnCount, itemsPerColumn));
+      // this.dispatchEvent(new MeasureChangeEvent(columnCount, itemsPerColumn));
     }
     this.#updateActiveIndex(this.activeIndex, false);
   };
@@ -193,7 +278,7 @@ export class MultiColumnList extends FrdyElement {
     this.#updateActiveIndex(index, false);
   }
 
-  #updateActiveIndex = (newActiveIndex: number, shiftTop: boolean) => {
+  #updateActiveIndex = (newActiveIndex: number, shiftTop: boolean, select?: SelectionType) => {
     const oldActiveIndex = this.activeIndex;
     newActiveIndex = clamp(0, newActiveIndex, this.itemsCount - 1);
     let newTopmostIndex = this.topmostIndex;
@@ -204,16 +289,22 @@ export class MultiColumnList extends FrdyElement {
     const itemsVisible = this.#columnCount * this.#itemsPerColumn;
     newTopmostIndex = clamp(newActiveIndex - itemsVisible + 1, newTopmostIndex, newActiveIndex);
     newTopmostIndex = clamp(0, newTopmostIndex, this.itemsCount - itemsVisible);
-    if (oldActiveIndex !== newActiveIndex || this.topmostIndex !== newTopmostIndex) {
+    if (oldActiveIndex !== newActiveIndex || this.topmostIndex !== newTopmostIndex || select) {
       this.topmostIndex = newTopmostIndex;
       this.activeIndex = newActiveIndex;
-      this.#fireActiveIndexChange(newTopmostIndex, newActiveIndex);
+      this.#fireActiveIndexChange(newTopmostIndex, newActiveIndex, select);
     }
   };
 
-  #fireActiveIndexChange(topmostIndex: number, activeIndex: number) {
-    this.dispatchEvent(new CustomEvent("active-index-change", { detail: { topmostIndex, activeIndex }, bubbles: true, composed: true }));
+  #fireActiveIndexChange(topmostIndex: number, activeIndex: number, select?: SelectionType) {
+    this.dispatchEvent(
+      new CustomEvent("active-index-change", { detail: { topmostIndex, activeIndex, select: select ?? "none" }, bubbles: true, composed: true })
+    );
   }
+
+  // #fireSelectionChange(activeIndex: number) {
+  //   this.dispatchEvent(new CustomEvent("selection-change", { detail: { topmostIndex, activeIndex }, bubbles: true, composed: true }));
+  // }
 
   #onPointerDown(e: PointerEvent) {
     // If user clicks of empty space beneath the last file, activate it.
@@ -296,5 +387,11 @@ export class MultiColumnList extends FrdyElement {
 declare global {
   interface HTMLElementTagNameMap {
     [TAG]: MultiColumnList;
+  }
+}
+
+declare global {
+  interface HTMLElementEventMap {
+    "active-index-change": CustomEvent<{ topmostIndex: number; activeIndex: number; select: SelectionType }>;
   }
 }

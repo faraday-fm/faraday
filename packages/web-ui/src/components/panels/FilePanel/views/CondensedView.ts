@@ -19,15 +19,7 @@ export class CondensedView extends View<TabFilesCondensedView> {
       <frdy-glyph-size-provider>
         <frdy-multicolumn-list
           .minColumnWidth=${250}
-          .renderItem=${(i: number, isActive: boolean) => html`
-            <frdy-column-cell
-              .selected=${selectedNames.has(this.items.get(i)?.filename ?? "")}
-              .cursorStyle=${isActive && this.cursorStyle === "firm" ? "firm" : "hidden"}
-              .isTouchscreen=${this.isTouchscreen}
-            >
-              <frdy-filename .dirent=${this.items.get(i)} .icons=${this.icons}></frdy-filename>
-            </frdy-column-cell>
-          `}
+          .renderItem=${(index: number, isActive:boolean) => this.renderItem(index, isActive, selectedNames)}
           .itemsCount=${this.items.size()}
           .lineHeight=${1.2}
           .far=${true}

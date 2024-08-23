@@ -51,6 +51,11 @@ export class ColumnCell extends FrdyElement {
     this.isTouchscreen = false;
   }
 
+  connectedCallback(): void {
+    super.connectedCallback();
+    this.draggable = true;
+  }
+
   #onPointerDown(e: PointerEvent) {
     if (!this.isTouchscreen) {
       e.stopPropagation();
@@ -77,7 +82,6 @@ export class ColumnCell extends FrdyElement {
   protected render() {
     return html`
       <div
-        draggable="true"
         class=${clsx("cell", this.cursorStyle !== "hidden" && `${this.cursorStyle}-cursor`, this.selected && "selected")}
         @pointerdown=${this.#onPointerDown}
         @click=${() => this.#onOpen(false)}

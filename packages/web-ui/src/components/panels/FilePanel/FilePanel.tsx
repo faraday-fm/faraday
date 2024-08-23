@@ -1,16 +1,18 @@
 import { context } from "@frdy/commands";
 import { Dirent, isDir } from "@frdy/sdk";
-import { LitElement, PropertyValues, css, html } from "lit";
+import { PropertyValues, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { choose } from "lit/directives/choose.js";
+import { range } from "lit/directives/range.js";
 import "../../../lit-contexts/GlyphSizeProvider";
 import { TabFilesView } from "../../../types";
 import { List, createList } from "../../../utils/immutableList";
+import { FrdyElement } from "../../FrdyElement";
+import "./FileInfo";
+import { SelectionType } from "./MultiColumnList";
 import "./ScrollableContainer";
 import "./views/CondensedView";
 import "./views/FullView";
-import "./FileInfo";
-import { FrdyElement } from "../../FrdyElement";
 
 const TAG = "frdy-file-panel";
 
@@ -93,7 +95,28 @@ export class FilePanel extends FrdyElement {
     this.showCursorWhenBlurred = false;
   }
 
-  #onActiveIndexChange = (e: CustomEvent<{ activeIndex: number }>) => {
+  #prevSelect: boolean | undefined;
+
+  #onActiveIndexChange = (e: CustomEvent<{ activeIndex: number; select: SelectionType }>) => {
+    if (e.detail.select !== "none") {
+      if (this.#prevSelect === undefined) {
+        const fn = this.items.get(this.activeIndex)?.filename;
+        this.#prevSelect = this.selectedItemNames.findIndex((i) => i === fn) < 0;
+      }
+      for (const i of range(Math.min(this.activeIndex, e.detail.activeIndex), Math.max(this.activeIndex, e.detail.activeIndex) + 1)) {
+        if (e.detail.select === "exclude-active" && i === e.detail.activeIndex) {
+          continue;
+        }
+        const fn = this.items.get(i)?.filename;
+        if (this.#prevSelect) {
+          this.selectedItemNames = this.selectedItemNames.append(fn!);
+        } else {
+          this.selectedItemNames = this.selectedItemNames.filter((i) => i !== fn);
+        }
+      }
+    } else {
+      this.#prevSelect = undefined;
+    }
     this.activeIndex = e.detail.activeIndex;
     this.#updateActiveItem();
   };
