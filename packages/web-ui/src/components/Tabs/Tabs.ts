@@ -1,12 +1,11 @@
 import clsx from "clsx";
 import { css, html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
+import { createRef, ref } from "lit/directives/ref.js";
 import { repeat } from "lit/directives/repeat.js";
 import type { TabSetLayout } from "../../types";
 import { FrdyElement } from "../FrdyElement";
 import "./Tab";
-import { createRef, ref } from "lit/directives/ref.js";
-import { Tab } from "./Tab";
 
 const TAG = "frdy-tabs";
 

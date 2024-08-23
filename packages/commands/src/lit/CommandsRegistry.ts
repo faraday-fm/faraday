@@ -2,7 +2,6 @@ import type { ReactiveController } from "lit";
 import { RegisterCommandEventName, UnregisterCommandEventName } from "../consts";
 import { RegisterCommandEvent, UnregisterCommandEvent } from "./events";
 import { CommandOptions, HostElement } from "./types";
-import { isDescendant } from "../utils/isDescendant";
 
 export class CommandsRegistry implements ReactiveController {
   #host: HostElement;
@@ -61,11 +60,11 @@ export class CommandsRegistry implements ReactiveController {
     }
   };
 
-  invokeCommand = (target: Node, name: string, args: any) => {
+  invokeCommand = (name: string, args: any, event?: Event) => {
     const handlers = this.#commands.get(name);
     if (handlers) {
       handlers.forEach((h, handler) => {
-        if (!h.options.whenFocusWithin || isDescendant(h.host, target)) {
+        if (!h.options.whenFocusWithin || event?.composedPath().includes(h.host)) {
           handler(args);
         }
       });

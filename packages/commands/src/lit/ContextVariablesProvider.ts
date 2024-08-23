@@ -2,7 +2,6 @@ import { ContextProvider, createContext } from "@lit/context";
 import jsep, { CoreExpression } from "jsep";
 import type { ReactiveController } from "lit";
 import { SetContextVariableEventName, UnsetContextVariableEventName } from "../consts";
-import { isDescendant } from "../utils/isDescendant";
 import { SetContextVariableEvent, UnsetContextVariableEvent } from "./events";
 import { ContextOptions, HostElement } from "./types";
 
@@ -67,11 +66,10 @@ export class ContextVariablesProvider implements ReactiveController {
     this.#variables.updateObservers();
   };
 
-  isInContext(target: Node, when: string) {
+  isInContext(when: string, event?: Event) {
     const ast = jsep(when);
-    // console.info("!!!!", ast, this.#evaluate(target, ast as CoreExpression));
     try {
-      return this.#evaluate(target, ast as CoreExpression);
+      return this.#evaluate(ast as CoreExpression, event);
     } catch {
       return false;
     }
@@ -81,13 +79,12 @@ export class ContextVariablesProvider implements ReactiveController {
     this.#variables.value.forEach((v, k) =>
       console.info(
         k,
-        Array.from(v)
-          .map(([k, v]) => v.value)
+        Array.from(v).map(([k, v]) => v.value)
       )
     );
   }
 
-  #getContextValue = (target: Node, variable: string) => {
+  #getContextValue = (variable: string, event?: Event) => {
     let r: unknown;
     const varEntries = this.#variables.value.get(variable);
     if (!varEntries) {
@@ -95,7 +92,7 @@ export class ContextVariablesProvider implements ReactiveController {
     }
     for (const [el, val] of varEntries) {
       if (val.value === undefined) continue;
-      if (val.options.whenFocusWithin && !isDescendant(el, target)) continue;
+      if (val.options.whenFocusWithin && (!event || !event.composedPath().includes(el))) continue;
       if (r === undefined) {
         r = val.value;
       } else if (!Object.is(r, val.value)) {
@@ -105,16 +102,16 @@ export class ContextVariablesProvider implements ReactiveController {
     return r;
   };
 
-  #visitNode = (target: Node, node: CoreExpression, stack: unknown[]) => {
+  #visitNode = (node: CoreExpression, stack: unknown[], event?: Event) => {
     switch (node.type) {
       case "Literal":
         stack.push(node.value);
         break;
       case "Identifier":
-        stack.push(this.#getContextValue(target, node.name));
+        stack.push(this.#getContextValue(node.name, event));
         break;
       case "UnaryExpression": {
-        this.#visitNode(target, node.argument as CoreExpression, stack);
+        this.#visitNode(node.argument as CoreExpression, stack, event);
         const val = stack.pop();
         switch (node.operator) {
           case "!":
@@ -131,8 +128,8 @@ export class ContextVariablesProvider implements ReactiveController {
       }
       case "BinaryExpression":
         {
-          this.#visitNode(target, node.left as CoreExpression, stack);
-          this.#visitNode(target, node.right as CoreExpression, stack);
+          this.#visitNode(node.left as CoreExpression, stack, event);
+          this.#visitNode(node.right as CoreExpression, stack, event);
           const right = stack.pop();
           const left = stack.pop();
           const op = node.operator;
@@ -151,9 +148,9 @@ export class ContextVariablesProvider implements ReactiveController {
     }
   };
 
-  #evaluate = (target: Node, expression: CoreExpression) => {
+  #evaluate = (expression: CoreExpression, event?: Event) => {
     const stack: [] = [];
-    this.#visitNode(target, expression, stack);
+    this.#visitNode(expression, stack, event);
     return !!stack.pop();
   };
 }

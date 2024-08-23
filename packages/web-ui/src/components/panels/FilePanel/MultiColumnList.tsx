@@ -26,9 +26,6 @@ export class MultiColumnList extends FrdyElement {
     :host {
       display: grid;
     }
-    /* .columns-scroller:focus {
-      border: 10px solid red;
-    } */
     .columns-scroller {
       position: relative;
       display: grid;
