@@ -319,7 +319,6 @@ export class MultiColumnList extends FrdyElement {
 
     return html`
       <frdy-scrollable
-        tabindex="0"
         class="columns-scroller"
         aria-colcount=${this.#columnCount}
         ref=${ref(this.#rootRef)}

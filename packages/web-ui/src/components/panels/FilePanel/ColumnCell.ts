@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import { LitElement, css, html } from "lit";
+import { LitElement, PropertyValues, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import type { CursorStyle } from "./types";
 import { FrdyElement } from "../../FrdyElement";
@@ -51,9 +51,18 @@ export class ColumnCell extends FrdyElement {
     this.isTouchscreen = false;
   }
 
+  protected update(_changedProperties: PropertyValues): void {
+    super.update(_changedProperties);
+    // HACK for safari. tabindex=0 for the whole panel makes scrolling very slow. Thus, we have to set tabindex=0 on each cell and track active item.
+    if (this.cursorStyle === "firm") {
+      this.focus();
+    }
+  }
+
   connectedCallback(): void {
     super.connectedCallback();
     this.draggable = true;
+    this.tabIndex = 0;
   }
 
   #onPointerDown(e: PointerEvent) {
