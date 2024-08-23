@@ -78,15 +78,12 @@
     "ansi-colors": "^4.1.3",
     "clsx": "^2.1.1",
     "comlink": "^4.4.1",
-    "deepmerge": "^4.3.1",
-    "fast-deep-equal": "^3.1.3",
     "immer": "^10.0.3",
+    "immutable": "^4.3.7",
     "is-promise": "^4.0.0",
-    "jotai": "^2.9.1",
     "jsonc-parser": "^3.3.1",
     "list": "^2.0.19",
     "lit": "^3.2.0",
-    "parsimmon": "^1.18.1",
     "valibot": "^0.37.0"
   }
 }

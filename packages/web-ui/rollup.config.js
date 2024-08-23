@@ -11,6 +11,7 @@ export default defineConfig([
     output: {
       dir: "./dist",
     },
+    external: ["@frdy/commands", /^@?lit(\/.*)?/, "jsonc-parser", "@frdy/sdk", "valibot", "clsx", "list"],
     plugins: [json(), typescript()],
   },
   {

@@ -1,14 +1,14 @@
 import { Dirent, FileSystemProvider, isDir, isHidden, readDir } from "@frdy/sdk";
 import { consume } from "@lit/context";
 import { Task } from "@lit/task";
-import { css, html, LitElement } from "lit";
+import { css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { fsContext } from "../../lit-contexts/fsContext";
 import "../../lit-contexts/GlyphSizeProvider";
 import { TabFilesView } from "../../types";
-import { createList } from "../../utils/immutableList";
-import "../panels/FilePanel/FilePanel";
+import { createList } from "../../utils/list/createList";
 import { FrdyElement } from "../FrdyElement";
+import "../panels/FilePanel/FilePanel";
 
 const TAG = "frdy-file-panel-tab";
 

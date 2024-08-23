@@ -2,18 +2,18 @@ import type { Dirent } from "@frdy/sdk";
 import { consume } from "@lit/context";
 import { css, CSSResultGroup, html, nothing, render } from "lit";
 import { property } from "lit/decorators.js";
+import { map } from "lit/directives/map.js";
 import "../../../../lit-contexts/GlyphSizeProvider";
 import { isTouchScreenContext } from "../../../../lit-contexts/IsTouchScreenProvider";
 import { IconsCache, iconsCacheContext } from "../../../../lit-contexts/iconsCacheContext";
 import { TabFilesView } from "../../../../types";
-import { createList, type List } from "../../../../utils/immutableList";
+import { createList, type List } from "../../../../utils/list/createList";
 import { FrdyElement } from "../../../FrdyElement";
 import "../ColumnCell";
-import { DragGhost } from "./DragGhost";
 import "../FileName";
 import "../MultiColumnList";
 import type { CursorStyle } from "../types";
-import { map } from "lit/directives/map.js";
+import { DragGhost } from "./DragGhost";
 
 export abstract class View<T extends TabFilesView> extends FrdyElement {
   static styles = css`

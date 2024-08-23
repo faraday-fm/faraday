@@ -6,7 +6,7 @@ import { choose } from "lit/directives/choose.js";
 import { range } from "lit/directives/range.js";
 import "../../../lit-contexts/GlyphSizeProvider";
 import { TabFilesView } from "../../../types";
-import { List, createList } from "../../../utils/immutableList";
+import { List, createList } from "../../../utils/list/createList";
 import { FrdyElement } from "../../FrdyElement";
 import "./FileInfo";
 import { SelectionType } from "./MultiColumnList";
