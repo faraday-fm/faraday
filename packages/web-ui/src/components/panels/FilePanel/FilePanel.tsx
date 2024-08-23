@@ -39,9 +39,6 @@ export class FilePanel extends FrdyElement {
     .panel-columns {
       display: grid;
       overflow: hidden;
-      &:focus {
-        outline: none;
-      }
     }
     .panel-footer {
       border-block-start: 1px solid var(--panel-border);

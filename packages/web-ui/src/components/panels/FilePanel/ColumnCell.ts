@@ -12,6 +12,9 @@ export class ColumnCell extends FrdyElement {
     :host {
       display: grid;
       overflow: hidden;
+      &:focus {
+        outline: none;
+      }
     }
     .cell {
       display: grid;
