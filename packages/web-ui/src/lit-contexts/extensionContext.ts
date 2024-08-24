@@ -1,6 +1,6 @@
 import { type FileSystemProvider } from "@frdy/sdk";
 import { createContext } from "@lit/context";
-import { ExtensionManifest, IconThemeDefinition } from "../schemas/manifest";
+import { ExtensionManifest, IconThemeDefinition, ThemeDefinition } from "../schemas/manifest";
 import { combine } from "../utils/path";
 import { ExtensionRepoContext } from "./extensionRepoContext";
 import { readFileJson } from "./fsUtils";
@@ -10,6 +10,7 @@ export type Extension = {
   loadingError?: unknown;
   manifest: ExtensionManifest | undefined;
   iconThemeDefinitions: Map<string, IconThemeDefinition>;
+  themeDefinitions: Map<string, ThemeDefinition>;
 };
 
 export type ExtensionsContext = {
@@ -23,11 +24,14 @@ async function loadExt(fs: FileSystemProvider, path: string, id: { uuid: string 
   try {
     const manifestLocation = combine(extensionLocation, "package.json");
     const manifest = await readFileJson(fs, manifestLocation, ExtensionManifest);
-    const iconThemes = new Map(manifest.contributes?.iconThemes?.map((t) => [`${manifest.publisher}.${manifest.name}.${t.id}`, t]));
-    return { path: extensionLocation, manifest, iconThemeDefinitions: iconThemes };
+    const themeDefinitions = new Map(manifest.contributes?.themes?.map((t) => [`${manifest.publisher}.${manifest.name}.${t.label}`, t]));
+    const iconThemeDefinitions = new Map(manifest.contributes?.iconThemes?.map((t) => [`${manifest.publisher}.${manifest.name}.${t.id}`, t]));
+    console.info("Themes:", themeDefinitions);
+    console.info("Icon Themes:", iconThemeDefinitions);
+    return { path: extensionLocation, manifest, themeDefinitions, iconThemeDefinitions };
   } catch (err) {
     console.error("Unable to load extension:", path);
-    return { path: extensionLocation, loadingError: err, manifest: undefined, iconThemeDefinitions: new Map() };
+    return { path: extensionLocation, loadingError: err, manifest: undefined, themeDefinitions: new Map(), iconThemeDefinitions: new Map() };
   }
 }
 

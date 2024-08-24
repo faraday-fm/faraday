@@ -45,7 +45,7 @@ export class FileIcon extends FrdyElement {
   constructor() {
     super();
     this.isDir = false;
-    this.size = 20;
+    this.size = 18;
     this.isOpen = false;
   }
 

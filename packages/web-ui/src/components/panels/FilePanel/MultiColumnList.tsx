@@ -327,7 +327,7 @@ export class MultiColumnList extends FrdyElement {
         @scroll=${this.#onScroll}
       >
         <div style="display:grid;position:absolute;inset:0;grid-template-columns: repeat(${this.#columnCount}, 1fr)">
-          ${map(range(this.#columnCount), (i) => html`<div style=${i < this.#columnCount - 1 && "border-inline-end: 1px solid var(--panel-border);"}></div>`)}
+          ${map(range(this.#columnCount), (i) => html`<div style=${i < this.#columnCount - 1 && "border-inline-end: 1px solid var(--sideBar-border);"}></div>`)}
         </div>
 
         <div class="columns-scroller-fixed" ref=${ref(this.#fixedRef)} @pointerdown=${this.#onPointerDown}>

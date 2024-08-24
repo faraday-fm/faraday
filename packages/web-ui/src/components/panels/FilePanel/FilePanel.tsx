@@ -41,8 +41,8 @@ export class FilePanel extends FrdyElement {
       width: 100%;
       height: 100%;
       position: relative;
-      color: var(--panel-foreground);
-      background-color: var(--panel-background);
+      /* color: var(--panel-foreground, var(--list-focusForeground, #adbac7)); */
+      background-color: var(--sideBar-background, #22272e);
       display: grid;
       overflow: hidden;
       outline: none;

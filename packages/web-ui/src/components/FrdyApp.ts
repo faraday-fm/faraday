@@ -2,11 +2,10 @@ import { command, CommandsProvider, context } from "@frdy/commands";
 import { ContextProvider } from "@lit/context";
 import { Task } from "@lit/task";
 import { parse as jsonParse } from "jsonc-parser";
-import { css, html, LitElement, PropertyValues } from "lit";
+import { css, html, PropertyValues } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { when } from "lit/directives/when.js";
 import keybindings from "../assets/keybindings.json";
-import { darkTheme } from "../features/themes/themes";
 import { CssVarsProvider } from "../lit-contexts/cssVarsProvider";
 import { createExtensionsContext, extensionsContext } from "../lit-contexts/extensionContext";
 import { createExtensionRepoContext, extensionRepoContext } from "../lit-contexts/extensionRepoContext";
@@ -14,12 +13,13 @@ import { fsContext } from "../lit-contexts/fsContext";
 import { readFileString } from "../lit-contexts/fsUtils";
 import { createIconThemeContext, iconThemeContext } from "../lit-contexts/iconThemeContext";
 import { createIconsCache, iconsCacheContext } from "../lit-contexts/iconsCacheContext";
+import { IsTouchScreenContext } from "../lit-contexts/isTouchScreenContext";
 import { createSettingsContext, settingsContext } from "../lit-contexts/settingsContext";
+import { createThemeContext, themeContext } from "../lit-contexts/themeContext";
 import { FaradayHost, NodeLayout } from "../types";
 import "./ActionBar";
-import "./Tabs/LayoutContainer";
 import { FrdyElement } from "./FrdyElement";
-import { IsTouchScreenContext } from "../lit-contexts/isTouchScreenContext";
+import "./Tabs/LayoutContainer";
 
 const TAG = "frdy-app";
 
@@ -28,10 +28,13 @@ export class FrdyApp extends FrdyElement {
   static styles = css`
     :host {
       display: contents;
+      /* font-family: var(--fontFamily,-apple-system, "system-ui", sans-serif); */
+      font-family: var(--fontFamily, "SF Mono", Monaco, Menlo, Courier, monospace);
+      color: var(--foreground, #adbac7);
     }
 
     .app {
-      -webkit-font-smoothing: antialiased;
+      /* -webkit-font-smoothing: antialiased; */
 
       ::-webkit-scrollbar {
         display: none;
@@ -43,7 +46,6 @@ export class FrdyApp extends FrdyElement {
         font-size: inherit;
       }
 
-      font-family: var(--fontFamily);
       text-rendering: geometricPrecision;
       background-color: #172637;
       height: 100%;
@@ -66,6 +68,7 @@ export class FrdyApp extends FrdyElement {
       position: absolute;
       inset: 0;
       z-index: 0;
+      background-color: var(--terminal-background);
     }
     .tabs {
       display: grid;
@@ -88,6 +91,7 @@ export class FrdyApp extends FrdyElement {
   private _settingsProvider = new ContextProvider(this, { context: settingsContext });
   private _extensionRepoProvider = new ContextProvider(this, { context: extensionRepoContext });
   private _extensionsProvider = new ContextProvider(this, { context: extensionsContext });
+  private _themeProvider = new ContextProvider(this, { context: themeContext });
   private _iconThemeProvider = new ContextProvider(this, { context: iconThemeContext });
   private _iconsCacheProvider = new ContextProvider(this, { context: iconsCacheContext });
   private _commandsProvider = new CommandsProvider(this, keybindings);
@@ -154,7 +158,7 @@ export class FrdyApp extends FrdyElement {
 
   constructor() {
     super();
-    this._css.setTheme(darkTheme);
+    // this._css.setTheme(darkTheme);
   }
 
   protected willUpdate(_changedProperties: PropertyValues): void {
@@ -165,8 +169,10 @@ export class FrdyApp extends FrdyElement {
         this._settingsProvider.setValue(createSettingsContext(fs));
         this._extensionRepoProvider.setValue(createExtensionRepoContext(fs));
         this._extensionsProvider.setValue(createExtensionsContext(fs, this._extensionRepoProvider.value));
+        this._themeProvider.setValue(createThemeContext(fs, this._settingsProvider.value, this._extensionsProvider.value));
         this._iconThemeProvider.setValue(createIconThemeContext(fs, this._settingsProvider.value, this._extensionsProvider.value));
         this._iconsCacheProvider.setValue(createIconsCache(fs, this._iconThemeProvider.value));
+        this._css.setThemeContext(this._themeProvider.value);
       }
     }
   }

@@ -19,14 +19,14 @@ export class ActionButton extends FrdyElement {
       }
     }
     .fnKeyClass {
-      color: var(--actionBar-keyForeground);
-      background-color: var(--actionBar-keyBackground);
+      color: var(--badge-foreground);
+      background-color: var(--badge-background);
     }
     .headerButton {
       text-align: left;
       width: 100%;
-      background-color: var(--actionBar-buttonBackground);
-      color: var(--actionBar-buttonForeground);
+      background-color: var(--button-background);
+      color: var(--button-foreground);
       padding: 0;
       cursor: pointer;
     }

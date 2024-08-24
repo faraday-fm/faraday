@@ -103,8 +103,8 @@
   }
 }
 .fnKey {
-  color: var(--actionBar-keyForeground);
-  background-color: var(--actionBar-keyBackground);
+  color: var(--badge-foreground);
+  background-color: var(--badge-background);
 }
 .headerButton {
   text-align: left;

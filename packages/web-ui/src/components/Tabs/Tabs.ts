@@ -17,27 +17,28 @@ export class Tabs extends FrdyElement {
       overflow: hidden;
       width: 100%;
       height: 100%;
-      border: 1px solid var(--panel-border);
+      border: 1px solid var(--panel-border, transparent);
       display: grid;
       grid-template-rows: auto 1fr;
     }
     .header {
       display: flex;
-      color: var(--panel-header-foreground);
-      background-color: var(--panel-header-background);
+      color: var(--tab-inactiveForeground);
+      background-color: var(--tab-inactiveBackground);
       overflow: hidden;
+      border: 1px solid var(--tab-border, transparent);
     }
     .tabName {
       cursor: pointer;
       padding-left: 1ch;
       white-space: nowrap;
       &:hover {
-        color: var(--panel-header-foreground-focus);
-        background-color: var(--panel-header-background-focus);
+        color: var(--tab-activeForeground);
+        background-color: var(--tab-hoverBackground, var(--tab-activeBackground));
       }
       &.-active {
-        color: var(--panel-header-foreground-focus);
-        background-color: var(--panel-header-background-focus);
+        color: var(--tab-activeForeground);
+        background-color: var(--tab-activeBackground);
       }
     }
   `;

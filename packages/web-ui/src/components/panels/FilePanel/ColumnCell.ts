@@ -12,11 +12,17 @@ export class ColumnCell extends FrdyElement {
     :host {
       display: grid;
       overflow: hidden;
-      &:focus, &:focus-visible {
+      padding-inline-end: 1px;
+    }
+    :host(:focus-visible) {
+      outline: none;
+    }
+
+    .cell {
+      &:focus,
+      &:focus-visible {
         outline: none;
       }
-    }
-    .cell {
       display: grid;
       align-items: center;
       cursor: default;
@@ -25,15 +31,16 @@ export class ColumnCell extends FrdyElement {
       padding: 0 2px;
       border-radius: 2px;
       border: 1px solid transparent;
-      &.firm-cursor {
-        background-color: var(--files-file-background-focus);
-        border: 1px solid var(--files-file-border-focus);
-      }
       &.inactive-cursor {
-        background-color: var(--files-file-background-focus);
+        background-color: var(--list-inactiveSelectionBackground);
+        background-color: color-mix(in srgb, var(--focusBorder, #316dca), transparent 70%);
       }
       &.selected {
-        background-color: var(--files-file-background-selected);
+        background-color: var(--list-inactiveSelectionBackground);
+      }
+      &.firm-cursor {
+        background-color: var(--list-focusBackground);
+        border: 1px solid var(--list-focusOutline, #316dca);
       }
     }
   `;

@@ -1,5 +1,6 @@
 import { Theme } from "@frdy/sdk";
 import { ReactiveController, ReactiveControllerHost } from "lit";
+import { ThemeContext } from "./themeContext";
 
 export class CssVarsProvider implements ReactiveController {
   #host: ReactiveControllerHost & HTMLElement;
@@ -10,10 +11,14 @@ export class CssVarsProvider implements ReactiveController {
     host.addController(this);
   }
 
-  setTheme(theme: Theme) {
+  async setThemeContext(themeCtx: ThemeContext) {
     if (this.#style) {
-      let vars = Object.entries(theme.colors);
-      vars.push(["fontFamily", theme.fontFamily]);
+      const themeDesc = await themeCtx.theme;
+      const { theme } = themeDesc;
+      let vars = Object.entries(theme.colors ?? {});
+      if (themeDesc.theme.fontFamily) {
+        vars.push(["fontFamily", themeDesc.theme.fontFamily]);
+      }
 
       const body = vars.map(([k, v]) => `--${k.replaceAll(".", "-").replaceAll(":", "-")}: ${v}`).join(";");
       this.#style.innerHTML = `body {${body}}`;

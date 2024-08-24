@@ -17,10 +17,14 @@ const IconThemeDefinition = object({
 const ThemeDefinition = object({
   label: string(),
   uiTheme: enum_({
-    fd: "fd",
-    "fd-light": "fd-light",
-    hc: "hc",
+    vs: "vs",
+    "vs-dark": "vs-dark",
     "hc-light": "hc-light",
+    "hc-black": "hc-black",
+    // fd: "fd",
+    // "fd-light": "fd-light",
+    // hc: "hc",
+    // "hc-light": "hc-light",
   }),
   path: string(),
 });
@@ -43,6 +47,8 @@ export const ExtensionManifest = object({
 });
 
 export type CustomPanelDefinition = InferOutput<typeof CustomPanelDefinition>;
+
+export type ThemeDefinition = InferOutput<typeof ThemeDefinition>;
 
 export type IconThemeDefinition = InferOutput<typeof IconThemeDefinition>;
 
