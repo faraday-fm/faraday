@@ -1,10 +1,14 @@
+import { CommandsContext, commandsContext } from "@frdy/commands";
+import { consume } from "@lit/context";
 import clsx from "clsx";
-import { LitElement, PropertyValues, css, html } from "lit";
+import { PropertyValues, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
-import type { CursorStyle } from "./types";
 import { FrdyElement } from "../../FrdyElement";
+import type { CursorStyle } from "./types";
 
 const TAG = "frdy-column-cell";
+
+const doubleClickThreshold = 300; // ms
 
 @customElement(TAG)
 export class ColumnCell extends FrdyElement {
@@ -27,9 +31,7 @@ export class ColumnCell extends FrdyElement {
       align-items: center;
       cursor: default;
       overflow: hidden;
-      box-sizing: border-box;
       padding: 0 2px;
-      border-radius: 2px;
       border: 1px solid transparent;
       &.inactive-cursor {
         background-color: var(--list-inactiveSelectionBackground);
@@ -37,13 +39,18 @@ export class ColumnCell extends FrdyElement {
       }
       &.selected {
         background-color: var(--list-focusBackground);
+        border-radius: 0;
       }
       &.firm-cursor {
         background-color: var(--list-focusBackground);
         border: 1px solid var(--list-focusOutline, #316dca);
+        border-radius: 4px;
       }
     }
   `;
+
+  @consume({ context: commandsContext })
+  accessor commands!: CommandsContext;
 
   @property({ attribute: true, type: Boolean, reflect: true })
   accessor selected: boolean;
@@ -75,36 +82,50 @@ export class ColumnCell extends FrdyElement {
     this.tabIndex = 0;
   }
 
+  #lastClickTime = 0;
+
   #onPointerDown(e: PointerEvent) {
-    if (!this.isTouchscreen) {
-      e.stopPropagation();
-      this.dispatchEvent(
-        new CustomEvent("activate", {
-          bubbles: true,
-          composed: true,
-        })
-      );
+    const currentTime = performance.now();
+
+    let isDoubleClick = false;
+    if (currentTime - this.#lastClickTime < doubleClickThreshold) {
+      isDoubleClick = true;
+      this.#lastClickTime = 0;
+    } else {
+      this.#lastClickTime = currentTime;
+    }
+
+    e.stopPropagation();
+    this.dispatchEvent(
+      new CustomEvent("activate", {
+        bubbles: true,
+        composed: true,
+      })
+    );
+
+    if (isDoubleClick || this.isTouchscreen) {
+      this.commands.invokeCommand("open", undefined, e.composedPath());
     }
   }
 
-  #onOpen(isDoubleClick: boolean) {
-    if (this.isTouchscreen && !isDoubleClick) {
-      this.dispatchEvent(
-        new CustomEvent("open", {
-          bubbles: true,
-          composed: true,
-        })
-      );
-    }
-  }
+  // #onPointerDown(e: PointerEvent) {
+  //   console.error("**",isDoubleClick);
+  //   // if (this.isTouchscreen && !isDoubleClick || isDoubleClick) {
+  //   //   this.commands.invokeCommand("open",);
+  //   //   this.dispatchEvent(
+  //   //     new CustomEvent("open", {
+  //   //       bubbles: true,
+  //   //       composed: true,
+  //   //     })
+  //   //   );
+  //   // }
+  // }
 
   protected render() {
     return html`
       <div
         class=${clsx("cell", this.cursorStyle !== "hidden" && `${this.cursorStyle}-cursor`, this.selected && "selected")}
         @pointerdown=${this.#onPointerDown}
-        @click=${() => this.#onOpen(false)}
-        @doubleclick=${() => this.#onOpen(true)}
       >
         <slot></slot>
       </div>

@@ -1,7 +1,7 @@
 import { ContextProvider, createContext } from "@lit/context";
 import jsep, { CoreExpression } from "jsep";
 import type { ReactiveController } from "lit";
-import { SetContextVariableEventName, UnsetContextVariableEventName } from "../consts";
+import { SetContextVariableEventName, UnsetContextVariableEventName } from "./consts";
 import { SetContextVariableEvent, UnsetContextVariableEvent } from "./events";
 import { ContextOptions, HostElement } from "./types";
 

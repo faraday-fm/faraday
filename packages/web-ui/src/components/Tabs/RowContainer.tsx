@@ -19,6 +19,7 @@ export class RowContainer extends FrdyElement {
     .row {
       width: 100%;
       display: flex;
+      gap: 2px;
     }
     .flexPanel {
       display: grid;

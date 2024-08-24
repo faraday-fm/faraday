@@ -12,6 +12,7 @@ export class ActionBar extends FrdyElement {
       display: contents;
     }
     .actionsBar {
+      margin-inline: 1ch;
       display: grid;
       gap: 1ch;
       grid-auto-flow: column;

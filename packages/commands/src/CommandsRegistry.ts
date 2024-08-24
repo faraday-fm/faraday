@@ -1,5 +1,5 @@
 import type { ReactiveController } from "lit";
-import { RegisterCommandEventName, UnregisterCommandEventName } from "../consts";
+import { RegisterCommandEventName, UnregisterCommandEventName } from "./consts";
 import { RegisterCommandEvent, UnregisterCommandEvent } from "./events";
 import { CommandOptions, HostElement } from "./types";
 

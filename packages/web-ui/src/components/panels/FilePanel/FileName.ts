@@ -1,9 +1,9 @@
 import { type Dirent, isDir, isHidden } from "@frdy/sdk";
-import { LitElement, css, html } from "lit";
+import { css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { IconsCache } from "../../../lit-contexts/iconsCacheContext";
-import "./FileIcon";
 import { FrdyElement } from "../../FrdyElement";
+import "../../FileIcon";
 
 @customElement("frdy-filename")
 export class FileName extends FrdyElement {

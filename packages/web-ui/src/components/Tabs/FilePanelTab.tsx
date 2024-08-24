@@ -28,7 +28,7 @@ export class FilePanelTab extends FrdyElement {
   accessor path: string | undefined;
 
   @property({ type: Boolean })
-  accessor showHidden = true;
+  accessor showHidden = false;
 
   constructor() {
     super();

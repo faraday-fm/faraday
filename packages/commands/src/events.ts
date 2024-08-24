@@ -1,4 +1,4 @@
-import { RegisterCommandEventName, SetContextVariableEventName, UnregisterCommandEventName, UnsetContextVariableEventName } from "../consts";
+import { RegisterCommandEventName, SetContextVariableEventName, UnregisterCommandEventName, UnsetContextVariableEventName } from "./consts";
 import { CommandOptions, ContextOptions } from "./types";
 
 export class RegisterCommandEvent extends Event {

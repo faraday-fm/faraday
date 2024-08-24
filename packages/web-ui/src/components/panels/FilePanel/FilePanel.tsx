@@ -1,22 +1,22 @@
 import { command, context } from "@frdy/commands";
 import { Dirent, FileSystemProvider, isDir, isHidden, readDir } from "@frdy/sdk";
+import { consume } from "@lit/context";
+import { Task } from "@lit/task";
 import { PropertyValues, css, html } from "lit";
-import { customElement, property, state } from "lit/decorators.js";
+import { customElement, property } from "lit/decorators.js";
 import { choose } from "lit/directives/choose.js";
 import { range } from "lit/directives/range.js";
+import { fsContext } from "../../../lit-contexts/fsContext";
 import "../../../lit-contexts/GlyphSizeProvider";
 import { TabFilesView } from "../../../types";
 import { List, createList } from "../../../utils/list/createList";
+import { combine, dir } from "../../../utils/path";
 import { FrdyElement } from "../../FrdyElement";
-import "./FileInfo";
+import "../../FileInfo";
 import { SelectionType } from "./MultiColumnList";
 import "./ScrollableContainer";
 import "./views/CondensedView";
 import "./views/FullView";
-import { fsContext } from "../../../lit-contexts/fsContext";
-import { consume } from "@lit/context";
-import { Task } from "@lit/task";
-import { combine, dir } from "../../../utils/path";
 
 const TAG = "frdy-file-panel";
 
@@ -27,6 +27,8 @@ const collator = new Intl.Collator(undefined, {
 });
 
 function fsCompare(a: Dirent, b: Dirent) {
+  if (a.filename === "..") return -1;
+  if (b.filename === "..") return 1;
   if (isDir(a) && !isDir(b)) return -1;
   if (!isDir(a) && isDir(b)) return 1;
   return collator.compare(a.filename, b.filename);

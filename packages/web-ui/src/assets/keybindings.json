@@ -31,9 +31,6 @@
   { "key": "F7", "command": "mkdir", "when": "filePanel.focus" },
   { "key": "F8", "command": "deleteFiles", "when": "filePanel.focus && !filePanel.firstItem" },
 
-  { "key": "ArrowUp", "command": "cursorEnd", "when": "filePanel.focus && filePanel.firstItem" },
-  { "key": "ArrowDown", "command": "cursorStart", "when": "filePanel.focus && filePanel.lastItem" },
-
   { "key": "Ctrl+KeyO", "command": "togglePanels" },
   { "key": "Ctrl+KeyD", "command": "switchDevMode" },
   { "key": "Ctrl+KeyH", "command": "switchShowHiddenFiles" },

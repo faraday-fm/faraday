@@ -1,5 +1,5 @@
 import type { ReactiveController } from "lit";
-import { KeyBindingsSchema } from "../schema";
+import { KeyBindingsSchema } from "./schema";
 import { CommandsRegistry } from "./CommandsRegistry";
 import { HostElement } from "./types";
 import { ContextVariablesProvider } from "./ContextVariablesProvider";

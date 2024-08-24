@@ -1,10 +1,9 @@
-import { consume } from "@lit/context";
 import { Task } from "@lit/task";
-import { LitElement, css, html } from "lit";
+import { css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
-import { type IconsCache, iconsCacheContext } from "../../../lit-contexts/iconsCacheContext";
-import { FrdyElement } from "../../FrdyElement";
+import { type IconsCache } from "../lit-contexts/iconsCacheContext";
+import { FrdyElement } from "./FrdyElement";
 
 const TAG = "frdy-fileicon";
 
@@ -63,26 +62,18 @@ export class FileIcon extends FrdyElement {
   });
 
   protected render() {
+    const defaultIcon = () =>
+      html`<img
+        style="width:${this.size}px;height:${this.size}px"
+        src="data:image/svg+xml;base64,${getDefaultIcon(this.isDir, this.isOpen) ?? ""}"
+        alt=${ifDefined(this.filepath)}
+      />`;
     return this.#task.render({
-      initial: () =>
-        html`<img
-          style="width:${this.size}px;height:${this.size}px"
-          src="data:image/svg+xml;base64,${getDefaultIcon(this.isDir, this.isOpen) ?? ""}"
-          alt=${ifDefined(this.filepath)}
-        />`,
-      pending: () =>
-        html`<img
-          style="width:${this.size}px;height:${this.size}px"
-          src="data:image/svg+xml;base64,${getDefaultIcon(this.isDir, this.isOpen) ?? ""}"
-          alt=${ifDefined(this.filepath)}
-        />`,
-      complete: (x) => html`<img style="width:${this.size}px;height:${this.size}px" src="data:image/svg+xml;base64,${x}" alt=${ifDefined(this.filepath)} />`,
-      error: () =>
-        html`<img
-          style="width:${this.size}px;height:${this.size}px"
-          src="data:image/svg+xml;base64,${getDefaultIcon(this.isDir, this.isOpen) ?? ""}"
-          alt=${ifDefined(this.filepath)}
-        />`,
+      initial: defaultIcon,
+      pending: defaultIcon,
+      error: defaultIcon,
+      complete: (content) =>
+        html`<img style="width:${this.size}px;height:${this.size}px" src="data:image/svg+xml;base64,${content}" alt=${ifDefined(this.filepath)} />`,
     });
   }
 }

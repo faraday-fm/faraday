@@ -1,9 +1,9 @@
 import { Dirent, FileType, isDir } from "@frdy/sdk";
 import { LitElement, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
-import { formatDateTime } from "../../../utils/date";
-import { bytesToSize } from "../../../utils/number";
-import { FrdyElement } from "../../FrdyElement";
+import { formatDateTime } from "../utils/date";
+import { bytesToSize } from "../utils/number";
+import { FrdyElement } from "./FrdyElement";
 
 const TAG = "frdy-file-info";
 
@@ -11,12 +11,13 @@ const TAG = "frdy-file-info";
 export class FileInfo extends FrdyElement {
   static styles = css`
     :host {
+      min-height: 3ch;
       display: flex;
+      align-items: center;
       overflow: hidden;
-      padding: 0.5rem 0;
-      border-block-start: 1px solid var(--panel-border);
+      padding-inline: 0.5ch;
+      border-block-start: 3px double var(--sideBar-border);
     }
-
     .name {
       text-overflow: ellipsis;
       overflow: hidden;
