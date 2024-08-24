@@ -20,6 +20,7 @@ export class CondensedView extends View<TabFilesCondensedView> {
       <frdy-glyph-size-provider>
         <frdy-multicolumn-list
           .minColumnWidth=${250}
+          .topmostIndex=${this.topmostIndex}
           .activeIndex=${this.activeIndex}
           .renderItem=${(index: number, isActive:boolean) => this.renderItem(index, isActive, selectedNames)}
           .itemsCount=${this.items.size()}

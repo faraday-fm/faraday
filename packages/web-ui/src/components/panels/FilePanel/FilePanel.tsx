@@ -61,6 +61,9 @@ export class FilePanel extends FrdyElement {
     }
   `;
 
+  @consume({ context: fsContext })
+  accessor fs!: FileSystemProvider;
+
   @property({ attribute: false })
   accessor items: List<Dirent>;
 
@@ -110,7 +113,7 @@ export class FilePanel extends FrdyElement {
   @context({ name: "filePanel.selectedItemsCount", whenFocusWithin: true })
   accessor selectedItemsCount = 0;
 
-  @command()
+  @command({ whenFocusWithin: true })
   async open() {
     if (this.activeItemName === "..") {
       await this.dirUp();
@@ -121,6 +124,7 @@ export class FilePanel extends FrdyElement {
           this.path = combine((this.path ?? "") + "/", this.activeItemName ?? ".");
           this.#task.run();
           await this.#task.taskComplete;
+          this.selectedItemNames = createList();
           this.activeIndex = 0;
           this.#updateActiveItem();
         }
@@ -128,7 +132,7 @@ export class FilePanel extends FrdyElement {
     }
   }
 
-  @command()
+  @command({ whenFocusWithin: true })
   async dirUp() {
     this.path = dir(this.path ?? "/");
     if (this.path.endsWith("/")) {
@@ -136,18 +140,25 @@ export class FilePanel extends FrdyElement {
     }
     this.#task.run();
     await this.#task.taskComplete;
+    this.selectedItemNames = createList();
     const pos = this.#positionsStack.pop();
     if (pos) {
-      const idx = this.items.findIndex((i) => i.filename === pos.activeName);
-      if (idx >= 0) {
-        this.activeIndex = idx;
+      const activeIdx = this.items.findIndex((i) => i.filename === pos.activeName);
+      const topmostIdx = this.items.findIndex((i) => i.filename === pos.topmostName);
+      if (activeIdx >= 0) {
+        if (topmostIdx >= 0) {
+          this.topmostIndex = topmostIdx;
+        }
+        this.activeIndex = activeIdx;
         this.#updateActiveItem();
       }
     }
   }
 
-  @consume({ context: fsContext })
-  accessor fs!: FileSystemProvider;
+  @command({ whenFocusWithin: false })
+  focusNextPanel() {
+    this.focus();
+  }
 
   #positionsStack: { topmostName: string; activeName: string }[] = [];
 
@@ -232,6 +243,7 @@ export class FilePanel extends FrdyElement {
                 "condensed",
                 () => html`<frdy-condensed-view
                   .view=${this.view as any /* TODO: think how to get rid of any */}
+                  .topmostIndex=${this.topmostIndex}
                   .activeIndex=${this.activeIndex}
                   .cursorStyle=${cursorStyle}
                   .items=${this.items}
@@ -243,6 +255,7 @@ export class FilePanel extends FrdyElement {
                 "full",
                 () => html`<frdy-full-view
                   .view=${this.view as any /* TODO: think how to get rid of any */}
+                  .topmostIndex=${this.topmostIndex}
                   .activeIndex=${this.activeIndex}
                   .cursorStyle=${cursorStyle}
                   .items=${this.items}

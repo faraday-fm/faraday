@@ -20,6 +20,7 @@ import { FaradayHost, NodeLayout } from "../types";
 import "./ActionBar";
 import { FrdyElement } from "./FrdyElement";
 import "./Tabs/LayoutContainer";
+import { createLanguagesContext, languagesContext } from "../lit-contexts/languagesContext";
 
 const TAG = "frdy-app";
 
@@ -28,8 +29,8 @@ export class FrdyApp extends FrdyElement {
   static styles = css`
     :host {
       display: contents;
-      /* font-family: var(--fontFamily,-apple-system, "system-ui", sans-serif); */
-      font-family: var(--fontFamily, "SF Mono", Monaco, Menlo, Courier, monospace);
+      font-family: var(--fontFamily,-apple-system, "system-ui", sans-serif);
+      /* font-family: var(--fontFamily, "SF Mono", Monaco, Menlo, Courier, monospace); */
       color: var(--foreground, #adbac7);
     }
 
@@ -93,6 +94,7 @@ export class FrdyApp extends FrdyElement {
   private _extensionsProvider = new ContextProvider(this, { context: extensionsContext });
   private _themeProvider = new ContextProvider(this, { context: themeContext });
   private _iconThemeProvider = new ContextProvider(this, { context: iconThemeContext });
+  private _languagesContext = new ContextProvider(this, { context: languagesContext });
   private _iconsCacheProvider = new ContextProvider(this, { context: iconsCacheContext });
   private _commandsProvider = new CommandsProvider(this, keybindings);
   private _css = new CssVarsProvider(this);
@@ -110,16 +112,6 @@ export class FrdyApp extends FrdyElement {
   @command()
   togglePanels() {
     // setPanelsOpen((p) => !p)
-  }
-
-  @command()
-  focusNextPanel() {
-    // focusNextPanel(false)
-  }
-
-  @command()
-  focusPrevPanel() {
-    // focusNextPanel(true)
   }
 
   @command()
@@ -171,7 +163,8 @@ export class FrdyApp extends FrdyElement {
         this._extensionsProvider.setValue(createExtensionsContext(fs, this._extensionRepoProvider.value));
         this._themeProvider.setValue(createThemeContext(fs, this._settingsProvider.value, this._extensionsProvider.value));
         this._iconThemeProvider.setValue(createIconThemeContext(fs, this._settingsProvider.value, this._extensionsProvider.value));
-        this._iconsCacheProvider.setValue(createIconsCache(fs, this._iconThemeProvider.value));
+        this._languagesContext.setValue(createLanguagesContext(fs, this._extensionsProvider.value));
+        this._iconsCacheProvider.setValue(createIconsCache(fs, this._iconThemeProvider.value, this._languagesContext.value));
         this._css.setThemeContext(this._themeProvider.value);
       }
     }

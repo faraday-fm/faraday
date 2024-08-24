@@ -1,6 +1,5 @@
 import { FaradayHost, FrdyApp } from "@frdy/web-ui";
 import { applyPolyfill } from "custom-elements-hmr-polyfill";
-import "./frdy.css";
 import "./index.css";
 // import { buildFaradayFs } from "./services/fs";
 import { wsfs } from "./services/wsfs";

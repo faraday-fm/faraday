@@ -92,7 +92,10 @@ export class ContextVariablesProvider implements ReactiveController {
     }
     for (const [el, val] of varEntries) {
       if (val.value === undefined) continue;
-      if (val.options.whenFocusWithin && (!path || !path.includes(el))) continue;
+      if (val.options.whenFocusWithin != null) {
+        const isFocusWithin = path && path.includes(el);
+        if (val.options.whenFocusWithin !== isFocusWithin) continue;
+      }
       if (r === undefined) {
         r = val.value;
       } else if (!Object.is(r, val.value)) {

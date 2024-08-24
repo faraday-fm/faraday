@@ -64,9 +64,11 @@ export class CommandsRegistry implements ReactiveController {
     const handlers = this.#commands.get(name);
     if (handlers) {
       for (const [handler, h] of handlers) {
-        if (!h.options.whenFocusWithin || path?.includes(h.host)) {
-          await handler(args);
+        if (h.options.whenFocusWithin != null) {
+          const isFocusWithin = path && path.includes(h.host);
+          if (h.options.whenFocusWithin !== isFocusWithin) continue;
         }
+        await handler(args);
       }
     }
     // if (handlers && handlers.size === 1) {

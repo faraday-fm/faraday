@@ -29,10 +29,20 @@ const ThemeDefinition = object({
   path: string(),
 });
 
+const LanguageDefinition = object({
+  id: string(),
+  aliases: optional(array(string())),
+  extensions: optional(array(string())),
+  filenames: optional(array(string())),
+  filenamePatterns: optional(array(string())),
+  configuration: optional(string()),
+});
+
 const Contributes = object({
   customPanels: optional(array(CustomPanelDefinition)),
   iconThemes: optional(array(IconThemeDefinition)),
   themes: optional(array(ThemeDefinition)),
+  languages: optional(array(LanguageDefinition)),
 });
 
 export const ExtensionManifest = object({
@@ -51,6 +61,8 @@ export type CustomPanelDefinition = InferOutput<typeof CustomPanelDefinition>;
 export type ThemeDefinition = InferOutput<typeof ThemeDefinition>;
 
 export type IconThemeDefinition = InferOutput<typeof IconThemeDefinition>;
+
+export type LanguageDefinition = InferOutput<typeof LanguageDefinition>;
 
 export type Contributes = InferOutput<typeof Contributes>;
 

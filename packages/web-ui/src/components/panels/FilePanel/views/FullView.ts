@@ -24,6 +24,8 @@ export class FullView extends View<TabFilesFullView> {
             ${map(range(columnDefs.length + 1), (i) => html`<div style=${i < columnDefs.length && "border-inline-end: 1px solid var(--panel-border);"}></div>`)}
           </div>
           <frdy-multicolumn-list
+            .topmostIndex=${this.topmostIndex}
+            .activeIndex=${this.activeIndex}
             .renderItem=${(index: number, isActive: boolean) => this.renderItem(index, isActive, selectedNames)}
             .itemsCount=${this.items.size()}
             .lineHeight=${1.2}

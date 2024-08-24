@@ -1,4 +1,3 @@
-import { Theme } from "@frdy/sdk";
 import { ReactiveController, ReactiveControllerHost } from "lit";
 import { ThemeContext } from "./themeContext";
 
@@ -9,6 +8,7 @@ export class CssVarsProvider implements ReactiveController {
   constructor(host: ReactiveControllerHost & HTMLElement) {
     this.#host = host;
     host.addController(this);
+    this.#style.innerHTML = localStorage.getItem("cached-theme") ?? "";
   }
 
   async setThemeContext(themeCtx: ThemeContext) {
@@ -22,6 +22,7 @@ export class CssVarsProvider implements ReactiveController {
 
       const body = vars.map(([k, v]) => `--${k.replaceAll(".", "-").replaceAll(":", "-")}: ${v}`).join(";");
       this.#style.innerHTML = `body {${body}}`;
+      localStorage.setItem("cached-theme", this.#style.innerHTML);
     }
   }
 

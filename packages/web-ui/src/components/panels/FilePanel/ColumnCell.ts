@@ -36,7 +36,7 @@ export class ColumnCell extends FrdyElement {
         background-color: color-mix(in srgb, var(--focusBorder, #316dca), transparent 70%);
       }
       &.selected {
-        background-color: var(--list-inactiveSelectionBackground);
+        background-color: var(--list-focusBackground);
       }
       &.firm-cursor {
         background-color: var(--list-focusBackground);

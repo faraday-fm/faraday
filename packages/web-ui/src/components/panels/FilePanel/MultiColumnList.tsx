@@ -246,6 +246,9 @@ export class MultiColumnList extends FrdyElement {
     if (_changedProperties.has("activeIndex") || _changedProperties.has("lineHeight") || _changedProperties.has("glyph")) {
       this.#scrollTop = this.activeIndex * this.#getItemHeight();
     }
+    if (_changedProperties.has("activeIndex")) {
+      this.#updateActiveIndex(this.activeIndex, false);
+    }
     super.willUpdate(_changedProperties);
   }
 
