@@ -30,6 +30,9 @@ export abstract class View<T extends TabFilesView> extends FrdyElement {
   @property()
   accessor cursorStyle: CursorStyle;
 
+  @property({ type: Number })
+  accessor activeIndex = 0;
+
   @property({ attribute: false })
   accessor items: List<Dirent>;
 

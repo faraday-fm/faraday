@@ -1,7 +1,4 @@
-// import { memo } from "react";
-// import { ActionButtonReact } from "./ActionButton";
-
-import { css, html, LitElement } from "lit";
+import { css, html } from "lit";
 import { customElement } from "lit/decorators.js";
 import "./ActionButton";
 import { FrdyElement } from "./FrdyElement";

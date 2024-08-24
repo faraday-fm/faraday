@@ -1,10 +1,10 @@
-import { css, html, LitElement } from "lit";
+import { css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { choose } from "lit/directives/choose.js";
 import type { NodeLayout, RowLayout, TabSetLayout } from "../../types";
+import { FrdyElement } from "../FrdyElement";
 import "./RowContainer";
 import "./Tabs";
-import { FrdyElement } from "../FrdyElement";
 
 const TAG = "frdy-layout-container";
 

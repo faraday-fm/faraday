@@ -66,10 +66,10 @@ export class ContextVariablesProvider implements ReactiveController {
     this.#variables.updateObservers();
   };
 
-  isInContext(when: string, event?: Event) {
+  isInContext(when: string, path?: EventTarget[]) {
     const ast = jsep(when);
     try {
-      return this.#evaluate(ast as CoreExpression, event);
+      return this.#evaluate(ast as CoreExpression, path);
     } catch {
       return false;
     }
@@ -84,7 +84,7 @@ export class ContextVariablesProvider implements ReactiveController {
     );
   }
 
-  #getContextValue = (variable: string, event?: Event) => {
+  #getContextValue = (variable: string, path?: EventTarget[]) => {
     let r: unknown;
     const varEntries = this.#variables.value.get(variable);
     if (!varEntries) {
@@ -92,7 +92,7 @@ export class ContextVariablesProvider implements ReactiveController {
     }
     for (const [el, val] of varEntries) {
       if (val.value === undefined) continue;
-      if (val.options.whenFocusWithin && (!event || !event.composedPath().includes(el))) continue;
+      if (val.options.whenFocusWithin && (!path || !path.includes(el))) continue;
       if (r === undefined) {
         r = val.value;
       } else if (!Object.is(r, val.value)) {
@@ -102,16 +102,16 @@ export class ContextVariablesProvider implements ReactiveController {
     return r;
   };
 
-  #visitNode = (node: CoreExpression, stack: unknown[], event?: Event) => {
+  #visitNode = (node: CoreExpression, stack: unknown[], path?: EventTarget[]) => {
     switch (node.type) {
       case "Literal":
         stack.push(node.value);
         break;
       case "Identifier":
-        stack.push(this.#getContextValue(node.name, event));
+        stack.push(this.#getContextValue(node.name, path));
         break;
       case "UnaryExpression": {
-        this.#visitNode(node.argument as CoreExpression, stack, event);
+        this.#visitNode(node.argument as CoreExpression, stack, path);
         const val = stack.pop();
         switch (node.operator) {
           case "!":
@@ -128,8 +128,8 @@ export class ContextVariablesProvider implements ReactiveController {
       }
       case "BinaryExpression":
         {
-          this.#visitNode(node.left as CoreExpression, stack, event);
-          this.#visitNode(node.right as CoreExpression, stack, event);
+          this.#visitNode(node.left as CoreExpression, stack, path);
+          this.#visitNode(node.right as CoreExpression, stack, path);
           const right = stack.pop();
           const left = stack.pop();
           const op = node.operator;
@@ -148,9 +148,9 @@ export class ContextVariablesProvider implements ReactiveController {
     }
   };
 
-  #evaluate = (expression: CoreExpression, event?: Event) => {
+  #evaluate = (expression: CoreExpression, path?: EventTarget[]) => {
     const stack: [] = [];
-    this.#visitNode(expression, stack, event);
+    this.#visitNode(expression, stack, path);
     return !!stack.pop();
   };
 }

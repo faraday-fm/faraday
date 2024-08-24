@@ -37,7 +37,7 @@ export class FileName extends FrdyElement {
     if (!this.dirent) return null;
     return html`
       <div class="root" style=${isHidden(this.dirent) && "opacity: 0.5"}>
-        <frdy-fileicon .filepath=${this.dirent.path} .isDir=${isDir(this.dirent)} .icons=${this.icons}></frdy-fileicon>
+        <frdy-fileicon .filepath=${this.dirent.path} .isDir=${isDir(this.dirent)} .isOpen=${this.dirent.filename === ".."} .icons=${this.icons}></frdy-fileicon>
         <span class="name">${this.dirent.filename}</span>
       </div>
     `;

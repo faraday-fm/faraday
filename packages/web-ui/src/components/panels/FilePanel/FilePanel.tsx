@@ -1,7 +1,7 @@
-import { context } from "@frdy/commands";
-import { Dirent, isDir } from "@frdy/sdk";
+import { command, context } from "@frdy/commands";
+import { Dirent, FileSystemProvider, isDir, isHidden, readDir } from "@frdy/sdk";
 import { PropertyValues, css, html } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import { customElement, property, state } from "lit/decorators.js";
 import { choose } from "lit/directives/choose.js";
 import { range } from "lit/directives/range.js";
 import "../../../lit-contexts/GlyphSizeProvider";
@@ -13,8 +13,24 @@ import { SelectionType } from "./MultiColumnList";
 import "./ScrollableContainer";
 import "./views/CondensedView";
 import "./views/FullView";
+import { fsContext } from "../../../lit-contexts/fsContext";
+import { consume } from "@lit/context";
+import { Task } from "@lit/task";
+import { combine, dir } from "../../../utils/path";
 
 const TAG = "frdy-file-panel";
+
+const collator = new Intl.Collator(undefined, {
+  numeric: true,
+  usage: "sort",
+  sensitivity: "case",
+});
+
+function fsCompare(a: Dirent, b: Dirent) {
+  if (isDir(a) && !isDir(b)) return -1;
+  if (!isDir(a) && isDir(b)) return 1;
+  return collator.compare(a.filename, b.filename);
+}
 
 @customElement(TAG)
 export class FilePanel extends FrdyElement {
@@ -61,7 +77,13 @@ export class FilePanel extends FrdyElement {
   accessor activeIndex = 0;
 
   @property({ attribute: false })
+  accessor topmostIndex = 0;
+
+  @property({ attribute: false })
   accessor activeItem: Dirent | undefined;
+
+  @property({ type: Boolean })
+  accessor showHidden = false;
 
   @property()
   @context({ name: "filePanel.path", whenFocusWithin: true })
@@ -77,13 +99,73 @@ export class FilePanel extends FrdyElement {
   accessor isLastItem = false;
 
   @context({ name: "filePanel.activeItem", whenFocusWithin: true })
-  accessor activeItemName: string | undefined;
+  accessor activeItemName = "";
+
+  @context({ name: "filePanel.topmostItem", whenFocusWithin: true })
+  accessor topmostItemName = "";
 
   @context({ name: "filePanel.totalItemsCount", whenFocusWithin: true })
   accessor totalItemsCount = 0;
 
   @context({ name: "filePanel.selectedItemsCount", whenFocusWithin: true })
-  accessor selectedItemsCount = 0; // selectedItemNames.size()
+  accessor selectedItemsCount = 0;
+
+  @command()
+  async open() {
+    if (this.activeItemName === "..") {
+      await this.dirUp();
+    } else {
+      if (this.activeItem) {
+        if (isDir(this.activeItem)) {
+          this.#positionsStack.push({ topmostName: this.topmostItemName, activeName: this.activeItemName });
+          this.path = combine((this.path ?? "") + "/", this.activeItemName ?? ".");
+          this.#task.run();
+          await this.#task.taskComplete;
+          this.activeIndex = 0;
+          this.#updateActiveItem();
+        }
+      }
+    }
+  }
+
+  @command()
+  async dirUp() {
+    this.path = dir(this.path ?? "/");
+    if (this.path.endsWith("/")) {
+      this.path = this.path.substring(0, this.path.length - 1);
+    }
+    this.#task.run();
+    await this.#task.taskComplete;
+    const pos = this.#positionsStack.pop();
+    if (pos) {
+      const idx = this.items.findIndex((i) => i.filename === pos.activeName);
+      if (idx >= 0) {
+        this.activeIndex = idx;
+        this.#updateActiveItem();
+      }
+    }
+  }
+
+  @consume({ context: fsContext })
+  accessor fs!: FileSystemProvider;
+
+  #positionsStack: { topmostName: string; activeName: string }[] = [];
+
+  #task = new Task(this, {
+    task: async ([path, showHidden], options) => {
+      if (!path) {
+        return [];
+      }
+      let files = await readDir(this.fs, path, options);
+      if (!showHidden) {
+        files = files.filter((f) => !isHidden(f));
+      }
+      files.sort(fsCompare);
+      this.items = createList(files);
+      return files;
+    },
+    args: () => [this.path, this.showHidden] as const,
+  });
 
   constructor() {
     super();
@@ -94,7 +176,7 @@ export class FilePanel extends FrdyElement {
 
   #prevSelect: boolean | undefined;
 
-  #onActiveIndexChange = (e: CustomEvent<{ activeIndex: number; select: SelectionType }>) => {
+  #onActiveIndexChange = (e: CustomEvent<{ activeIndex: number; topmostIndex: number; select: SelectionType }>) => {
     if (e.detail.select !== "none") {
       if (this.#prevSelect === undefined) {
         const fn = this.items.get(this.activeIndex)?.filename;
@@ -114,14 +196,17 @@ export class FilePanel extends FrdyElement {
     } else {
       this.#prevSelect = undefined;
     }
+    this.topmostIndex = e.detail.topmostIndex;
     this.activeIndex = e.detail.activeIndex;
     this.#updateActiveItem();
   };
 
   #updateActiveItem = () => {
     this.totalItemsCount = this.items.size();
+    this.selectedItemsCount = this.selectedItemNames.size();
     this.activeItem = this.items.get(this.activeIndex);
-    this.activeItemName = this.activeItem?.filename;
+    this.activeItemName = this.activeItem?.filename ?? "";
+    this.topmostItemName = this.items.get(this.topmostIndex)?.filename ?? "";
     this.isFirstItem = this.activeIndex === 0;
     this.isLastItem = this.activeIndex === this.items.size() - 1;
   };
@@ -147,6 +232,7 @@ export class FilePanel extends FrdyElement {
                 "condensed",
                 () => html`<frdy-condensed-view
                   .view=${this.view as any /* TODO: think how to get rid of any */}
+                  .activeIndex=${this.activeIndex}
                   .cursorStyle=${cursorStyle}
                   .items=${this.items}
                   .selectedItemNames=${this.selectedItemNames}
@@ -157,6 +243,7 @@ export class FilePanel extends FrdyElement {
                 "full",
                 () => html`<frdy-full-view
                   .view=${this.view as any /* TODO: think how to get rid of any */}
+                  .activeIndex=${this.activeIndex}
                   .cursorStyle=${cursorStyle}
                   .items=${this.items}
                   .selectedItemNames=${this.selectedItemNames}

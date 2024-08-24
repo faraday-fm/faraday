@@ -13,6 +13,7 @@ export class KeyBindingsController implements ReactiveController {
   #host: HostElement;
   #commands: CommandsRegistry;
   #vars: ContextVariablesProvider;
+  #executionPromise = Promise.resolve();
 
   constructor(host: HostElement, commands: CommandsRegistry, vars: ContextVariablesProvider) {
     this.#host = host;
@@ -34,21 +35,28 @@ export class KeyBindingsController implements ReactiveController {
     const modifiers = getModifiers(e);
     const keyCombination = modifiers ? `${modifiers}+${e.code}` : e.code;
     console.debug("Key pressed:", e.key, "(", keyCombination, ")");
-    for (let i = bindings.length - 1; i >= 0; i -= 1) {
-      const { key, command, args, when } = bindings[i]!;
+    const path = e.composedPath();
 
-      if (key === keyCombination && (!when || this.#vars.isInContext(when, e))) {
+    let matchedBinding: KeyBindingsSchema[number] | undefined;
+    for (let i = bindings.length - 1; i >= 0; i -= 1) {
+      const binding = bindings[i]!;
+      const { key, command, args, when } = binding;
+
+      if (key === keyCombination && (!when || this.#vars.isInContext(when, path))) {
         if (args != null) {
           console.debug(command, "(", JSON.stringify(args), ")");
         } else {
           console.debug(command, "()");
         }
-        this.#commands.invokeCommand(command, args, e);
-        e.stopPropagation();
-        e.preventDefault();
+        matchedBinding = binding;
         break;
       }
     }
-    // this.#vars.dump();
+
+    if (matchedBinding) {
+      e.stopPropagation();
+      e.preventDefault();
+      this.#executionPromise = this.#executionPromise.then(() => this.#commands.invokeCommand(matchedBinding.command, matchedBinding.args, path));
+    }
   };
 }

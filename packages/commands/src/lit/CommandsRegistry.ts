@@ -5,7 +5,7 @@ import { CommandOptions, HostElement } from "./types";
 
 export class CommandsRegistry implements ReactiveController {
   #host: HostElement;
-  #commands = new Map<string, Map<(args: any) => void, { host: HTMLElement; options: CommandOptions }>>();
+  #commands = new Map<string, Map<(args: any) => any, { host: HTMLElement; options: CommandOptions }>>();
   #commandNames = new Map<any, string>();
   #subscribed = false;
 
@@ -60,14 +60,14 @@ export class CommandsRegistry implements ReactiveController {
     }
   };
 
-  invokeCommand = (name: string, args: any, event?: Event) => {
+  invokeCommand = async (name: string, args: any, path?: EventTarget[]) => {
     const handlers = this.#commands.get(name);
     if (handlers) {
-      handlers.forEach((h, handler) => {
-        if (!h.options.whenFocusWithin || event?.composedPath().includes(h.host)) {
-          handler(args);
+      for (const [handler, h] of handlers) {
+        if (!h.options.whenFocusWithin || path?.includes(h.host)) {
+          await handler(args);
         }
-      });
+      }
     }
     // if (handlers && handlers.size === 1) {
     //   const [handler] = handlers;
