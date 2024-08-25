@@ -1,6 +1,7 @@
 import { css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { FrdyElement } from "./FrdyElement";
+import { badge_background, badge_foreground, button_background, button_foreground } from "../css";
 
 const TAG = "frdy-action-button";
 
@@ -19,14 +20,14 @@ export class ActionButton extends FrdyElement {
       }
     }
     .fnKeyClass {
-      color: var(--badge-foreground);
-      background-color: var(--badge-background);
+      color: ${badge_foreground};
+      background-color: ${badge_background};
     }
     .headerButton {
       text-align: left;
       width: 100%;
-      background-color: var(--button-background);
-      color: var(--button-foreground);
+      color: ${button_foreground};
+      background-color: ${button_background};
       padding: 0;
       cursor: pointer;
     }

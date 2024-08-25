@@ -17,6 +17,7 @@ import { SelectionType } from "./MultiColumnList";
 import "./ScrollableContainer";
 import "./views/CondensedView";
 import "./views/FullView";
+import { panel_border, tab_activeBackground } from "../../../css";
 
 const TAG = "frdy-file-panel";
 
@@ -44,7 +45,7 @@ export class FilePanel extends FrdyElement {
       height: 100%;
       position: relative;
       /* color: var(--panel-foreground, var(--list-focusForeground, #adbac7)); */
-      background-color: var(--sideBar-background, #22272e);
+      background-color: ${tab_activeBackground};
       display: grid;
       overflow: hidden;
       outline: none;
@@ -59,7 +60,7 @@ export class FilePanel extends FrdyElement {
       overflow: hidden;
     }
     .panel-footer {
-      border-block-start: 1px solid var(--panel-border);
+      border-block-start: 1px solid ${panel_border};
     }
   `;
 
@@ -143,7 +144,7 @@ export class FilePanel extends FrdyElement {
     this.selectedItemNames = createList();
     this.activeIndex = 0;
     this.#updateActiveItem();
-}
+  }
 
   @command({ whenFocusWithin: true })
   async dirUp() {

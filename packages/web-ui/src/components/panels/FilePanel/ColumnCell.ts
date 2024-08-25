@@ -5,6 +5,7 @@ import { PropertyValues, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { FrdyElement } from "../../FrdyElement";
 import type { CursorStyle } from "./types";
+import { focusBorder, list_focusBackground, list_focusOutline, list_inactiveSelectionBackground } from "../../../css";
 
 const TAG = "frdy-column-cell";
 
@@ -34,16 +35,16 @@ export class ColumnCell extends FrdyElement {
       padding: 0 2px;
       border: 1px solid transparent;
       &.inactive-cursor {
-        background-color: var(--list-inactiveSelectionBackground);
-        background-color: color-mix(in srgb, var(--focusBorder, #316dca), transparent 70%);
+        background-color: ${list_inactiveSelectionBackground};
+        background-color: color-mix(in srgb, ${focusBorder}, transparent 70%);
       }
       &.selected {
-        background-color: var(--list-focusBackground);
+        background-color: ${list_focusBackground};
         border-radius: 0;
       }
       &.firm-cursor {
-        background-color: var(--list-focusBackground);
-        border: 1px solid var(--list-focusOutline, #316dca);
+        background-color: ${list_focusBackground};
+        border: 1px solid ${list_focusOutline};
         border-radius: 4px;
       }
     }

@@ -21,6 +21,7 @@ import "./ActionBar";
 import { FrdyElement } from "./FrdyElement";
 import "./Tabs/LayoutContainer";
 import { createLanguagesContext, languagesContext } from "../lit-contexts/languagesContext";
+import { fontFamily, foreground } from "../css";
 
 const TAG = "frdy-app";
 
@@ -29,9 +30,9 @@ export class FrdyApp extends FrdyElement {
   static styles = css`
     :host {
       display: contents;
-      font-family: var(--fontFamily,-apple-system, "system-ui", sans-serif);
+      font-family: ${fontFamily};
       /* font-family: var(--fontFamily, "SF Mono", Monaco, Menlo, Courier, monospace); */
-      color: var(--foreground, #adbac7);
+      color: ${foreground};
     }
 
     .app {

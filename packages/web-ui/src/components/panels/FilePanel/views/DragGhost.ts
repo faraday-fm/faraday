@@ -1,6 +1,7 @@
 import { css, html } from "lit";
 import { customElement } from "lit/decorators.js";
 import { FrdyElement } from "../../../FrdyElement";
+import { fontFamily } from "../../../../css";
 
 const TAG = "frdy-drag-ghost";
 
@@ -13,7 +14,7 @@ export class DragGhost extends FrdyElement {
     }
     .host {
       /* zoom: 0.8; */
-      font-family: var(--fontFamily);
+      font-family: ${fontFamily};
       color: var(--files-file-foreground);
       background-color: var(--files-file-background-selected);
       overflow: hidden;

@@ -6,6 +6,7 @@ import { repeat } from "lit/directives/repeat.js";
 import type { TabSetLayout } from "../../types";
 import { FrdyElement } from "../FrdyElement";
 import "./Tab";
+import { panel_border, tab_activeBackground, tab_activeForeground, tab_border, tab_hoverBackground, tab_inactiveBackground, tab_inactiveForeground } from "../../css";
 
 const TAG = "frdy-tabs";
 
@@ -17,28 +18,32 @@ export class Tabs extends FrdyElement {
       overflow: hidden;
       width: 100%;
       height: 100%;
-      border: 1px solid var(--panel-border, transparent);
+      border: 1px solid ${panel_border};
       display: grid;
       grid-template-rows: auto 1fr;
     }
     .header {
       display: flex;
-      color: var(--tab-inactiveForeground);
-      background-color: var(--tab-inactiveBackground);
+      color: ${tab_inactiveForeground};
+      background-color: ${tab_inactiveBackground};
       overflow: hidden;
-      border: 1px solid var(--tab-border, transparent);
+      box-shadow: inset 0 0 0 1px ${tab_border};
     }
     .tabName {
       cursor: pointer;
-      padding-left: 1ch;
+      min-width: fit-content;
+      padding-inline: 2ch;
+      line-height: 35px;
       white-space: nowrap;
+      border-inline: 1px solid ${tab_border};
+      border-inline-start: none;
       &:hover {
-        color: var(--tab-activeForeground);
-        background-color: var(--tab-hoverBackground, var(--tab-activeBackground));
+        color: ${tab_activeForeground};
+        background-color: ${tab_activeBackground};
       }
       &.-active {
-        color: var(--tab-activeForeground);
-        background-color: var(--tab-activeBackground);
+        color: ${tab_activeForeground};
+        background-color: ${tab_activeBackground};
       }
     }
   `;

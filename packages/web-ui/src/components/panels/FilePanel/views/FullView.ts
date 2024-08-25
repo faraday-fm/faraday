@@ -8,6 +8,7 @@ import "../ColumnCell";
 import "../FileName";
 import "../MultiColumnList";
 import { View } from "./View";
+import { panel_border } from "../../../../css";
 
 const TAG = "frdy-full-view";
 
@@ -21,7 +22,7 @@ export class FullView extends View<TabFilesFullView> {
       <frdy-glyph-size-provider>
         <div style="display:grid;position:relative;">
           <div style="display:grid;position:absolute;inset:0;grid-template-columns: ${columnWidths}">
-            ${map(range(columnDefs.length + 1), (i) => html`<div style=${i < columnDefs.length && "border-inline-end: 1px solid var(--panel-border);"}></div>`)}
+            ${map(range(columnDefs.length + 1), (i) => html`<div style=${i < columnDefs.length && `border-inline-end: 1px solid ${panel_border});`}></div>`)}
           </div>
           <frdy-multicolumn-list
             .topmostIndex=${this.topmostIndex}
