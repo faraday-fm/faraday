@@ -1,276 +1,293 @@
-import { useCommandBinding, useExecuteCommand, useSetContextVariable } from "@frdy/commands";
-import type { Dirent } from "@frdy/sdk";
-import { isDir } from "@frdy/sdk";
-import equal from "fast-deep-equal";
-import { forwardRef, memo, useCallback, useImperativeHandle, useMemo, useRef, useState } from "react";
-import { GlyphSizeProvider } from "../../../contexts/glyphSizeContext";
-import type { CursorPosition } from "../../../features/panels";
-import { css } from "../../../features/styles";
-import { useElementSize } from "../../../hooks/useElementSize";
-import { useFocused } from "../../../hooks/useFocused";
-import { usePrevValueIfDeepEqual } from "../../../hooks/usePrevValueIfDeepEqual";
-import type { FilePanelView } from "../../../types";
-import type { List } from "../../../utils/immutableList";
-import { clamp } from "../../../utils/number";
-import { Border } from "../../Border";
-import { Breadcrumb } from "../../Breadcrumb";
-import { PanelHeader } from "../../PanelHeader";
-import { FileInfoFooter } from "./FileInfoFooter";
-import type { CursorStyle } from "./types";
-import { CondensedView } from "./views/CondensedView";
-import { FullView } from "./views/FullView";
+import { command, context } from "@frdy/commands";
+import { Dirent, FileSystemProvider, isDir, isHidden, readDir } from "@frdy/sdk";
+import { consume } from "@lit/context";
+import { Task } from "@lit/task";
+import { PropertyValues, css, html } from "lit";
+import { customElement, property } from "lit/decorators.js";
+import { choose } from "lit/directives/choose.js";
+import { range } from "lit/directives/range.js";
+import { fsContext } from "../../../lit-contexts/fsContext";
+import "../../../lit-contexts/GlyphSizeProvider";
+import { TabFilesView } from "../../../types";
+import { List, createList } from "../../../utils/list/createList";
+import { combine, dir } from "../../../utils/path";
+import { FrdyElement } from "../../FrdyElement";
+import "../../FileInfo";
+import { SelectionType } from "./MultiColumnList";
+import "./ScrollableContainer";
+import "./views/CondensedView";
+import "./views/FullView";
 
-export interface FilePanelProps {
-  items: List<Dirent>;
-  selectedItemNames: List<string>;
-  cursor: CursorPosition;
-  view: FilePanelView;
-  path: string;
-  showCursorWhenBlurred?: boolean;
-  onFocus?: () => void;
-  onCursorPositionChange: (newPosition: CursorPosition, select: boolean) => void;
-  onSelectItems: (names: string[], select: boolean) => void;
+const TAG = "frdy-file-panel";
+
+const collator = new Intl.Collator(undefined, {
+  numeric: true,
+  usage: "sort",
+  sensitivity: "case",
+});
+
+function fsCompare(a: Dirent, b: Dirent) {
+  if (a.filename === "..") return -1;
+  if (b.filename === "..") return 1;
+  if (isDir(a) && !isDir(b)) return -1;
+  if (!isDir(a) && isDir(b)) return 1;
+  return collator.compare(a.filename, b.filename);
 }
 
-export interface FilePanelActions {
-  focus(): void;
-}
+@customElement(TAG)
+export class FilePanel extends FrdyElement {
+  static shadowRootOptions: ShadowRootInit = { ...FrdyElement.shadowRootOptions, delegatesFocus: true };
+  static styles = css`
+    :host {
+      display: grid;
+      width: 100%;
+      height: 100%;
+      position: relative;
+      /* color: var(--panel-foreground, var(--list-focusForeground, #adbac7)); */
+      background-color: var(--sideBar-background, #22272e);
+      display: grid;
+      overflow: hidden;
+      outline: none;
+    }
+    .panel-content {
+      display: grid;
+      grid-template-rows: 1fr auto auto;
+      overflow: hidden;
+    }
+    .panel-columns {
+      display: grid;
+      overflow: hidden;
+    }
+    .panel-footer {
+      border-block-start: 1px solid var(--panel-border);
+    }
+  `;
 
-function adjustCursor(cursor: CursorPosition, items: List<Dirent>, displayedItems: number): Required<CursorPosition> {
-  let selectedIndex = cursor.activeIndex ?? 0;
-  let topmostIndex = cursor.topmostIndex ?? 0;
-  const selectedName = cursor.activeName ?? items.get(selectedIndex)?.filename;
-  const topmostName = cursor.topmostName ?? items.get(topmostIndex)?.filename;
+  @consume({ context: fsContext })
+  accessor fs!: FileSystemProvider;
 
-  selectedIndex = clamp(0, selectedIndex, items.size() - 1);
-  topmostIndex = clamp(0, topmostIndex, items.size() - displayedItems);
-  topmostIndex = clamp(selectedIndex - displayedItems + 1, topmostIndex, selectedIndex);
+  @property({ attribute: false })
+  accessor items: List<Dirent>;
 
-  const updateIndexByName = (name: string | undefined, fallbackIndex: number) => {
-    if (name !== items.get(fallbackIndex)?.filename) {
-      const idx = items.findIndex((i) => i.filename === name);
-      if (idx >= 0) {
-        return idx;
+  @property({ attribute: false })
+  accessor selectedItemNames: List<string>;
+
+  @property({ attribute: false })
+  accessor view: TabFilesView | undefined;
+
+  @property({ type: Boolean })
+  accessor showCursorWhenBlurred: boolean;
+
+  @property({ attribute: false })
+  accessor activeIndex = 0;
+
+  @property({ attribute: false })
+  accessor topmostIndex = 0;
+
+  @property({ attribute: false })
+  accessor activeItem: Dirent | undefined;
+
+  @property({ type: Boolean })
+  accessor showHidden = false;
+
+  @property()
+  @context({ name: "filePanel.path", whenFocusWithin: true })
+  accessor path: string | undefined;
+
+  @context({ name: "filePanel.focus", whenFocusWithin: true })
+  accessor isFilePanelFocus = true;
+
+  @context({ name: "filePanel.firstItem", whenFocusWithin: true })
+  accessor isFirstItem = false;
+
+  @context({ name: "filePanel.lastItem", whenFocusWithin: true })
+  accessor isLastItem = false;
+
+  @context({ name: "filePanel.activeItem", whenFocusWithin: true })
+  accessor activeItemName = "";
+
+  @context({ name: "filePanel.topmostItem", whenFocusWithin: true })
+  accessor topmostItemName = "";
+
+  @context({ name: "filePanel.totalItemsCount", whenFocusWithin: true })
+  accessor totalItemsCount = 0;
+
+  @context({ name: "filePanel.selectedItemsCount", whenFocusWithin: true })
+  accessor selectedItemsCount = 0;
+
+  @command({ whenFocusWithin: true })
+  async open() {
+    if (this.activeItemName === "..") {
+      await this.dirUp();
+    } else {
+      if (this.activeItem) {
+        if (isDir(this.activeItem)) {
+          this.#positionsStack.push({ topmostName: this.topmostItemName, activeName: this.activeItemName });
+          this.path = combine((this.path ?? "") + "/", this.activeItemName ?? ".");
+          this.#task.run();
+          await this.#task.taskComplete;
+          this.selectedItemNames = createList();
+          this.activeIndex = 0;
+          this.#updateActiveItem();
+        }
       }
     }
-    return fallbackIndex;
-  };
+  }
 
-  selectedIndex = updateIndexByName(selectedName, selectedIndex);
-  topmostIndex = updateIndexByName(topmostName, topmostIndex);
-
-  topmostIndex = clamp(0, topmostIndex, items.size() - displayedItems);
-  topmostIndex = clamp(selectedIndex - displayedItems + 1, topmostIndex, selectedIndex);
-  return {
-    activeIndex: selectedIndex,
-    topmostIndex,
-    activeName: selectedName ?? "",
-    topmostName: topmostName ?? "",
-  };
+  @command({ whenFocusWithin: true })
+  async openHome() {
+    this.#positionsStack = [];
+    this.path = ".";
+    this.#task.run();
+    await this.#task.taskComplete;
+    this.selectedItemNames = createList();
+    this.activeIndex = 0;
+    this.#updateActiveItem();
 }
 
-export const FilePanel = memo(
-  forwardRef<FilePanelActions, FilePanelProps>((props, ref) => {
-    const { items, selectedItemNames, cursor, view, path, showCursorWhenBlurred, onFocus, onCursorPositionChange } = props;
-
-    const onFocusRef = useRef(onFocus);
-    const onCursorPositionChangeRef = useRef(onCursorPositionChange);
-    onCursorPositionChangeRef.current = onCursorPositionChange;
-
-    const panelRootRef = useRef<HTMLDivElement>(null);
-    const { width } = useElementSize(panelRootRef);
-    const [maxItemsPerColumn, setMaxItemsPerColumn] = useState<number>();
-
-    const columnCount = useMemo(() => {
-      if (view.type === "full") return 1;
-      return width ? Math.ceil(width / 350) : undefined;
-    }, [view.type, width]);
-
-    const displayedItems = columnCount && maxItemsPerColumn ? Math.min(items.size(), maxItemsPerColumn * columnCount) : 1;
-
-    const adjustedCursor = usePrevValueIfDeepEqual(adjustCursor(cursor, items, displayedItems));
-    const focused = useFocused(panelRootRef);
-
-    useImperativeHandle(ref, () => ({
-      focus: () => panelRootRef.current?.focus(),
-    }));
-
-    useSetContextVariable("filePanel.focus", true, focused);
-    useSetContextVariable("filePanel.firstItem", cursor.activeIndex === 0, focused);
-    useSetContextVariable("filePanel.lastItem", cursor.activeIndex === items.size() - 1, focused);
-    useSetContextVariable("filePanel.activeItem", cursor.activeName, focused);
-    useSetContextVariable("filePanel.path", path, focused);
-    useSetContextVariable("filePanel.totalItemsCount", items.size(), focused);
-    useSetContextVariable("filePanel.selectedItemsCount", selectedItemNames.size(), focused);
-
-    const moveCursorLeftRight = useCallback(
-      (direction: "left" | "right", select: boolean) => {
-        let newCursor = structuredClone(adjustedCursor);
-        if (direction === "right") {
-          newCursor.activeIndex += maxItemsPerColumn ?? 0;
-          if (newCursor.activeIndex >= newCursor.topmostIndex + displayedItems) {
-            newCursor.topmostIndex += maxItemsPerColumn ?? 0;
-          }
-        } else if (direction === "left") {
-          newCursor.activeIndex -= maxItemsPerColumn ?? 0;
-          if (newCursor.activeIndex < newCursor.topmostIndex) {
-            newCursor.topmostIndex -= maxItemsPerColumn ?? 0;
-          }
+  @command({ whenFocusWithin: true })
+  async dirUp() {
+    this.path = dir(this.path ?? "/");
+    if (this.path.endsWith("/")) {
+      this.path = this.path.substring(0, this.path.length - 1);
+    }
+    this.#task.run();
+    await this.#task.taskComplete;
+    this.selectedItemNames = createList();
+    const pos = this.#positionsStack.pop();
+    if (pos) {
+      const activeIdx = this.items.findIndex((i) => i.filename === pos.activeName);
+      const topmostIdx = this.items.findIndex((i) => i.filename === pos.topmostName);
+      if (activeIdx >= 0) {
+        if (topmostIdx >= 0) {
+          this.topmostIndex = topmostIdx;
         }
-        newCursor.activeName = items.get(newCursor.activeIndex)?.filename ?? "";
-        newCursor.topmostName = items.get(newCursor.topmostIndex)?.filename ?? "";
-        newCursor = adjustCursor(newCursor, items, displayedItems);
-        if (!equal(newCursor, adjustedCursor)) {
-          onCursorPositionChangeRef.current(newCursor, select);
+        this.activeIndex = activeIdx;
+        this.#updateActiveItem();
+      }
+    }
+  }
+
+  @command({ whenFocusWithin: false })
+  focusNextPanel() {
+    this.focus();
+  }
+
+  #positionsStack: { topmostName: string; activeName: string }[] = [];
+
+  #task = new Task(this, {
+    task: async ([path, showHidden], options) => {
+      if (!path) {
+        return [];
+      }
+      let files = await readDir(this.fs, path, options);
+      if (!showHidden) {
+        files = files.filter((f) => !isHidden(f));
+      }
+      files.sort(fsCompare);
+      this.items = createList(files);
+      return files;
+    },
+    args: () => [this.path, this.showHidden] as const,
+  });
+
+  constructor() {
+    super();
+    this.items = createList();
+    this.selectedItemNames = createList();
+    this.showCursorWhenBlurred = false;
+  }
+
+  #prevSelect: boolean | undefined;
+
+  #onActiveIndexChange = (e: CustomEvent<{ activeIndex: number; topmostIndex: number; select: SelectionType }>) => {
+    if (e.detail.select !== "none") {
+      if (this.#prevSelect === undefined) {
+        const fn = this.items.get(this.activeIndex)?.filename;
+        this.#prevSelect = this.selectedItemNames.findIndex((i) => i === fn) < 0;
+      }
+      for (const i of range(Math.min(this.activeIndex, e.detail.activeIndex), Math.max(this.activeIndex, e.detail.activeIndex) + 1)) {
+        if (e.detail.select === "exclude-active" && i === e.detail.activeIndex) {
+          continue;
         }
-      },
-      [adjustedCursor, displayedItems, items, maxItemsPerColumn],
-    );
-
-    const adjustedCursorRef = useRef(adjustedCursor);
-    adjustedCursorRef.current = adjustedCursor;
-    const scroll = useCallback(
-      (delta: number, followCursor: boolean, select: boolean) => {
-        let c = structuredClone(adjustedCursorRef.current);
-        c.activeIndex += delta;
-        if (followCursor) {
-          c.topmostIndex += delta;
+        const fn = this.items.get(i)?.filename;
+        if (this.#prevSelect) {
+          this.selectedItemNames = this.selectedItemNames.append(fn!);
+        } else {
+          this.selectedItemNames = this.selectedItemNames.filter((i) => i !== fn);
         }
-        c.activeName = items.get(c.activeIndex)?.filename ?? "";
-        c.topmostName = items.get(c.topmostIndex)?.filename ?? "";
-        c = adjustCursor(c, items, displayedItems);
-        if (!equal(c, adjustedCursorRef.current)) {
-          onCursorPositionChangeRef.current(c, select);
-        }
-      },
-      [items, displayedItems],
-    );
-
-    const moveCursorToPos = useCallback(
-      (pos: number, select: boolean) => {
-        let c = structuredClone(adjustedCursor);
-        c.activeIndex = pos;
-        c.activeName = items.get(pos)?.filename ?? "";
-        c.topmostName = items.get(c.topmostIndex)?.filename ?? "";
-        c = adjustCursor(c, items, displayedItems);
-        if (!equal(c, adjustedCursor)) {
-          onCursorPositionChangeRef.current(c, select);
-        }
-      },
-      [adjustedCursor, displayedItems, items],
-    );
-
-    const moveCursorPage = useCallback(
-      (direction: "up" | "down", select: boolean) => {
-        let c = structuredClone(adjustedCursor);
-        if (direction === "up") {
-          c.activeIndex -= displayedItems - 1;
-          c.topmostIndex -= displayedItems - 1;
-        } else if (direction === "down") {
-          c.activeIndex += displayedItems - 1;
-          c.topmostIndex += displayedItems - 1;
-        }
-        c.activeName = items.get(c.activeIndex)?.filename ?? "";
-        c.topmostName = items.get(c.topmostIndex)?.filename ?? "";
-        c = adjustCursor(c, items, displayedItems);
-        if (!equal(c, adjustedCursor)) {
-          onCursorPositionChangeRef.current(c, select);
-        }
-      },
-      [adjustedCursor, displayedItems, items],
-    );
-
-    useCommandBinding("cursorLeft", (args) => moveCursorLeftRight("left", Boolean(args?.select)), focused);
-    useCommandBinding("cursorRight", (args) => moveCursorLeftRight("right", Boolean(args?.select)), focused);
-    useCommandBinding("cursorUp", (args) => scroll(-1, false, Boolean(args?.select)), focused);
-    useCommandBinding("cursorDown", (args) => scroll(1, false, Boolean(args?.select)), focused);
-    useCommandBinding("cursorStart", (args) => moveCursorToPos(0, Boolean(args?.select)), focused);
-    useCommandBinding("cursorEnd", (args) => moveCursorToPos(items.size() - 1, Boolean(args?.select)), focused);
-    useCommandBinding("cursorPageUp", (args) => moveCursorPage("up", Boolean(args?.select)), focused);
-    useCommandBinding("cursorPageDown", (args) => moveCursorPage("down", Boolean(args?.select)), focused);
-
-    const executeCommand = useExecuteCommand();
-    const onItemActivated = useCallback(() => executeCommand("open", { path }), [executeCommand, path]);
-
-    const onMaxItemsPerColumnChanged = useCallback((maxItemsPerColumn: number) => setMaxItemsPerColumn(maxItemsPerColumn), []);
-    const onItemClicked = useCallback((pos: number) => moveCursorToPos(pos, false), [moveCursorToPos]);
-    const selectedIndexRef = useRef(cursor.activeIndex);
-    selectedIndexRef.current = cursor.activeIndex;
-    const handlePosChange = useCallback((topmost: number, active: number) => scroll(active - (selectedIndexRef.current ?? 0), true, false), [scroll]);
-    const handleFocus = useCallback(() => onFocusRef.current?.(), []);
-
-    let cursorStyle: CursorStyle;
-    if (focused) {
-      cursorStyle = "firm";
-    } else if (showCursorWhenBlurred) {
-      cursorStyle = "inactive";
+      }
     } else {
-      cursorStyle = "hidden";
+      this.#prevSelect = undefined;
     }
+    this.topmostIndex = e.detail.topmostIndex;
+    this.activeIndex = e.detail.activeIndex;
+    this.#updateActiveItem();
+  };
 
-    const bytesCount = useMemo(() => items.reduce((acc, item) => acc + ((!isDir(item) ? item.attrs.size : 0) ?? 0), 0), [items]);
-    const filesCount = useMemo(() => items.reduce((acc, item) => acc + (!isDir(item) ? 1 : 0), 0), [items]);
+  #updateActiveItem = () => {
+    this.totalItemsCount = this.items.size();
+    this.selectedItemsCount = this.selectedItemNames.size();
+    this.activeItem = this.items.get(this.activeIndex);
+    this.activeItemName = this.activeItem?.filename ?? "";
+    this.topmostItemName = this.items.get(this.topmostIndex)?.filename ?? "";
+    this.isFirstItem = this.activeIndex === 0;
+    this.isLastItem = this.activeIndex === this.items.size() - 1;
+  };
 
-    const pathParts = path.split("/");
-    if (!columnCount) {
-      return <div className={css("panel-root", focused ? "-focused" : "")} ref={panelRootRef} tabIndex={0} onFocus={handleFocus} />;
+  protected willUpdate(_changedProperties: PropertyValues): void {
+    if (_changedProperties.has("items")) {
+      this.#updateActiveItem();
     }
+    super.willUpdate(_changedProperties);
+  }
 
-    return (
-      <div className={css("panel-root", focused ? "-focused" : "")} ref={panelRootRef} tabIndex={0} onFocus={handleFocus} onWheel={() => panelRootRef.current?.focus()}>
-        <GlyphSizeProvider>
-          <Border color={focused ? "panel-border-focus" : "panel-border"}>
-            <div className={css("panel-content")}>
-              <PanelHeader active={focused}>
-                <Breadcrumb isActive={focused}>
-                  {pathParts.map((x, i) => (
-                    // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
-                    <Breadcrumb.Item key={i}>{x}</Breadcrumb.Item>
-                  ))}
-                </Breadcrumb>
-              </PanelHeader>
-              <div
-                className={css("panel-columns")}
-                // onWheel={(e) => scroll(Math.sign(e.deltaY), true)}
-                onKeyDown={(e) => {
-                  // dispatch({ type: "findFirst", char: e.key });
-                  e.preventDefault();
-                }}
-              >
-                {view.type === "full" ? (
-                  <FullView
-                    cursorStyle={cursorStyle}
-                    items={items}
-                    cursor={adjustedCursor}
-                    onItemClicked={onItemClicked}
-                    onItemActivated={onItemActivated}
-                    onMaxVisibleItemsChanged={onMaxItemsPerColumnChanged}
-                    columnDefs={view.columnDefs}
-                  />
-                ) : (
-                  <CondensedView
-                    cursorStyle={cursorStyle}
-                    items={items}
-                    selectedItemNames={selectedItemNames}
-                    topmostIndex={adjustedCursor.topmostIndex}
-                    selectedIndex={adjustedCursor.activeIndex}
-                    columnCount={columnCount}
-                    onItemClicked={onItemClicked}
-                    onItemActivated={onItemActivated}
-                    onMaxItemsPerColumnChanged={onMaxItemsPerColumnChanged}
-                    onPosChange={handlePosChange}
-                  />
-                )}
-              </div>
-              <div className={css("file-info-panel")}>
-                <FileInfoFooter file={items.get(adjustedCursor.activeIndex)} />
-              </div>
-              <div className={css("panel-footer")}>{`${bytesCount.toLocaleString()} bytes in ${filesCount.toLocaleString()} files`}</div>
-            </div>
-          </Border>
-        </GlyphSizeProvider>
-      </div>
-    );
-  }),
-);
-FilePanel.displayName = "FilePanel";
+  protected render() {
+    const bytesCount = this.items.reduce((acc, item) => acc + ((!isDir(item) ? item.attrs.size : 0) ?? 0), 0);
+    const filesCount = this.items.reduce((acc, item) => acc + (!isDir(item) ? 1 : 0), 0);
+    const cursorStyle = "firm";
+
+    return html`
+      <frdy-glyph-size-provider>
+        <div class="panel-content">
+          <div class="panel-columns">
+            ${choose(this.view?.type, [
+              [
+                "condensed",
+                () => html`<frdy-condensed-view
+                  .view=${this.view as any /* TODO: think how to get rid of any */}
+                  .topmostIndex=${this.topmostIndex}
+                  .activeIndex=${this.activeIndex}
+                  .cursorStyle=${cursorStyle}
+                  .items=${this.items}
+                  .selectedItemNames=${this.selectedItemNames}
+                  @active-index-change=${this.#onActiveIndexChange}
+                ></frdy-condensed-view>`,
+              ],
+              [
+                "full",
+                () => html`<frdy-full-view
+                  .view=${this.view as any /* TODO: think how to get rid of any */}
+                  .topmostIndex=${this.topmostIndex}
+                  .activeIndex=${this.activeIndex}
+                  .cursorStyle=${cursorStyle}
+                  .items=${this.items}
+                  .selectedItemNames=${this.selectedItemNames}
+                  @active-index-change=${this.#onActiveIndexChange}
+                ></frdy-full-view>`,
+              ],
+            ])}
+          </div>
+          <frdy-file-info .file=${this.activeItem}></frdy-file-info>
+          <div class="panel-footer">${`${bytesCount.toLocaleString()} bytes in ${filesCount.toLocaleString()} files`}</div>
+        </div>
+      </frdy-glyph-size-provider>
+    `;
+  }
+}
+
+declare global {
+  interface HTMLElementTagNameMap {
+    [TAG]: FilePanel;
+  }
+}

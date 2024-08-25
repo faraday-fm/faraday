@@ -1,0 +1,26 @@
+{
+  "name": "@frdy/extension-host",
+  "version": "0.0.1",
+  "description": "Extension Host script",
+  "type": "module",
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "dev": "tsc --watch",
+    "build": "tsc"
+  },
+  "keywords": [],
+  "author": "Mikhail Isupov",
+  "license": "ISC",
+  "files": [
+    "dist"
+  ],
+  "dependencies": {
+    "@frdy/sdk": "workspace:*",
+    "comlink": "^4.4.1",
+    "eventemitter3": "^5.0.1"
+  },
+  "devDependencies": {
+    "@frdy/typescript-config": "workspace:*"
+  }
+}

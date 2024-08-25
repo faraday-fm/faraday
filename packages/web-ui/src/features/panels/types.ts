@@ -1,5 +1,5 @@
 import type { Dirent } from "@frdy/sdk";
-import type { List } from "../../utils/immutableList";
+import type { List } from "../../utils/list/List";
 
 export interface CursorPosition {
   activeName?: string;

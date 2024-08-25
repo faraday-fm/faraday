@@ -4,6 +4,7 @@
   "scripts": {
     "build": "turbo build",
     "dev": "turbo dev",
+    "preview": "turbo preview",
     "lint": "turbo lint",
     "changeset": "changeset add",
     "version": "changeset version",
@@ -18,5 +19,8 @@
   "packageManager": "pnpm@9.4.0",
   "engines": {
     "node": ">=18"
+  },
+  "prettier": {
+    "printWidth": 160
   }
 }

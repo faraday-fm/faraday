@@ -4,14 +4,14 @@
   "publisher": "faraday",
   "description": "Simple text viewer",
   "author": "Mikhail Isupov",
-  "version": "1.2.2",
+  "version": "1.2.1",
   "license": "MIT",
   "private": true,
   "categories": [
-    "QuickView"
+    "Custom Panels"
   ],
   "keywords": [
-    "quickview",
+    "faraday-panels",
     "text"
   ],
   "scripts": {
@@ -27,7 +27,7 @@
     "tsup": "~8.2.4"
   },
   "contributes": {
-    "quickViews": [
+    "customPanels": [
       {
         "id": "text",
         "extensions": [

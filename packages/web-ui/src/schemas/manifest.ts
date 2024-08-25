@@ -1,6 +1,6 @@
 import { type InferOutput, array, enum as enum_, object, optional, string } from "valibot";
 
-const QuickViewDefinition = object({
+const CustomPanelDefinition = object({
   id: string(),
   extensions: optional(array(string())),
   filenames: optional(array(string())),
@@ -17,18 +17,32 @@ const IconThemeDefinition = object({
 const ThemeDefinition = object({
   label: string(),
   uiTheme: enum_({
-    fd: "fd",
-    "fd-light": "fd-light",
-    hc: "hc",
+    vs: "vs",
+    "vs-dark": "vs-dark",
     "hc-light": "hc-light",
+    "hc-black": "hc-black",
+    // fd: "fd",
+    // "fd-light": "fd-light",
+    // hc: "hc",
+    // "hc-light": "hc-light",
   }),
   path: string(),
 });
 
+const LanguageDefinition = object({
+  id: string(),
+  aliases: optional(array(string())),
+  extensions: optional(array(string())),
+  filenames: optional(array(string())),
+  filenamePatterns: optional(array(string())),
+  configuration: optional(string()),
+});
+
 const Contributes = object({
-  quickViews: optional(array(QuickViewDefinition)),
+  customPanels: optional(array(CustomPanelDefinition)),
   iconThemes: optional(array(IconThemeDefinition)),
   themes: optional(array(ThemeDefinition)),
+  languages: optional(array(LanguageDefinition)),
 });
 
 export const ExtensionManifest = object({
@@ -42,9 +56,13 @@ export const ExtensionManifest = object({
   contributes: optional(Contributes),
 });
 
-export type QuickViewDefinition = InferOutput<typeof QuickViewDefinition>;
+export type CustomPanelDefinition = InferOutput<typeof CustomPanelDefinition>;
+
+export type ThemeDefinition = InferOutput<typeof ThemeDefinition>;
 
 export type IconThemeDefinition = InferOutput<typeof IconThemeDefinition>;
+
+export type LanguageDefinition = InferOutput<typeof LanguageDefinition>;
 
 export type Contributes = InferOutput<typeof Contributes>;
 

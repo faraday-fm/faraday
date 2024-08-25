@@ -1,20 +1,5 @@
 # @frdy/web-ui
 
-## 1.39.0
-
-### Minor Changes
-
-- 32d2ef4: introduced @frdy/commands package
-
-### Patch Changes
-
-- 74cdc20: minor improvements
-- Updated dependencies [74cdc20]
-- Updated dependencies [32d2ef4]
-  - @frdy/webview-host@0.6.1
-  - @frdy/commands@0.1.0
-  - @frdy/sdk@1.5.0
-
 ## 1.38.1
 
 ### Patch Changes
