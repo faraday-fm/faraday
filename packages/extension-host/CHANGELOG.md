@@ -1,5 +1,12 @@
 # @frdy/extension-host
 
+## 0.0.3
+
+### Patch Changes
+
+- Updated dependencies [5ed5a9b]
+  - @frdy/sdk@1.6.0
+
 ## 0.0.2
 
 ### Patch Changes

@@ -1,7 +1,7 @@
 {
   "name": "@frdy/web-ui",
   "private": false,
-  "version": "1.39.0",
+  "version": "1.40.0",
   "description": "Web front-end for Faraday file manager",
   "source": "src/index.tsx",
   "type": "module",

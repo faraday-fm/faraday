@@ -1,5 +1,12 @@
 # text-viewer
 
+## 1.2.3
+
+### Patch Changes
+
+- Updated dependencies [5ed5a9b]
+  - @frdy/sdk@1.6.0
+
 ## 1.2.2
 
 ### Patch Changes

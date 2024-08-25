@@ -1,5 +1,12 @@
 # image-viewer
 
+## 1.1.4
+
+### Patch Changes
+
+- Updated dependencies [5ed5a9b]
+  - @frdy/sdk@1.6.0
+
 ## 1.1.3
 
 ### Patch Changes
