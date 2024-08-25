@@ -1,8 +1,8 @@
 ---
-"@frdy/memory-fs": minor
+"faraday-fm.github.io": minor
 "@frdy/commands": minor
 "@frdy/web-ui": minor
 "@frdy/sdk": minor
 ---
 
-introduced @frdy/commands package
+Lit migration
