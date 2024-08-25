@@ -1,0 +1,46 @@
+{
+  "id": "row1",
+  "type": "row",
+  "children": [
+    {
+      "id": "col1",
+      "type": "row",
+      "children": [
+        {
+          "id": "left",
+          "type": "tab-set",
+          "children": [
+            {
+              "id": "panel1",
+              "type": "tab",
+              "name": "~",
+              "path": ".",
+              "component": { "type": "files", "view": { "type": "condensed", "columnDef": { "field": "name", "name": "Name" } } }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "col2",
+      "type": "row",
+      "flex": 1.6,
+      "children": [
+        {
+          "id": "right",
+          "type": "tab-set",
+          "children": [
+            {
+              "id": "panel2",
+              "type": "tab",
+              "flex": 1,
+              "name": "~",
+              "path": ".",
+              "component": { "type": "files", "view": { "type": "condensed", "columnDef": { "field": "name", "name": "Name" } } }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

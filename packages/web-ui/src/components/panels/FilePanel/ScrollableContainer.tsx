@@ -1,174 +1,151 @@
-import type React from "react";
-import { type CSSProperties, type ReactNode, useEffect, useRef } from "react";
-import { useMediaQuery } from "../../../hooks/useMediaQuery";
+import { consume } from "@lit/context";
+import { html } from "lit";
+import { customElement, eventOptions, property } from "lit/decorators.js";
+import { type Ref, createRef, ref } from "lit/directives/ref.js";
+import { isTouchScreenContext } from "../../../lit-contexts/isTouchScreenContext";
+import { FrdyElement } from "../../FrdyElement";
 
-interface ScrollableContainerProps {
-  children: ReactNode;
-  scrollHeight: number;
-  scrollTop: number;
-  velocityFactor?: number;
-  frictionFactor?: number;
-  style?: CSSProperties;
-  innerContainerStyle?: CSSProperties;
-  onScroll?: (scrollTop: number) => void;
-}
+const TAG = "frdy-scrollable";
 
-const ScrollableContainer: React.FC<ScrollableContainerProps> = ({
-  children,
-  scrollHeight,
-  scrollTop,
-  velocityFactor = 20,
-  frictionFactor = 0.95,
-  style,
-  innerContainerStyle,
-  onScroll,
-}) => {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const scrollPaneRef = useRef<HTMLDivElement>(null);
-  const scrollTopRef = useRef(scrollTop);
-  const onScrollRef = useRef(onScroll);
+@customElement(TAG)
+export class Scrollable extends FrdyElement {
 
-  scrollTopRef.current = scrollTop;
-  onScrollRef.current = onScroll;
+  private containerRef: Ref<HTMLInputElement> = createRef();
 
-  if (scrollPaneRef.current) {
-    scrollPaneRef.current.scrollTop = scrollTop;
+  @property({ type: Number })
+  accessor fullScrollHeight: number;
+
+  @property({ type: Number })
+  accessor fullScrollTop: number;
+
+  @property({ type: Number })
+  accessor velocityFactor: number;
+
+  @property({ type: Number })
+  accessor frictionFactor: number;
+
+  @property({ type: Boolean })
+  @consume({ context: isTouchScreenContext, subscribe: true })
+  accessor isTouchscreen: boolean;
+
+  constructor() {
+    super();
+    this.fullScrollHeight = 0;
+    this.fullScrollTop = 0;
+    this.velocityFactor = 20;
+    this.frictionFactor = 0.95;
+    this.isTouchscreen = false;
   }
 
-  const isTouchscreen = useMediaQuery("(pointer: coarse)");
+  @eventOptions({ passive: true })
+  private onWheel(e: WheelEvent) {
+    this.#updateScrollTop(e.deltaY);
+  }
 
-  useEffect(() => {
-    const scrollPane = scrollPaneRef.current;
-    const innerContainer = containerRef.current;
+  #touchStartY: number | undefined;
+  #touchStartTime = 0;
+  #velocity = 0;
+  #isInertiaScrolling = false;
 
-    if (!scrollPane || !innerContainer) return;
+  #onPointerDown = (event: PointerEvent) => {
+    if (!this.isTouchscreen) return;
 
-    let touchStartY: number | undefined;
-    let touchStartTime = 0;
-    let velocity = 0;
-    let isInertiaScrolling = false;
+    this.#touchStartY = event.clientY;
+    this.#touchStartTime = performance.now();
+    this.#isInertiaScrolling = false;
+    this.#velocity = 0;
+  };
 
-    const updateScrollTop = (scrollDelta: number) => {
-      if (onScrollRef.current && scrollPaneRef.current) {
-        let newScrollTop = scrollTopRef.current + scrollDelta;
-        newScrollTop = Math.min(newScrollTop, scrollHeight);
-        newScrollTop = Math.max(0, newScrollTop);
-        if (scrollTopRef.current !== newScrollTop) {
-          onScrollRef.current(newScrollTop);
-        }
-      }
-    };
+  #onPointerMove = (event: PointerEvent) => {
+    if (!this.isTouchscreen || this.#touchStartY == null) return;
 
-    const handleWheel = (event: WheelEvent) => {
-      updateScrollTop(event.deltaY);
-    };
-
-    const handlePointerDown = (event: PointerEvent) => {
-      touchStartY = event.clientY;
-      touchStartTime = performance.now();
-      isInertiaScrolling = false;
-      velocity = 0;
-    };
-
-    const handlePointerMove = (event: PointerEvent) => {
-      if (touchStartY == null) {
-        return;
-      }
-
-      const touchCurrentY = event.clientY;
-      const deltaY = touchStartY - touchCurrentY;
-      if (Math.abs(deltaY) < 3) {
-        return;
-      }
-
-      innerContainer.setPointerCapture(event.pointerId);
-      updateScrollTop(deltaY);
-      touchStartY = touchCurrentY;
-      const currentTime = performance.now();
-      const timeDelta = currentTime - touchStartTime;
-      touchStartTime = currentTime;
-      if (timeDelta > 0) {
-        velocity = deltaY / timeDelta;
-      }
-      event.preventDefault();
-    };
-
-    const handlePointerUp = (event: PointerEvent) => {
-      if (touchStartY == null) {
-        return;
-      }
-      touchStartY = undefined;
-      innerContainer.releasePointerCapture(event.pointerId);
-      const inertiaScroll = () => {
-        if (Math.abs(velocity) > 0.1) {
-          updateScrollTop(velocity * velocityFactor);
-          velocity *= frictionFactor;
-          requestAnimationFrame(inertiaScroll);
-        } else {
-          isInertiaScrolling = false;
-        }
-      };
-      if (!isInertiaScrolling) {
-        isInertiaScrolling = true;
-        requestAnimationFrame(inertiaScroll);
-      }
-    };
-
-    innerContainer.addEventListener("wheel", handleWheel, { passive: true });
-    if (isTouchscreen) {
-      innerContainer.addEventListener("pointerdown", handlePointerDown);
-      innerContainer.addEventListener("pointermove", handlePointerMove);
-      innerContainer.addEventListener("pointerup", handlePointerUp);
-      innerContainer.addEventListener("pointercancel", handlePointerUp);
+    const touchCurrentY = event.clientY;
+    const deltaY = this.#touchStartY - touchCurrentY;
+    if (Math.abs(deltaY) < 3) {
+      return;
     }
 
-    return () => {
-      innerContainer.removeEventListener("wheel", handleWheel);
-      if (isTouchscreen) {
-        innerContainer.removeEventListener("pointerdown", handlePointerDown);
-        innerContainer.removeEventListener("pointermove", handlePointerMove);
-        innerContainer.removeEventListener("pointerup", handlePointerUp);
-        innerContainer.removeEventListener("pointercancel", handlePointerUp);
+    this.containerRef.value?.setPointerCapture(event.pointerId);
+    this.#updateScrollTop(deltaY);
+    this.#touchStartY = touchCurrentY;
+    const currentTime = performance.now();
+    const timeDelta = currentTime - this.#touchStartTime;
+    this.#touchStartTime = currentTime;
+    if (timeDelta > 0) {
+      this.#velocity = deltaY / timeDelta;
+    }
+    event.preventDefault();
+  };
+
+  #onPointerUp = (event: PointerEvent) => {
+    if (!this.isTouchscreen || this.#touchStartY == null) return;
+
+    this.#touchStartY = undefined;
+    this.containerRef.value?.releasePointerCapture(event.pointerId);
+    const inertiaScroll = () => {
+      if (Math.abs(this.#velocity) > 0.1) {
+        this.#updateScrollTop(this.#velocity * this.velocityFactor);
+        this.#velocity *= this.frictionFactor;
+        requestAnimationFrame(inertiaScroll);
+      } else {
+        this.#isInertiaScrolling = false;
+        this.#velocity = 0;
+        this.#updateScrollTop(0);
       }
     };
-  }, [velocityFactor, frictionFactor, scrollHeight, isTouchscreen]);
+    if (!this.#isInertiaScrolling) {
+      this.#isInertiaScrolling = true;
+      requestAnimationFrame(inertiaScroll);
+    }
+  };
 
-  return (
-    <div
-      style={{
-        overflow: "hidden",
-        position: "relative",
-        touchAction: "none",
-        ...style,
-      }}
-    >
-      <div
-        ref={scrollPaneRef}
-        style={{
-          width: "100%",
-          height: "100%",
-          overflowY: "scroll",
-          position: "absolute",
-        }}
-      >
+  #updateScrollTop(scrollDelta: number) {
+    const currScrollTop = this.fullScrollTop;
+    let newScrollTop = currScrollTop + scrollDelta;
+    newScrollTop = Math.min(newScrollTop, this.fullScrollHeight);
+    newScrollTop = Math.max(0, newScrollTop);
+    if (currScrollTop !== newScrollTop) {
+      this.scrollTop = newScrollTop;
+      this.dispatchEvent(
+        new CustomEvent("scroll", {
+          detail: { top: newScrollTop, isInertiaScrolling: this.#isInertiaScrolling },
+          bubbles: true,
+          composed: true,
+        })
+      );
+    }
+  }
+
+  render() {
+    return html`
+      <div style=${"overflow: hidden; position: relative; touch-action: none;"}>
         <div
-          style={{
-            height: `${scrollHeight + (scrollPaneRef.current?.clientHeight ?? 0)}px`,
-          }}
-        />
+          ref=${ref(this.containerRef)}
+          style="position: absolute; inset: 0; pointer-events: auto;"
+          @wheel=${this.onWheel}
+          @pointerdown=${this.#onPointerDown}
+          @pointermove=${this.#onPointerMove}
+          @pointerup=${this.#onPointerUp}
+          @pointercancel=${this.#onPointerUp}
+        >
+          <slot></slot>
+        </div>
       </div>
-      <div
-        ref={containerRef}
-        style={{
-          position: "absolute",
-          pointerEvents: "auto",
-          ...innerContainerStyle,
-        }}
-      >
-        {children}
-      </div>
-    </div>
-  );
-};
+    `;
+  }
+}
 
-export default ScrollableContainer;
+declare global {
+  interface HTMLElementTagNameMap {
+    [TAG]: Scrollable;
+  }
+}
+
+// export const ScrollableReact = createComponent({
+//   tagName: TAG,
+//   elementClass: ScrollableLit,
+//   react: React,
+//   events: {
+//     onScroll: "scroll",
+//   },
+// });

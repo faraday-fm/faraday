@@ -24,9 +24,6 @@
         "noParameterAssign": "off",
         "noNonNullAssertion": "off"
       },
-      "a11y": {
-        "noNoninteractiveTabindex": "off"
-      },
       "complexity": {
         "noForEach": "off"
       }

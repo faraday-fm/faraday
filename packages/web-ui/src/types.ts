@@ -1,45 +1,48 @@
 import type { Dirent, FileSystemProvider } from "@frdy/sdk";
 
-export interface RowLayout {
-  id: string;
+export type NodeLayout = RowLayout | TabLayout | TabSetLayout;
+
+export type RowLayout = {
   type: "row";
-  children: PanelsLayout[];
-}
-
-export interface FilePanelLayout {
-  id: string;
-  type: "file-panel";
-  path: string;
-  view: FilePanelView;
-}
-
-export interface ColumnDef {
-  name: string;
-  field: keyof Dirent;
-  width?: string;
-}
-
-export interface FullView {
-  type: "full";
-  columnDefs: ColumnDef[];
-}
-export interface CondensedView {
-  type: "condensed";
-}
-export type FilePanelView = FullView | CondensedView;
-
-export interface QuickViewLayout {
-  id: string;
-  type: "quick-view";
-}
-
-export type PanelLayout = FilePanelLayout | QuickViewLayout;
-
-export type PanelsLayout = (RowLayout | PanelLayout) & {
   id: string;
   flex?: number;
-  when?: string;
+  children: (TabSetLayout | RowLayout)[];
 };
+
+export type TabLayout = {
+  type: "tab";
+  id: string;
+  flex?: number;
+  name: string;
+  path: string;
+  component: TabComponentLayout;
+};
+
+export type TabSetLayout = {
+  type: "tab-set";
+  id: string;
+  activeTabId?: string;
+  flex?: number;
+  children: TabLayout[];
+};
+
+export type TabFilesFullView = {
+  type: "full";
+  columnDefs: { field: string; name: string; flex?: number }[];
+};
+
+export type TabFilesCondensedView = {
+  type: "condensed";
+};
+
+export type TabFilesView = TabFilesFullView | TabFilesCondensedView;
+
+export type TabFilesLayout = {
+  type: "files";
+  view: TabFilesView;
+};
+
+export type TabComponentLayout = TabFilesLayout;
 
 export interface FaradayConfig {
   isDesktop(): boolean;

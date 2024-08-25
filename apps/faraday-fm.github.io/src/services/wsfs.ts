@@ -8,7 +8,6 @@ const pool = new Map<number, PromiseWithResolvers<any>>();
 
 ws.addEventListener("message", (m) => {
   const msg = JSON.parse(m.data);
-  console.info("<<", msg);
   const { id, result, error } = msg;
   const task = pool.get(id);
   if (task) {
@@ -35,7 +34,6 @@ function invokeRequest(type: string, args: any, signal?: AbortSignal) {
   requestIdCounter++;
   const task = Promise.withResolvers<any>();
   pool.set(requestId, task);
-  console.info(">>", { type, requestId, ...args });
   ws.send(JSON.stringify({ type, requestId, ...args }));
   return task.promise;
 }

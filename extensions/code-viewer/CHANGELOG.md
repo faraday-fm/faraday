@@ -1,12 +1,5 @@
 # code-viewer
 
-## 1.4.1
-
-### Patch Changes
-
-- Updated dependencies [32d2ef4]
-  - @frdy/sdk@1.5.0
-
 ## 1.4.0
 
 ### Minor Changes
