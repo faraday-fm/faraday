@@ -2,6 +2,9 @@ import { css, html } from "lit";
 import { customElement } from "lit/decorators.js";
 import "./ActionButton";
 import { FrdyElement } from "./FrdyElement";
+import { command } from "@frdy/commands";
+import { consume } from "@lit/context";
+import { SettingsContext, settingsContext } from "../lit-contexts/settingsContext";
 
 const TAG = "frdy-action-bar";
 
@@ -23,6 +26,15 @@ export class ActionBar extends FrdyElement {
       -webkit-user-select: none;
     }
   `;
+
+@consume({context:settingsContext, subscribe: true})
+accessor settings!: SettingsContext;
+
+@command()
+switchShowHiddenFiles() {
+  const showHiddenFiles = !this.settings.settings.showHiddenFiles;
+  this.settings.showHiddenFiles(showHiddenFiles);
+}
 
   protected render() {
     return html`

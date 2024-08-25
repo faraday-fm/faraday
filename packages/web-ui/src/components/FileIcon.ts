@@ -62,18 +62,14 @@ export class FileIcon extends FrdyElement {
   });
 
   protected render() {
-    const defaultIcon = () =>
-      html`<img
-        style="width:${this.size}px;height:${this.size}px"
-        src="data:image/svg+xml;base64,${getDefaultIcon(this.isDir, this.isOpen) ?? ""}"
-        alt=${ifDefined(this.filepath)}
-      />`;
+    const icon = (content: string) =>
+      html`<img style="width:${this.size}px;height:${this.size}px" src="data:image/svg+xml;base64,${content}" alt=${ifDefined(this.filepath)} />`;
+    const defaultIcon = () => icon(getDefaultIcon(this.isDir, this.isOpen) ?? "");
     return this.#task.render({
       initial: defaultIcon,
       pending: defaultIcon,
       error: defaultIcon,
-      complete: (content) =>
-        html`<img style="width:${this.size}px;height:${this.size}px" src="data:image/svg+xml;base64,${content}" alt=${ifDefined(this.filepath)} />`,
+      complete: icon,
     });
   }
 }

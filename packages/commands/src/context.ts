@@ -52,8 +52,3 @@ class ContextVariablesController<HostElement extends ReactiveControllerHost & Re
     this.#host.dispatchEvent(new SetContextVariableEvent(this.#host, this.#options, value));
   }
 }
-
-// class X extends ReactiveElement {
-//   @context()
-//   accessor sdf = 5;
-// }

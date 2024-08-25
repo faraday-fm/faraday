@@ -133,18 +133,11 @@ export class FrdyApp extends FrdyElement {
     this.devMode = !this.devMode;
   }
 
-  @command()
-  switchShowHiddenFiles() {
-    const showHiddenFiles = !this.#settingsProvider.settingsSignal.valueOf().settings.showHiddenFiles;
-    this.#settingsProvider.setShowHiddenFiles(showHiddenFiles);
-  }
-
   @state()
   private accessor layout: NodeLayout | undefined;
 
   constructor() {
     super();
-    // this._css.setTheme(darkTheme);
   }
 
   protected willUpdate(_changedProperties: PropertyValues): void {

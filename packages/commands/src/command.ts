@@ -2,8 +2,10 @@ import { ReactiveController, ReactiveControllerHost, ReactiveElement } from "lit
 import { RegisterCommandEvent, UnregisterCommandEvent } from "./events";
 import { CommandOptions } from "./types";
 
+type Method = (...args: any) => any;
+
 export function command(options?: CommandOptions) {
-  return (originalMethod: any, context: ClassMethodDecoratorContext<ReactiveElement>) => {
+  return (originalMethod: Method, context: ClassMethodDecoratorContext<ReactiveElement>) => {
     const methodName = String(context.name);
     context.addInitializer(function () {
       new CommandRegistration(this, originalMethod.bind(this), { name: methodName, whenFocusWithin: false, makeHostInert: false, ...options });
@@ -13,10 +15,10 @@ export function command(options?: CommandOptions) {
 
 class CommandRegistration<HostElement extends ReactiveControllerHost & HTMLElement> implements ReactiveController {
   #host: HostElement;
-  #callback: () => void;
+  #callback: Method;
   #options: Required<CommandOptions>;
 
-  constructor(host: HostElement, callback: () => void, options: Required<CommandOptions>) {
+  constructor(host: HostElement, callback: Method, options: Required<CommandOptions>) {
     this.#host = host;
     this.#callback = callback;
     this.#options = options;
@@ -31,10 +33,3 @@ class CommandRegistration<HostElement extends ReactiveControllerHost & HTMLEleme
     this.#host.dispatchEvent(new UnregisterCommandEvent(this.#callback));
   }
 }
-
-// export class X extends LitElement {
-//   @command()
-//   dfg(d: string) {
-//     return 7;
-//   }
-// }
