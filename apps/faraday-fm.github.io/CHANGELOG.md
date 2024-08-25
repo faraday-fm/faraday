@@ -1,5 +1,20 @@
 # faraday-fm.github.io
 
+## 1.36.0
+
+### Minor Changes
+
+- 7af1afc: Lit migration
+- cd981d7: Lit migration
+
+### Patch Changes
+
+- Updated dependencies [7af1afc]
+- Updated dependencies [cd981d7]
+  - @frdy/web-ui@1.39.0
+  - @frdy/sdk@1.5.0
+  - @frdy/memory-fs@1.34.4
+
 ## 1.35.6
 
 ### Patch Changes

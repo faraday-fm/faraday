@@ -1,5 +1,20 @@
 # @frdy/web-ui
 
+## 1.39.0
+
+### Minor Changes
+
+- 7af1afc: Lit migration
+- cd981d7: Lit migration
+
+### Patch Changes
+
+- Updated dependencies [7af1afc]
+- Updated dependencies [cd981d7]
+  - @frdy/commands@0.1.0
+  - @frdy/sdk@1.5.0
+  - @frdy/extension-host@0.0.2
+
 ## 1.38.1
 
 ### Patch Changes

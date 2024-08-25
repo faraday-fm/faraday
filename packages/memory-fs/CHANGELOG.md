@@ -1,5 +1,13 @@
 # @frdy/memory-fs
 
+## 1.34.4
+
+### Patch Changes
+
+- Updated dependencies [7af1afc]
+- Updated dependencies [cd981d7]
+  - @frdy/sdk@1.5.0
+
 ## 1.34.3
 
 ### Patch Changes
