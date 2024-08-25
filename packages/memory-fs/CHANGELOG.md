@@ -1,5 +1,16 @@
 # @frdy/memory-fs
 
+## 1.35.0
+
+### Minor Changes
+
+- 5ed5a9b: Lit migration
+
+### Patch Changes
+
+- Updated dependencies [5ed5a9b]
+  - @frdy/sdk@1.6.0
+
 ## 1.34.4
 
 ### Patch Changes

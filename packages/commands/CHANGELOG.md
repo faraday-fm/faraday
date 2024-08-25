@@ -1,5 +1,11 @@
 # @frdy/commands
 
+## 0.2.0
+
+### Minor Changes
+
+- 5ed5a9b: Lit migration
+
 ## 0.1.0
 
 ### Minor Changes
