@@ -135,6 +135,17 @@ export class FilePanel extends FrdyElement {
   }
 
   @command({ whenFocusWithin: true })
+  async openHome() {
+    this.#positionsStack = [];
+    this.path = ".";
+    this.#task.run();
+    await this.#task.taskComplete;
+    this.selectedItemNames = createList();
+    this.activeIndex = 0;
+    this.#updateActiveItem();
+}
+
+  @command({ whenFocusWithin: true })
   async dirUp() {
     this.path = dir(this.path ?? "/");
     if (this.path.endsWith("/")) {

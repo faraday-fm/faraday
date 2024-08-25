@@ -115,16 +115,6 @@ export class FrdyApp extends FrdyElement {
   }
 
   @command()
-  open() {
-    // enterDir()
-  }
-
-  @command()
-  openShell() {
-    // setCopyDialogOpen(true)
-  }
-
-  @command()
   copyFiles() {
     // setCopyDialogOpen(true)
   }
