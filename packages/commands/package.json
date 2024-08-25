@@ -1,6 +1,6 @@
 {
   "name": "@frdy/commands",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Commands abstraction for Faraday File Manager",
   "source": "src/index.tsx",
   "type": "module",

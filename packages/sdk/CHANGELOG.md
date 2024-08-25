@@ -1,5 +1,12 @@
 # @frdy/sdk
 
+## 1.5.0
+
+### Minor Changes
+
+- 7af1afc: Lit migration
+- cd981d7: Lit migration
+
 ## 1.4.0
 
 ### Minor Changes

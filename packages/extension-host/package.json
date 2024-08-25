@@ -1,6 +1,6 @@
 {
   "name": "@frdy/extension-host",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Extension Host script",
   "type": "module",
   "module": "dist/index.js",
