@@ -1,10 +1,12 @@
 import { type FileSystemProvider } from "@frdy/sdk";
-import { createContext } from "@lit/context";
+import { ContextProvider, createContext } from "@lit/context";
+import { effect, signal, Signal } from "@preact/signals-core";
 import { IconTheme, isSvgIcon } from "../schemas/iconTheme";
 import { combine, filename } from "../utils/path";
+import { Extension } from "./extensionContext";
 import { readFileString } from "./fsUtils";
 import { IconThemeContext } from "./iconThemeContext";
-import { LanguagesContext } from "./languagesContext";
+import { ReactiveControllerHost } from "lit";
 
 export type IconsCache = {
   getIcon(name: string, isDir: boolean, isOpen: boolean): Promise<string>;
@@ -12,39 +14,58 @@ export type IconsCache = {
 
 export const iconsCacheContext = createContext<IconsCache>(Symbol("icons-cache"));
 
-export function createIconsCache(fs: FileSystemProvider, iconThemeContext: IconThemeContext, languagesContext: LanguagesContext): IconsCache {
-  const cache = new Map<string, Promise<string>>();
-  return {
-    async getIcon(name, isDir, isOpen) {
-      const iconTheme = await iconThemeContext.iconTheme;
-      const iconDefinitionName = await resolveIconDefinitionName(iconTheme.theme, languagesContext, name, isDir, isOpen);
-      const cachedIcon = cache.get(iconDefinitionName);
-      if (cachedIcon) {
-        return cachedIcon;
-      }
-      const iconDefinition = iconTheme.theme.iconDefinitions[iconDefinitionName];
-      const iconPath = isSvgIcon(iconDefinition) ? iconDefinition.iconPath : undefined;
-      const iconPathAbsolute = iconPath ? combine(iconTheme.path, iconPath) : undefined;
-      if (!iconPathAbsolute) {
-        throw new Error("Cannot resolve Icon Theme path.");
-      }
-
-      const svgContent = readFileString(fs, iconPathAbsolute);
-      const svgPromise = svgContent.then((svg) => btoa(svg));
-      cache.set(iconDefinitionName, svgPromise);
-      return svgPromise;
+export function createIconsCache(
+  host: ReactiveControllerHost & HTMLElement,
+  fsSignal: Signal<FileSystemProvider | undefined>,
+  iconThemeSignal: Signal<IconThemeContext>,
+  extensionsSignal: Signal<Extension[]>
+) {
+  const iconsCache = signal<IconsCache>({
+    getIcon: () => {
+      throw new Error();
     },
-  };
+  });
+  const context = new ContextProvider(host, { context: iconsCacheContext, initialValue: iconsCache.valueOf() });
+
+  const cache = new Map<string, Promise<string>>();
+  effect(() => {
+    const fs = fsSignal.value;
+    if (!fs) {
+      return;
+    }
+    const extensions = extensionsSignal.value;
+    const iconTheme = iconThemeSignal.value;
+
+    iconsCache.value = {
+      getIcon: async (name, isDir, isOpen) => {
+        if (!iconTheme || "error" in iconTheme) {
+          throw new Error("Cannot resolve Icon Theme path.");
+        }
+        const iconDefinitionName = resolveIconDefinitionName(iconTheme.theme, extensions, name, isDir, isOpen);
+        const cachedIcon = cache.get(iconDefinitionName);
+        if (cachedIcon) {
+          return cachedIcon;
+        }
+        const iconDefinition = iconTheme.theme.iconDefinitions[iconDefinitionName];
+        const iconPath = isSvgIcon(iconDefinition) ? iconDefinition.iconPath : undefined;
+        const iconPathAbsolute = iconPath ? combine(iconTheme.path, iconPath) : undefined;
+        if (!iconPathAbsolute) {
+          throw new Error("Cannot resolve Icon Theme path.");
+        }
+
+        const svgContent = readFileString(fs, iconPathAbsolute);
+        const svgPromise = svgContent.then((svg) => btoa(svg));
+        cache.set(iconDefinitionName, svgPromise);
+        return svgPromise;
+      },
+    };
+    context.setValue(iconsCache.valueOf());
+  });
+
+  return { iconsCache };
 }
 
-async function resolveIconDefinitionName(
-  iconTheme: IconTheme,
-  languagesContext: LanguagesContext,
-  path: string,
-  isDir: boolean,
-  isOpen: boolean,
-  languageId?: string
-): Promise<string> {
+function resolveIconDefinitionName(iconTheme: IconTheme, extensions: Extension[], path: string, isDir: boolean, isOpen: boolean, languageId?: string): string {
   const defaultDef = isDir ? (isOpen ? iconTheme.folderExpanded ?? iconTheme.folder : iconTheme.folder) : iconTheme.file;
   const direntName = filename(path);
   if (!direntName) {
@@ -57,7 +78,7 @@ async function resolveIconDefinitionName(
   if (result) {
     return result;
   }
-  const language = await languagesContext.getLanguageByFilename(direntName);
+  const language = getLanguageByFilename(direntName, extensions);
   if (language) {
     result = iconTheme.languageIds?.[language];
     if (result) {
@@ -80,4 +101,25 @@ async function resolveIconDefinitionName(
     }
   }
   return defaultDef;
+}
+
+function getLanguageByFilename(filename: string, extensions: Extension[]) {
+  for (const ext of extensions) {
+    for (const [id, lang] of ext.languageDefinitions) {
+      if (lang.filenames) {
+        for (const fn of lang.filenames) {
+          if (fn === filename) {
+            return lang.id;
+          }
+        }
+      }
+      if (lang.extensions) {
+        for (const ext of lang.extensions) {
+          if (filename.endsWith(ext)) {
+            return lang.id;
+          }
+        }
+      }
+    }
+  }
 }

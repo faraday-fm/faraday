@@ -1,19 +1,15 @@
-import { ReactiveController, ReactiveControllerHost } from "lit";
+import { effect, Signal } from "@preact/signals-core";
+import { ReactiveControllerHost } from "lit";
 import { ThemeContext } from "./themeContext";
 
-export class CssVarsProvider implements ReactiveController {
-  #host: ReactiveControllerHost & HTMLElement;
-  #style = document.createElement("style");
+export function createCssVarsProvider(host: ReactiveControllerHost & HTMLElement, themeSignal: Signal<ThemeContext>) {
+  const style = document.createElement("style");
+  style.innerHTML = localStorage.getItem("cached-theme") ?? "";
+  host.prepend(style);
 
-  constructor(host: ReactiveControllerHost & HTMLElement) {
-    this.#host = host;
-    host.addController(this);
-    this.#style.innerHTML = localStorage.getItem("cached-theme") ?? "";
-  }
-
-  async setThemeContext(themeCtx: ThemeContext) {
-    if (this.#style) {
-      const themeDesc = await themeCtx.theme;
+  effect(() => {
+    const themeDesc = themeSignal.value;
+    if (themeDesc && !("error" in themeDesc)) {
       const { theme } = themeDesc;
       let vars = Object.entries(theme.colors ?? {});
       if (themeDesc.theme.fontFamily) {
@@ -21,16 +17,10 @@ export class CssVarsProvider implements ReactiveController {
       }
 
       const body = vars.map(([k, v]) => `--${k.replaceAll(".", "-").replaceAll(":", "-")}: ${v}`).join(";");
-      this.#style.innerHTML = `body {${body}}`;
-      localStorage.setItem("cached-theme", this.#style.innerHTML);
+      style.innerHTML = `body {${body}}`;
+    } else {
+      style.innerHTML = "";
     }
-  }
-
-  hostConnected(): void {
-    this.#host.prepend(this.#style);
-  }
-
-  hostDisconnected(): void {
-    this.#style.remove();
-  }
+    localStorage.setItem("cached-theme", style.innerHTML);
+  });
 }

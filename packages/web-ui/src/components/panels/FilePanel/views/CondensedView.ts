@@ -24,7 +24,7 @@ export class CondensedView extends View<TabFilesCondensedView> {
           .activeIndex=${this.activeIndex}
           .renderItem=${(index: number, isActive:boolean) => this.renderItem(index, isActive, selectedNames)}
           .itemsCount=${this.items.size()}
-          .lineHeight=${1.2}
+          .lineHeight=${1.4}
           .far=${true}
         ></frdy-multicolumn-list>
       </frdy-glyph-size-provider>

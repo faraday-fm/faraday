@@ -14,6 +14,7 @@ import "../FileName";
 import "../MultiColumnList";
 import type { CursorStyle } from "../types";
 import { DragGhost } from "./DragGhost";
+import { Signal } from "@preact/signals-core";
 
 export abstract class View<T extends TabFilesView> extends FrdyElement {
   static styles = css`
@@ -42,7 +43,7 @@ export abstract class View<T extends TabFilesView> extends FrdyElement {
   @property({ attribute: false })
   accessor selectedItemNames: List<string>;
 
-  @consume({ context: iconsCacheContext })
+  @consume({ context: iconsCacheContext, subscribe: true })
   accessor icons!: IconsCache;
 
   @consume({ context: isTouchScreenContext, subscribe: true })

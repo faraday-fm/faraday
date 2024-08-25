@@ -49,9 +49,3 @@ declare global {
     "frdy-filename": FileName;
   }
 }
-
-// export const FileNameReact = createComponent({
-//   tagName: "frdy-filename",
-//   elementClass: FileName,
-//   react: React,
-// });

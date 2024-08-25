@@ -6,18 +6,20 @@ import { PropertyValues, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { choose } from "lit/directives/choose.js";
 import { range } from "lit/directives/range.js";
+import * as v from "../../../css";
 import { fsContext } from "../../../lit-contexts/fsContext";
 import "../../../lit-contexts/GlyphSizeProvider";
 import { TabFilesView } from "../../../types";
 import { List, createList } from "../../../utils/list/createList";
 import { combine, dir } from "../../../utils/path";
-import { FrdyElement } from "../../FrdyElement";
 import "../../FileInfo";
+import { FrdyElement } from "../../FrdyElement";
 import { SelectionType } from "./MultiColumnList";
 import "./ScrollableContainer";
 import "./views/CondensedView";
 import "./views/FullView";
-import { panel_border, tab_activeBackground } from "../../../css";
+import { Signal } from "@preact/signals-core";
+import { SettingsContext, settingsContext } from "../../../lit-contexts/settingsContext";
 
 const TAG = "frdy-file-panel";
 
@@ -45,7 +47,7 @@ export class FilePanel extends FrdyElement {
       height: 100%;
       position: relative;
       /* color: var(--panel-foreground, var(--list-focusForeground, #adbac7)); */
-      background-color: ${tab_activeBackground};
+      background-color: ${v.tab_activeBackground};
       display: grid;
       overflow: hidden;
       outline: none;
@@ -60,7 +62,7 @@ export class FilePanel extends FrdyElement {
       overflow: hidden;
     }
     .panel-footer {
-      border-block-start: 1px solid ${panel_border};
+      border-block-start: 1px solid ${v.panel_border};
     }
   `;
 
@@ -88,8 +90,8 @@ export class FilePanel extends FrdyElement {
   @property({ attribute: false })
   accessor activeItem: Dirent | undefined;
 
-  @property({ type: Boolean })
-  accessor showHidden = false;
+  @consume({ context: settingsContext, subscribe: true })
+  accessor settings!: SettingsContext;
 
   @property()
   @context({ name: "filePanel.path", whenFocusWithin: true })
@@ -116,7 +118,7 @@ export class FilePanel extends FrdyElement {
   @context({ name: "filePanel.selectedItemsCount", whenFocusWithin: true })
   accessor selectedItemsCount = 0;
 
-  @command({ whenFocusWithin: true })
+  @command({ whenFocusWithin: true, makeHostInert: true })
   async open() {
     if (this.activeItemName === "..") {
       await this.dirUp();
@@ -135,7 +137,7 @@ export class FilePanel extends FrdyElement {
     }
   }
 
-  @command({ whenFocusWithin: true })
+  @command({ whenFocusWithin: true, makeHostInert: true })
   async openHome() {
     this.#positionsStack = [];
     this.path = ".";
@@ -146,7 +148,7 @@ export class FilePanel extends FrdyElement {
     this.#updateActiveItem();
   }
 
-  @command({ whenFocusWithin: true })
+  @command({ whenFocusWithin: true, makeHostInert: true })
   async dirUp() {
     this.path = dir(this.path ?? "/");
     if (this.path.endsWith("/")) {
@@ -189,7 +191,7 @@ export class FilePanel extends FrdyElement {
       this.items = createList(files);
       return files;
     },
-    args: () => [this.path, this.showHidden] as const,
+    args: () => [this.path, this.settings.settings.showHiddenFiles] as const,
   });
 
   constructor() {

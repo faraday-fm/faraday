@@ -1,10 +1,10 @@
 import { Dirent, FileType, isDir } from "@frdy/sdk";
-import { LitElement, css, html } from "lit";
+import { css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
+import * as v from "../css";
 import { formatDateTime } from "../utils/date";
 import { bytesToSize } from "../utils/number";
 import { FrdyElement } from "./FrdyElement";
-import { sideBar_border } from "../css";
 
 const TAG = "frdy-file-info";
 
@@ -17,7 +17,7 @@ export class FileInfo extends FrdyElement {
       align-items: center;
       overflow: hidden;
       padding-inline: 0.5ch;
-      border-block-start: 3px double ${sideBar_border};
+      border-block-start: 3px double ${v.sideBar_border};
     }
     .name {
       text-overflow: ellipsis;

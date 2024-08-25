@@ -2,13 +2,13 @@ import { html } from "lit";
 import { customElement } from "lit/decorators.js";
 import { map } from "lit/directives/map.js";
 import { range } from "lit/directives/range.js";
+import * as v from "../../../../css";
 import "../../../../lit-contexts/GlyphSizeProvider";
 import { TabFilesFullView } from "../../../../types";
 import "../ColumnCell";
 import "../FileName";
 import "../MultiColumnList";
 import { View } from "./View";
-import { panel_border } from "../../../../css";
 
 const TAG = "frdy-full-view";
 
@@ -22,14 +22,14 @@ export class FullView extends View<TabFilesFullView> {
       <frdy-glyph-size-provider>
         <div style="display:grid;position:relative;">
           <div style="display:grid;position:absolute;inset:0;grid-template-columns: ${columnWidths}">
-            ${map(range(columnDefs.length + 1), (i) => html`<div style=${i < columnDefs.length && `border-inline-end: 1px solid ${panel_border});`}></div>`)}
+            ${map(range(columnDefs.length + 1), (i) => html`<div style=${i < columnDefs.length && `border-inline-end: 1px solid ${v.panel_border});`}></div>`)}
           </div>
           <frdy-multicolumn-list
             .topmostIndex=${this.topmostIndex}
             .activeIndex=${this.activeIndex}
             .renderItem=${(index: number, isActive: boolean) => this.renderItem(index, isActive, selectedNames)}
             .itemsCount=${this.items.size()}
-            .lineHeight=${1.2}
+            .lineHeight=${1.4}
             .far=${true}
           ></frdy-multicolumn-list>
         </div>

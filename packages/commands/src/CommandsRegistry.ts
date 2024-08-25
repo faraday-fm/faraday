@@ -68,7 +68,17 @@ export class CommandsRegistry implements ReactiveController {
           const isFocusWithin = path && path.includes(h.host);
           if (h.options.whenFocusWithin !== isFocusWithin) continue;
         }
-        await handler(args);
+        if (h.options.makeHostInert) {
+          const isInert = h.host.inert;
+          try {
+            h.host.inert = true;
+            await handler(args);
+          } finally {
+            h.host.inert = isInert;
+          }
+        } else {
+          await handler(args);
+        }
       }
     }
     // if (handlers && handlers.size === 1) {

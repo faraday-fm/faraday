@@ -52,13 +52,13 @@ export class FileIcon extends FrdyElement {
   accessor icons!: IconsCache;
 
   #task = new Task(this, {
-    task: async ([filepath, isDir, isOpen]) => {
+    task: async ([icons, filepath, isDir, isOpen]) => {
       if (!filepath) {
         return getDefaultIcon(isDir, isOpen);
       }
-      return this.icons?.getIcon(filepath, isDir, isOpen);
+      return icons.getIcon(filepath, isDir, isOpen);
     },
-    args: () => [this.filepath, this.isDir, this.isOpen] as const,
+    args: () => [this.icons, this.filepath, this.isDir, this.isOpen] as const,
   });
 
   protected render() {

@@ -38,7 +38,7 @@ export class Separator extends FrdyElement {
   #thumbRef = createRef();
   // #pointerDownCoords: { x: number; y: number } | undefined;
 
-  #handlePointerDown = (e: React.PointerEvent) => {
+  #handlePointerDown = (e: PointerEvent) => {
     const beforeItem = this.items[this.index];
     const afterItem = this.items[this.index + 1];
     const dim = (r?: DOMRect) => (this.direction === "h" ? r?.width : r?.height);

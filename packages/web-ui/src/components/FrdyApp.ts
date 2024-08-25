@@ -1,27 +1,28 @@
 import { command, CommandsProvider, context } from "@frdy/commands";
+import { FileSystemProvider } from "@frdy/sdk";
 import { ContextProvider } from "@lit/context";
 import { Task } from "@lit/task";
+import { signal } from "@preact/signals-core";
 import { parse as jsonParse } from "jsonc-parser";
 import { css, html, PropertyValues } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { when } from "lit/directives/when.js";
 import keybindings from "../assets/keybindings.json";
-import { CssVarsProvider } from "../lit-contexts/cssVarsProvider";
-import { createExtensionsContext, extensionsContext } from "../lit-contexts/extensionContext";
-import { createExtensionRepoContext, extensionRepoContext } from "../lit-contexts/extensionRepoContext";
+import * as v from "../css";
+import { createCssVarsProvider } from "../lit-contexts/cssVarsProvider";
+import { createExtensionsProvider } from "../lit-contexts/extensionContext";
+import { createExtensionRepoProvider } from "../lit-contexts/extensionRepoContext";
 import { fsContext } from "../lit-contexts/fsContext";
 import { readFileString } from "../lit-contexts/fsUtils";
-import { createIconThemeContext, iconThemeContext } from "../lit-contexts/iconThemeContext";
+import { createIconThemeProvider } from "../lit-contexts/iconThemeContext";
 import { createIconsCache, iconsCacheContext } from "../lit-contexts/iconsCacheContext";
 import { IsTouchScreenContext } from "../lit-contexts/isTouchScreenContext";
-import { createSettingsContext, settingsContext } from "../lit-contexts/settingsContext";
-import { createThemeContext, themeContext } from "../lit-contexts/themeContext";
+import { createSettingsContextProvider } from "../lit-contexts/settingsContext";
+import { createThemeProvider } from "../lit-contexts/themeContext";
 import { FaradayHost, NodeLayout } from "../types";
 import "./ActionBar";
 import { FrdyElement } from "./FrdyElement";
 import "./Tabs/LayoutContainer";
-import { createLanguagesContext, languagesContext } from "../lit-contexts/languagesContext";
-import { fontFamily, foreground } from "../css";
 
 const TAG = "frdy-app";
 
@@ -30,9 +31,10 @@ export class FrdyApp extends FrdyElement {
   static styles = css`
     :host {
       display: contents;
-      font-family: ${fontFamily};
+      font-size: 14px;
+      font-family: ${v.fontFamily};
       /* font-family: var(--fontFamily, "SF Mono", Monaco, Menlo, Courier, monospace); */
-      color: ${foreground};
+      color: ${v.foreground};
     }
 
     .app {
@@ -89,16 +91,16 @@ export class FrdyApp extends FrdyElement {
     }
   `;
 
-  private _fsProvider = new ContextProvider(this, { context: fsContext });
-  private _settingsProvider = new ContextProvider(this, { context: settingsContext });
-  private _extensionRepoProvider = new ContextProvider(this, { context: extensionRepoContext });
-  private _extensionsProvider = new ContextProvider(this, { context: extensionsContext });
-  private _themeProvider = new ContextProvider(this, { context: themeContext });
-  private _iconThemeProvider = new ContextProvider(this, { context: iconThemeContext });
-  private _languagesContext = new ContextProvider(this, { context: languagesContext });
-  private _iconsCacheProvider = new ContextProvider(this, { context: iconsCacheContext });
+  #fs = signal<FileSystemProvider>();
+  #fsProvider = new ContextProvider(this, { context: fsContext });
+  #settingsProvider = createSettingsContextProvider(this, this.#fs);
+  #extensionRepoProvider = createExtensionRepoProvider(this, this.#fs);
+  #extensionsProvider = createExtensionsProvider(this, this.#fs, this.#extensionRepoProvider.extensionRepoSignal);
+  #themeProvider = createThemeProvider(this, this.#fs, this.#extensionsProvider.extensionsSignal, this.#settingsProvider.settingsSignal);
+  #iconThemeProvider = createIconThemeProvider(this, this.#fs, this.#extensionsProvider.extensionsSignal, this.#settingsProvider.settingsSignal);
+  #iconsCacheProvider = createIconsCache(this, this.#fs, this.#iconThemeProvider.iconThemeSignal, this.#extensionsProvider.extensionsSignal);
   private _commandsProvider = new CommandsProvider(this, keybindings);
-  private _css = new CssVarsProvider(this);
+  private _css = createCssVarsProvider(this, this.#themeProvider.themeSignal);
   private _isTouchScreenProvider = new IsTouchScreenContext(this);
 
   @property({ attribute: false })
@@ -133,7 +135,8 @@ export class FrdyApp extends FrdyElement {
 
   @command()
   switchShowHiddenFiles() {
-    // setShowHiddenFiles((d) => !d)
+    const showHiddenFiles = !this.#settingsProvider.settingsSignal.valueOf().settings.showHiddenFiles;
+    this.#settingsProvider.setShowHiddenFiles(showHiddenFiles);
   }
 
   @state()
@@ -148,26 +151,22 @@ export class FrdyApp extends FrdyElement {
     if (_changedProperties.has("host")) {
       const fs = this.host?.rootFs;
       if (fs) {
-        this._fsProvider.setValue(fs);
-        this._settingsProvider.setValue(createSettingsContext(fs));
-        this._extensionRepoProvider.setValue(createExtensionRepoContext(fs));
-        this._extensionsProvider.setValue(createExtensionsContext(fs, this._extensionRepoProvider.value));
-        this._themeProvider.setValue(createThemeContext(fs, this._settingsProvider.value, this._extensionsProvider.value));
-        this._iconThemeProvider.setValue(createIconThemeContext(fs, this._settingsProvider.value, this._extensionsProvider.value));
-        this._languagesContext.setValue(createLanguagesContext(fs, this._extensionsProvider.value));
-        this._iconsCacheProvider.setValue(createIconsCache(fs, this._iconThemeProvider.value, this._languagesContext.value));
-        this._css.setThemeContext(this._themeProvider.value);
+        this.#fs.value = fs;
+        this.#fsProvider.setValue(fs);
       }
     }
   }
 
   #layoutTask = new Task(this, {
     task: async ([fs]) => {
+      if (!fs) {
+        return undefined;
+      }
       const layout: NodeLayout = jsonParse(await readFileString(fs, ".faraday/layout.json")) as any;
       this.layout = layout;
       return layout;
     },
-    args: () => [this._fsProvider.value] as const,
+    args: () => [this.#fsProvider.value] as const,
   });
 
   protected render() {
@@ -204,9 +203,3 @@ declare global {
     [TAG]: FrdyApp;
   }
 }
-
-// export const FrdyAppReact = createComponent({
-//   tagName: TAG,
-//   elementClass: FrdyApp,
-//   react: React,
-// });

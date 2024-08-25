@@ -6,13 +6,12 @@ import { map } from "lit/directives/map.js";
 import { range } from "lit/directives/range.js";
 import { type Ref, createRef, ref } from "lit/directives/ref.js";
 import { repeat } from "lit/directives/repeat.js";
+import * as v from "../../../css";
 import { glyphSizeContext } from "../../../lit-contexts/GlyphSizeProvider";
 import { clamp } from "../../../utils/number";
 import { FrdyElement } from "../../FrdyElement";
-import "./views/DragGhost";
 import "./ScrollableContainer";
-import { DragGhost } from "./views/DragGhost";
-import { panel_border, sideBar_border } from "../../../css";
+import "./views/DragGhost";
 
 const TAG = "frdy-multicolumn-list";
 
@@ -46,7 +45,7 @@ export class MultiColumnList extends FrdyElement {
     }
     .column-border {
       overflow: hidden;
-      border-inline-end: 1px solid ${panel_border};
+      border-inline-end: 1px solid ${v.panel_border};
       &:last-child {
         border-inline-end: none;
       }
@@ -331,7 +330,7 @@ export class MultiColumnList extends FrdyElement {
         @scroll=${this.#onScroll}
       >
         <div style="display:grid;position:absolute;inset:0;grid-template-columns: repeat(${this.#columnCount}, 1fr)">
-          ${map(range(this.#columnCount), (i) => html`<div style=${i < this.#columnCount - 1 && `border-inline-end: 1px solid ${sideBar_border};`}></div>`)}
+          ${map(range(this.#columnCount), (i) => html`<div style=${i < this.#columnCount - 1 && `border-inline-end: 1px solid ${v.sideBar_border};`}></div>`)}
         </div>
 
         <div class="columns-scroller-fixed" ref=${ref(this.#fixedRef)} @pointerdown=${this.#onPointerDown}>

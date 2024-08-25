@@ -3,9 +3,9 @@ import { consume } from "@lit/context";
 import clsx from "clsx";
 import { PropertyValues, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
+import * as v from "../../../css";
 import { FrdyElement } from "../../FrdyElement";
 import type { CursorStyle } from "./types";
-import { focusBorder, list_focusBackground, list_focusOutline, list_inactiveSelectionBackground } from "../../../css";
 
 const TAG = "frdy-column-cell";
 
@@ -30,21 +30,23 @@ export class ColumnCell extends FrdyElement {
       }
       display: grid;
       align-items: center;
-      cursor: default;
+      /* cursor: default; */
       overflow: hidden;
       padding: 0 2px;
       border: 1px solid transparent;
       &.inactive-cursor {
-        background-color: ${list_inactiveSelectionBackground};
-        background-color: color-mix(in srgb, ${focusBorder}, transparent 70%);
+        background-color: ${v.list_inactiveSelectionBackground};
+        background-color: color-mix(in srgb, ${v.focusBorder}, transparent 70%);
+        border: 1px solid ${v.list_inactiveFocusOutline};
       }
       &.selected {
-        background-color: ${list_focusBackground};
+        background-color: ${v.list_activeSelectionBackground};
         border-radius: 0;
       }
       &.firm-cursor {
-        background-color: ${list_focusBackground};
-        border: 1px solid ${list_focusOutline};
+        color: ${v.list_activeSelectionForeground};
+        background-color: ${v.list_activeSelectionBackground};
+        border: 1px solid ${v.list_focusOutline};
         border-radius: 4px;
       }
     }

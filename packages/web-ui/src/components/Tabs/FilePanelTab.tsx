@@ -1,12 +1,7 @@
-import { Dirent, FileSystemProvider, isDir, isHidden, readDir } from "@frdy/sdk";
-import { consume } from "@lit/context";
-import { Task } from "@lit/task";
 import { css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
-import { fsContext } from "../../lit-contexts/fsContext";
 import "../../lit-contexts/GlyphSizeProvider";
 import { TabFilesView } from "../../types";
-import { createList } from "../../utils/list/createList";
 import { FrdyElement } from "../FrdyElement";
 import "../panels/FilePanel/FilePanel";
 
@@ -28,7 +23,7 @@ export class FilePanelTab extends FrdyElement {
   accessor path: string | undefined;
 
   @property({ type: Boolean })
-  accessor showHidden = false;
+  accessor showHidden = true;
 
   constructor() {
     super();

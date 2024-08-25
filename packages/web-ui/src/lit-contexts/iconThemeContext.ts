@@ -1,30 +1,59 @@
 import { FileSystemProvider } from "@frdy/sdk";
-import { Extension, ExtensionsContext } from "./extensionContext";
-import { readFileJson, realpath } from "./fsUtils";
-import { SettingsContext } from "./settingsContext";
+import { ContextProvider, createContext } from "@lit/context";
 import { IconTheme, IconThemeSchema } from "../schemas/iconTheme";
-import { createContext } from "@lit/context";
 import { combine } from "../utils/path";
+import { Extension } from "./extensionContext";
+import { readFileJson } from "./fsUtils";
+import { SettingsContext } from "./settingsContext";
+import { ReactiveControllerHost } from "lit";
+import { effect, signal, Signal } from "@preact/signals-core";
 
-export type IconThemeContext = {
-  iconTheme: Promise<{ extension: Extension; path: string, theme: IconTheme }>;
-};
+export type IconThemeContext = { extension: Extension; path: string; theme: IconTheme } | { error: unknown } | undefined;
 
 export const iconThemeContext = createContext<IconThemeContext>(Symbol("icon-theme"));
 
-export function createIconThemeContext(fs: FileSystemProvider, settingsCtx: SettingsContext, extCtx: ExtensionsContext): IconThemeContext {
-  const loadIconTheme = async () => {
-    const settings = await settingsCtx.settings;
-    const exts = await extCtx.extensions;
-    const iconThemeExt = exts.find((e) => e.iconThemeDefinitions.has(settings.iconThemeId));
-    if (iconThemeExt) {
-      const themeDefinition = iconThemeExt.iconThemeDefinitions.get(settings.iconThemeId)!;
-      const iconThemeFile = combine(iconThemeExt.path, themeDefinition.path);
-      const theme = await readFileJson(fs, iconThemeFile, IconThemeSchema);
-      return { extension: iconThemeExt, path: iconThemeFile, theme };
-    }
-    throw new Error("No Icon Theme defined");
-  };
+export function createIconThemeProvider(
+  host: ReactiveControllerHost & HTMLElement,
+  fsSignal: Signal<FileSystemProvider | undefined>,
+  extensionsSignal: Signal<Extension[]>,
+  settingsSignal: Signal<SettingsContext>
+) {
+  const iconThemeSignal = signal<IconThemeContext>();
+  const context = new ContextProvider(host, { context: iconThemeContext, initialValue: iconThemeSignal.valueOf() });
 
-  return { iconTheme: loadIconTheme() };
+  effect(() => {
+    const fs = fsSignal.value;
+    if (!fs) {
+      return;
+    }
+    const { iconThemeId } = settingsSignal.value.settings;
+    if (!iconThemeId) {
+      return;
+    }
+    const exts = extensionsSignal.value;
+
+    const controller = new AbortController();
+    const loadIconTheme = async () => {
+      try {
+        const extension = exts.find((e) => e.iconThemeDefinitions.has(iconThemeId));
+        if (extension) {
+          const themeDefinition = extension.iconThemeDefinitions.get(iconThemeId)!;
+          const path = combine(extension.path, themeDefinition.path);
+          const theme = await readFileJson(fs, path, IconThemeSchema, { signal: controller.signal });
+          iconThemeSignal.value = { extension: extension, path, theme };
+        } else {
+          iconThemeSignal.value = undefined;
+        }
+      } catch (error) {
+        iconThemeSignal.value = { error };
+      }
+      context.setValue(iconThemeSignal.valueOf());
+    };
+
+    loadIconTheme();
+
+    return () => controller.abort();
+  });
+
+  return { iconThemeSignal };
 }

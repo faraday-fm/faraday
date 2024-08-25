@@ -45,9 +45,6 @@
   "publishConfig": {
     "access": "public"
   },
-  "peerDependencies": {
-    "react": ">=18"
-  },
   "devDependencies": {
     "@biomejs/biome": "^1.8.3",
     "@frdy/typescript-config": "workspace:*",
@@ -56,9 +53,6 @@
     "@rollup/plugin-node-resolve": "^15.2.3",
     "@rollup/plugin-terser": "^0.4.4",
     "@rollup/plugin-typescript": "^11.1.6",
-    "@types/parsimmon": "^1.10.8",
-    "@types/react": "^18.3.3",
-    "react": "^18.3.1",
     "rollup": "^4.21.0",
     "tslib": "^2.6.3",
     "typescript": "^5.5.4"
@@ -70,6 +64,7 @@
     "@lit/context": "^1.1.2",
     "@lit/react": "^1.0.5",
     "@lit/task": "^1.0.1",
+    "@preact/signals-core": "^1.8.0",
     "@xterm/addon-fit": "~0.10.0",
     "@xterm/addon-unicode11": "~0.8.0",
     "@xterm/addon-web-links": "~0.11.0",

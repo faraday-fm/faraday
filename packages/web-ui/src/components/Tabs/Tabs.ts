@@ -3,10 +3,10 @@ import { css, html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { createRef, ref } from "lit/directives/ref.js";
 import { repeat } from "lit/directives/repeat.js";
+import * as v from "../../css";
 import type { TabSetLayout } from "../../types";
 import { FrdyElement } from "../FrdyElement";
 import "./Tab";
-import { panel_border, tab_activeBackground, tab_activeForeground, tab_border, tab_hoverBackground, tab_inactiveBackground, tab_inactiveForeground } from "../../css";
 
 const TAG = "frdy-tabs";
 
@@ -18,16 +18,15 @@ export class Tabs extends FrdyElement {
       overflow: hidden;
       width: 100%;
       height: 100%;
-      border: 1px solid ${panel_border};
       display: grid;
       grid-template-rows: auto 1fr;
     }
     .header {
       display: flex;
-      color: ${tab_inactiveForeground};
-      background-color: ${tab_inactiveBackground};
+      color: ${v.tab_inactiveForeground};
+      background-color: ${v.tab_inactiveBackground};
       overflow: hidden;
-      box-shadow: inset 0 0 0 1px ${tab_border};
+      box-shadow: inset 0 0 0 1px ${v.tab_border};
     }
     .tabName {
       cursor: pointer;
@@ -35,15 +34,20 @@ export class Tabs extends FrdyElement {
       padding-inline: 2ch;
       line-height: 35px;
       white-space: nowrap;
-      border-inline: 1px solid ${tab_border};
+      border-inline: 1px solid ${v.tab_border};
       border-inline-start: none;
+      border-block: 2px solid transparent;
       &:hover {
-        color: ${tab_activeForeground};
-        background-color: ${tab_activeBackground};
+        color: ${v.tab_activeForeground};
+        background-color: ${v.tab_activeBackground};
+        border-block-start: 2px solid ${v.tab_activeBorderTop};
+        border-block-end: 2px solid ${v.tab_activeBorder};
       }
       &.-active {
-        color: ${tab_activeForeground};
-        background-color: ${tab_activeBackground};
+        color: ${v.tab_activeForeground};
+        background-color: ${v.tab_activeBackground};
+        border-block-start: 2px solid ${v.tab_activeBorderTop};
+        border-block-end: 2px solid ${v.tab_activeBorder};
       }
     }
   `;

@@ -6,7 +6,7 @@ export function command(options?: CommandOptions) {
   return (originalMethod: any, context: ClassMethodDecoratorContext<ReactiveElement>) => {
     const methodName = String(context.name);
     context.addInitializer(function () {
-      new CommandRegistration(this, originalMethod.bind(this), { name: methodName, whenFocusWithin: false, ...options });
+      new CommandRegistration(this, originalMethod.bind(this), { name: methodName, whenFocusWithin: false, makeHostInert: false, ...options });
     });
   };
 }
