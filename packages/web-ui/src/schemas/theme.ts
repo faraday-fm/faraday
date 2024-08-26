@@ -3,7 +3,7 @@ import { type InferOutput, object, boolean, optional, record, string, array, uni
 const Color = union([string(), array(string())]);
 
 const TokenColor = object({
-  scope: union([string(), array(string())]),
+  scope: optional(union([string(), array(string())])),
   settings: object({
     foreground: optional(string()),
     background: optional(string()),

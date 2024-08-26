@@ -75,6 +75,8 @@ export abstract class View<T extends TabFilesView> extends FrdyElement {
     return html`
       <frdy-column-cell
         .selected=${selectedNames.has(this.items.get(index)?.filename ?? "")}
+        .prevSiblingSelected=${selectedNames.has(this.items.get(index - 1)?.filename ?? "")}
+        .nextSiblingSelected=${selectedNames.has(this.items.get(index + 1)?.filename ?? "")}
         .cursorStyle=${isActive && this.cursorStyle === "firm" ? "firm" : "hidden"}
         .isTouchscreen=${this.isTouchscreen}
       >

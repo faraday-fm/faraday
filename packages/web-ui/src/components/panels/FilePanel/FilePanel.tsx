@@ -106,7 +106,8 @@ export class FilePanel extends FrdyElement {
   accessor path: string | undefined;
 
   @context({ name: "filePanel.focus", whenFocusWithin: true })
-  accessor isFilePanelFocus = true;
+  @property({ type: Boolean })
+  accessor isFilePanelFocus = false;
 
   @context({ name: "filePanel.firstItem", whenFocusWithin: true })
   accessor isFirstItem = false;
@@ -125,6 +126,16 @@ export class FilePanel extends FrdyElement {
 
   @context({ name: "filePanel.selectedItemsCount", whenFocusWithin: true })
   accessor selectedItemsCount = 0;
+
+  connectedCallback() {
+    super.connectedCallback();
+    this.addEventListener("focus", () => {
+      this.isFilePanelFocus = true;
+    });
+    this.addEventListener("blur", () => {
+      this.isFilePanelFocus = false;
+    });
+  }
 
   @command({ whenFocusWithin: true, makeHostInert: true })
   async open() {
@@ -251,7 +262,7 @@ export class FilePanel extends FrdyElement {
   protected render() {
     const bytesCount = this.items.reduce((acc, item) => acc + ((!isDir(item) ? item.attrs.size : 0) ?? 0), 0);
     const filesCount = this.items.reduce((acc, item) => acc + (!isDir(item) ? 1 : 0), 0);
-    const cursorStyle = "firm";
+    const cursorStyle = this.isFilePanelFocus ? "firm" : "inactive";
 
     return html`
       <frdy-glyph-size-provider>

@@ -45,6 +45,7 @@ export function createThemeProvider(
           themeSignal.value = undefined;
         }
       } catch (error) {
+        console.error("Unable to load theme:", error);
         themeSignal.value = { error };
       }
       context.setValue(themeSignal.valueOf());

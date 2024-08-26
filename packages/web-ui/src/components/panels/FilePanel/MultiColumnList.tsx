@@ -42,6 +42,7 @@ export class MultiColumnList extends FrdyElement {
       display: flex;
       flex-direction: column;
       flex-wrap: wrap;
+      /* filter: drop-shadow(2px 4px 10px black); */
     }
     .column-border {
       overflow: hidden;

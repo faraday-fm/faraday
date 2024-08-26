@@ -1,9 +1,8 @@
 import { consume } from "@lit/context";
-import { css, html } from "lit";
+import { css, html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { join } from "lit/directives/join.js";
 import { map } from "lit/directives/map.js";
-import * as v from "../css";
 import { iconsCacheContext, type IconsCache } from "../lit-contexts/iconsCacheContext";
 import "./FileIcon";
 import { FrdyElement } from "./FrdyElement";
@@ -16,8 +15,10 @@ export class Breadcrumbs extends FrdyElement {
     :host {
       display: flex;
       gap: 1ch;
+      font-size: smaller;
     }
     .breadcrumb {
+      align-items: center;
       display: flex;
       gap: 0.5ch;
     }
@@ -30,11 +31,15 @@ export class Breadcrumbs extends FrdyElement {
   accessor items: string[] | undefined;
 
   protected render() {
+    const items = this.items;
+    if (!items || items.length === 0) return nothing;
     return html`${join(
       map(
         this.items,
-        (item) =>
-          html`<span class="breadcrumb"><frdy-fileicon .size=${16} .filepath=${item} .isDir=${true} .isOpen=${true} .icons=${this.icons}></frdy-fileicon>${item}</span>`
+        (item, index) =>
+          html`<span class="breadcrumb" style="${index === items.length - 1 ? "font-weight: bolder" : ""}"
+            ><frdy-fileicon .size=${16} .filepath=${item} .isDir=${true} .isOpen=${true} .icons=${this.icons}></frdy-fileicon>${item}</span
+          >`
       ),
       () => html`›`
     )}`;

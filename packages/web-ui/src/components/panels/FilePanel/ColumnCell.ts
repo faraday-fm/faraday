@@ -15,14 +15,14 @@ const doubleClickThreshold = 300; // ms
 export class ColumnCell extends FrdyElement {
   static styles = css`
     :host {
+      position: relative;
       display: grid;
       overflow: hidden;
-      padding-inline-end: 1px;
+      margin-inline: 4px 5px;
     }
     :host(:focus-visible) {
       outline: none;
     }
-
     .cell {
       &:focus,
       &:focus-visible {
@@ -40,14 +40,25 @@ export class ColumnCell extends FrdyElement {
         border: 1px solid ${v.list_inactiveFocusOutline};
       }
       &.selected {
-        background-color: ${v.list_activeSelectionBackground};
-        border-radius: 0;
-      }
-      &.firm-cursor {
         color: ${v.list_activeSelectionForeground};
         background-color: ${v.list_activeSelectionBackground};
+        border-radius: 5px;
+      }
+      &.merge-prev {
+        border-start-start-radius: 0px;
+        border-start-end-radius: 0px;
+      }
+      &.merge-next {
+        border-end-start-radius: 0px;
+        border-end-end-radius: 0px;
+      }
+      &.firm-cursor:after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        color: ${v.list_activeSelectionForeground};
         border: 1px solid ${v.list_focusOutline};
-        border-radius: 4px;
+        border-radius: 5px;
       }
     }
   `;
@@ -55,8 +66,14 @@ export class ColumnCell extends FrdyElement {
   @consume({ context: commandsContext })
   accessor commands!: CommandsContext;
 
-  @property({ attribute: true, type: Boolean, reflect: true })
-  accessor selected: boolean;
+  @property({ type: Boolean })
+  accessor selected = false;
+
+  @property({ type: Boolean })
+  accessor prevSiblingSelected = false;
+
+  @property({ type: Boolean })
+  accessor nextSiblingSelected = false;
 
   @property({ type: String })
   accessor cursorStyle: CursorStyle;
@@ -66,7 +83,6 @@ export class ColumnCell extends FrdyElement {
 
   constructor() {
     super();
-    this.selected = false;
     this.cursorStyle = "firm";
     this.isTouchscreen = false;
   }
@@ -111,23 +127,16 @@ export class ColumnCell extends FrdyElement {
     }
   }
 
-  // #onPointerDown(e: PointerEvent) {
-  //   console.error("**",isDoubleClick);
-  //   // if (this.isTouchscreen && !isDoubleClick || isDoubleClick) {
-  //   //   this.commands.invokeCommand("open",);
-  //   //   this.dispatchEvent(
-  //   //     new CustomEvent("open", {
-  //   //       bubbles: true,
-  //   //       composed: true,
-  //   //     })
-  //   //   );
-  //   // }
-  // }
-
   protected render() {
     return html`
       <div
-        class=${clsx("cell", this.cursorStyle !== "hidden" && `${this.cursorStyle}-cursor`, this.selected && "selected")}
+        class=${clsx(
+          "cell",
+          this.prevSiblingSelected && "merge-prev",
+          this.nextSiblingSelected && "merge-next",
+          this.cursorStyle !== "hidden" && `${this.cursorStyle}-cursor`,
+          this.selected && "selected"
+        )}
         @pointerdown=${this.#onPointerDown}
       >
         <slot></slot>
