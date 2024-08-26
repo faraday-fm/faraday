@@ -18,6 +18,6 @@
     "jsx": "react-jsx",
     "baseUrl": "./"
   },
-  "include": ["src", "src/assets/faraday-fs/.faraday/extensions"],
+  "include": ["src", "src/assets/faraday-fs/.config/faraday/extensions"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

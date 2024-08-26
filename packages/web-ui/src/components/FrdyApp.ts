@@ -155,7 +155,7 @@ export class FrdyApp extends FrdyElement {
       if (!fs) {
         return undefined;
       }
-      const layout: NodeLayout = jsonParse(await readFileString(fs, ".faraday/layout.json")) as any;
+      const layout: NodeLayout = jsonParse(await readFileString(fs, ".config/faraday/layout.json")) as any;
       this.layout = layout;
       return layout;
     },

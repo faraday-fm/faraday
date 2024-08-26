@@ -32,7 +32,7 @@ export function createSettingsContextProvider(host: ReactiveControllerHost & HTM
 
     (async () => {
       try {
-        const settings = await readFileJson(fs, ".faraday/settings.json", Settings, { signal: controller.signal });
+        const settings = await readFileJson(fs, ".config/faraday/settings.json", Settings, { signal: controller.signal });
         settingsSignal.value = produce(settingsSignal.valueOf(), (v) => {
           v.settings = settings;
         });

@@ -16,7 +16,7 @@
               "id": "panel11",
               "type": "tab",
               "name": "icons",
-              "path": ".faraday/extensions/PKief.material-icon-theme-5.8.0/icons",
+              "path": ".config/faraday/extensions/PKief.material-icon-theme-5.8.0/icons",
               "component": { "type": "files", "view": { "type": "condensed", "columnDef": { "field": "name", "name": "Name" } } }
             }
           ]
@@ -39,7 +39,7 @@
               // "name": "~",
               // "path": ".",
               "name": "icons",
-              "path": ".faraday/extensions/PKief.material-icon-theme-5.8.0/icons",
+              "path": ".config/faraday/extensions/PKief.material-icon-theme-5.8.0/icons",
               "component": {
                 "type": "files",
                 "view": {

@@ -14,7 +14,7 @@ export type ExtensionRepoContext = {
 export const extensionRepoContext = createContext<ExtensionRepoContext>(Symbol("extension-repo"));
 
 export function createExtensionRepoProvider(host: ReactiveControllerHost & HTMLElement, fsSignal: Signal<FileSystemProvider | undefined>) {
-  const path = ".faraday/extensions";
+  const path = ".config/faraday/extensions";
   const extensionRepoSignal = signal<ExtensionRepoContext>({ path, repo: [] });
   const context = new ContextProvider(host, { context: extensionRepoContext, initialValue: extensionRepoSignal.valueOf() });
 
@@ -31,7 +31,7 @@ export function createExtensionRepoProvider(host: ReactiveControllerHost & HTMLE
         try {
           extensionRepoSignal.value = {
             path,
-            repo: await readFileJson(fs, ".faraday/extensions/extensions.json", ExtensionRepoSchema, { signal: controller.signal }),
+            repo: await readFileJson(fs, ".config/faraday/extensions/extensions.json", ExtensionRepoSchema, { signal: controller.signal }),
           };
         } catch (error) {
           console.error("Unable to load extensions list", error);
