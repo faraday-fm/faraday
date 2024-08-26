@@ -27,14 +27,14 @@ export class ActionBar extends FrdyElement {
     }
   `;
 
-@consume({context:settingsContext, subscribe: true})
-accessor settings!: SettingsContext;
+  @consume({ context: settingsContext, subscribe: true })
+  accessor settings!: SettingsContext;
 
-@command()
-switchShowHiddenFiles() {
-  const showHiddenFiles = !this.settings.settings.showHiddenFiles;
-  this.settings.showHiddenFiles(showHiddenFiles);
-}
+  @command()
+  switchShowHiddenFiles() {
+    const showHiddenFiles = !this.settings.settings.showHiddenFiles;
+    this.settings.showHiddenFiles(showHiddenFiles);
+  }
 
   protected render() {
     return html`

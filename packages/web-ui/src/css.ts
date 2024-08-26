@@ -8,7 +8,10 @@ function transparent(cssText: string, percent: number) {
   return `color-mix(in srgb, ${cssText} ${percent}%, transparent)`
 }
 
-export const fontFamily = /*#__PURE__*/ buildVar("fontFamily", '-apple-system, "system-ui", sans-serif');
+// export const fontFamily = /*#__PURE__*/ buildVar("fontFamily", '-apple-system, "system-ui", sans-serif');
+// export const fontFamily = /*#__PURE__*/ buildVar("fontFamily", "Verdana, Geneva, sans-serif");
+export const fontFamily = /*#__PURE__*/ buildVar("fontFamily", "ui-monospace, SFMono-Regular, SF Mono, Menlo, Consolas, Liberation Mono, monospace");
+
 
 export const focusBorder = /*#__PURE__*/ buildVar("focusBorder", "#0078D4");
 export const foreground = /*#__PURE__*/ buildVar("foreground", "#CCCCCC");

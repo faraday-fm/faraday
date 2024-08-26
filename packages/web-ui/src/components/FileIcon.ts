@@ -33,20 +33,13 @@ export class FileIcon extends FrdyElement {
   accessor filepath: string | undefined;
 
   @property({ type: Boolean })
-  accessor isDir: boolean;
+  accessor isDir = false;
 
   @property({ type: Boolean })
-  accessor isOpen: boolean;
+  accessor isOpen = false;
 
   @property({ type: Number })
-  accessor size: number;
-
-  constructor() {
-    super();
-    this.isDir = false;
-    this.size = 18;
-    this.isOpen = false;
-  }
+  accessor size = 18;
 
   @property({ attribute: false })
   accessor icons!: IconsCache;

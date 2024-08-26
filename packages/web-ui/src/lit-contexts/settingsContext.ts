@@ -17,11 +17,14 @@ export function createSettingsContextProvider(host: ReactiveControllerHost & HTM
   const settingsSignal = signal<SettingsContext>({ settings: {}, showHiddenFiles: (show) => setShowHiddenFiles(show) });
   const context = new ContextProvider(host, { context: settingsContext, initialValue: settingsSignal.valueOf() });
 
-  const loadSettings = (fs: FileSystemProvider | undefined) => {
+  effect(() => {
+    const fs = fsSignal.value;
     if (!fs) {
       return;
     }
+
     const controller = new AbortController();
+
     (async () => {
       try {
         settingsSignal.value = {
@@ -33,13 +36,8 @@ export function createSettingsContextProvider(host: ReactiveControllerHost & HTM
       }
       context.setValue(settingsSignal.valueOf());
     })();
+    
     return () => controller.abort();
-  };
-
-  effect(() => {
-    const fs = fsSignal.value;
-    const cancelLoading = loadSettings(fs);
-    return cancelLoading;
   });
 
   const setShowHiddenFiles = (showHiddenFiles: boolean) => {

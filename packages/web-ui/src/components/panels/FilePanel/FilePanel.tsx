@@ -9,17 +9,17 @@ import { range } from "lit/directives/range.js";
 import * as v from "../../../css";
 import { fsContext } from "../../../lit-contexts/fsContext";
 import "../../../lit-contexts/GlyphSizeProvider";
+import { SettingsContext, settingsContext } from "../../../lit-contexts/settingsContext";
 import { TabFilesView } from "../../../types";
 import { List, createList } from "../../../utils/list/createList";
 import { combine, dir } from "../../../utils/path";
+import "../../Breadcrumbs";
 import "../../FileInfo";
 import { FrdyElement } from "../../FrdyElement";
 import { SelectionType } from "./MultiColumnList";
 import "./ScrollableContainer";
 import "./views/CondensedView";
 import "./views/FullView";
-import { Signal } from "@preact/signals-core";
-import { SettingsContext, settingsContext } from "../../../lit-contexts/settingsContext";
 
 const TAG = "frdy-file-panel";
 
@@ -54,7 +54,7 @@ export class FilePanel extends FrdyElement {
     }
     .panel-content {
       display: grid;
-      grid-template-rows: 1fr auto auto;
+      grid-template-rows: auto 1fr auto auto;
       overflow: hidden;
     }
     .panel-columns {
@@ -253,6 +253,7 @@ export class FilePanel extends FrdyElement {
     return html`
       <frdy-glyph-size-provider>
         <div class="panel-content">
+          <frdy-breadcrumbs .items=${this.path?.split("/")}></frdy-breadcrumbs>
           <div class="panel-columns">
             ${choose(this.view?.type, [
               [
