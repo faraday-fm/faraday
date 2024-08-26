@@ -4,18 +4,23 @@ import { effect, signal, Signal } from "@preact/signals-core";
 import { ReactiveControllerHost } from "lit";
 import { Settings } from "../schemas/settings";
 import { readFileJson } from "./fsUtils";
+import { produce } from "immer";
 
 export type SettingsContext = {
   settings: Settings;
-  showHiddenFiles: (show: boolean) => void;
+  updateSettings: (updateFn: (settings: Settings) => void) => void;
   error?: unknown;
 };
 
 export const settingsContext = createContext<SettingsContext>(Symbol("settings"));
 
 export function createSettingsContextProvider(host: ReactiveControllerHost & HTMLElement, fsSignal: Signal<FileSystemProvider | undefined>) {
-  const settingsSignal = signal<SettingsContext>({ settings: {}, showHiddenFiles: (show) => setShowHiddenFiles(show) });
+  const settingsSignal = signal<SettingsContext>({ settings: {}, updateSettings: (updateFn) => updateSettings(updateFn) });
   const context = new ContextProvider(host, { context: settingsContext, initialValue: settingsSignal.valueOf() });
+
+  effect(() => {
+    context.setValue(settingsSignal.value);
+  });
 
   effect(() => {
     const fs = fsSignal.value;
@@ -27,22 +32,24 @@ export function createSettingsContextProvider(host: ReactiveControllerHost & HTM
 
     (async () => {
       try {
-        settingsSignal.value = {
-          showHiddenFiles: setShowHiddenFiles,
-          settings: await readFileJson(fs, ".faraday/settings.json", Settings, { signal: controller.signal }),
-        };
+        const settings = await readFileJson(fs, ".faraday/settings.json", Settings, { signal: controller.signal });
+        settingsSignal.value = produce(settingsSignal.valueOf(), (v) => {
+          v.settings = settings;
+        });
       } catch (error) {
-        settingsSignal.value = { ...settingsSignal.value, error };
+        settingsSignal.value = produce(settingsSignal.valueOf(), (v) => {
+          v.error = error;
+        });
       }
-      context.setValue(settingsSignal.valueOf());
     })();
-    
+
     return () => controller.abort();
   });
 
-  const setShowHiddenFiles = (showHiddenFiles: boolean) => {
-    settingsSignal.value = { ...settingsSignal.valueOf(), settings: { ...settingsSignal.valueOf().settings, showHiddenFiles } };
-    context.setValue(settingsSignal.valueOf());
+  const updateSettings = (updateFn: (settings: Settings) => void) => {
+    settingsSignal.value = produce(settingsSignal.valueOf(), (ctx) => {
+      updateFn(ctx.settings);
+    });
   };
 
   return {

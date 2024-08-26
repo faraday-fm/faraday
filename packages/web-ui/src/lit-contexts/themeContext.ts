@@ -41,8 +41,9 @@ export function createThemeProvider(
           const themeFile = combine(extension.path, themeDefinition.path);
           const theme = await readFileJson(fs, themeFile, ThemeSchema, { signal: controller.signal });
           themeSignal.value = { extension, path: themeFile, theme };
+        } else {
+          themeSignal.value = undefined;
         }
-        throw new Error("No Icon Theme defined");
       } catch (error) {
         themeSignal.value = { error };
       }

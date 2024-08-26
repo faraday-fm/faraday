@@ -32,8 +32,9 @@ export class ActionBar extends FrdyElement {
 
   @command()
   switchShowHiddenFiles() {
-    const showHiddenFiles = !this.settings.settings.showHiddenFiles;
-    this.settings.showHiddenFiles(showHiddenFiles);
+    this.settings.updateSettings((s) => {
+      s.showHiddenFiles = !s.showHiddenFiles;
+    });
   }
 
   protected render() {

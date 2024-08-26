@@ -15,7 +15,7 @@ import { createExtensionRepoProvider } from "../lit-contexts/extensionRepoContex
 import { fsContext } from "../lit-contexts/fsContext";
 import { readFileString } from "../lit-contexts/fsUtils";
 import { createIconThemeProvider } from "../lit-contexts/iconThemeContext";
-import { createIconsCache, iconsCacheContext } from "../lit-contexts/iconsCacheContext";
+import { createIconsCache } from "../lit-contexts/iconsCacheContext";
 import { IsTouchScreenContext } from "../lit-contexts/isTouchScreenContext";
 import { createSettingsContextProvider } from "../lit-contexts/settingsContext";
 import { createThemeProvider } from "../lit-contexts/themeContext";
@@ -51,7 +51,7 @@ export class FrdyApp extends FrdyElement {
       }
 
       text-rendering: geometricPrecision;
-      background-color: #172637;
+      background-color: ${v.panel_background};
       height: 100%;
       display: grid;
       grid-template-rows: minmax(0, 1fr) auto;

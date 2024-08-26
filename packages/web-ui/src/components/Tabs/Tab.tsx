@@ -1,9 +1,9 @@
-import { css, html, LitElement } from "lit";
+import { css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { choose } from "lit/directives/choose.js";
 import type { TabLayout } from "../../types";
-import "./FilePanelTab";
 import { FrdyElement } from "../FrdyElement";
+import "./FilePanelTab";
 
 const TAG = "frdy-tab";
 

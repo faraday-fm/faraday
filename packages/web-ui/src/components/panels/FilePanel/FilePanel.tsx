@@ -11,7 +11,7 @@ import { fsContext } from "../../../lit-contexts/fsContext";
 import "../../../lit-contexts/GlyphSizeProvider";
 import { SettingsContext, settingsContext } from "../../../lit-contexts/settingsContext";
 import { TabFilesView } from "../../../types";
-import { List, createList } from "../../../utils/list/createList";
+import { createList } from "../../../utils/list/createList";
 import { combine, dir } from "../../../utils/path";
 import "../../Breadcrumbs";
 import "../../FileInfo";
@@ -47,7 +47,7 @@ export class FilePanel extends FrdyElement {
       height: 100%;
       position: relative;
       /* color: var(--panel-foreground, var(--list-focusForeground, #adbac7)); */
-      background-color: ${v.tab_activeBackground};
+      background-color: ${v.panel_background};
       display: grid;
       overflow: hidden;
       outline: none;
@@ -70,16 +70,16 @@ export class FilePanel extends FrdyElement {
   accessor fs!: FileSystemProvider;
 
   @property({ attribute: false })
-  accessor items: List<Dirent>;
+  accessor items = createList<Dirent>();
 
   @property({ attribute: false })
-  accessor selectedItemNames: List<string>;
+  accessor selectedItemNames = createList<string>();
 
   @property({ attribute: false })
   accessor view: TabFilesView | undefined;
 
   @property({ type: Boolean })
-  accessor showCursorWhenBlurred: boolean;
+  accessor showCursorWhenBlurred = false;
 
   @property({ attribute: false })
   accessor activeIndex = 0;
@@ -193,13 +193,6 @@ export class FilePanel extends FrdyElement {
     },
     args: () => [this.path, this.settings.settings.showHiddenFiles] as const,
   });
-
-  constructor() {
-    super();
-    this.items = createList();
-    this.selectedItemNames = createList();
-    this.showCursorWhenBlurred = false;
-  }
 
   #prevSelect: boolean | undefined;
 

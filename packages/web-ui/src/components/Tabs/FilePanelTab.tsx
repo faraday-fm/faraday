@@ -22,15 +22,12 @@ export class FilePanelTab extends FrdyElement {
   @property({ attribute: false })
   accessor path: string | undefined;
 
-  @property({ type: Boolean })
-  accessor showHidden = true;
-
   constructor() {
     super();
   }
 
   protected render() {
-    return html`<frdy-file-panel .path=${this.path} .view=${this.view} .showHidden=${this.showHidden}></frdy-file-panel>`;
+    return html`<frdy-file-panel .path=${this.path} .view=${this.view}></frdy-file-panel>`;
   }
 }
 
