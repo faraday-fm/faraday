@@ -52,6 +52,11 @@ export class FilePanel extends FrdyElement {
       overflow: hidden;
       outline: none;
     }
+    .breadcrumbs {
+      color: ${v.tab_activeForeground};
+      background-color: ${v.tab_activeBackground};
+      padding: 4px 3px;
+    }
     .panel-content {
       display: grid;
       grid-template-rows: auto 1fr auto auto;
@@ -189,7 +194,6 @@ export class FilePanel extends FrdyElement {
       }
       files.sort(fsCompare);
       this.items = createList(files);
-      return files;
     },
     args: () => [this.path, this.settings.settings.showHiddenFiles] as const,
   });
@@ -246,7 +250,7 @@ export class FilePanel extends FrdyElement {
     return html`
       <frdy-glyph-size-provider>
         <div class="panel-content">
-          <frdy-breadcrumbs .items=${this.path?.split("/")}></frdy-breadcrumbs>
+          <div class="breadcrumbs"><frdy-breadcrumbs .items=${this.path?.split("/")}></frdy-breadcrumbs></div>
           <div class="panel-columns">
             ${choose(this.view?.type, [
               [

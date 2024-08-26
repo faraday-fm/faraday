@@ -75,6 +75,9 @@ export class CommandsRegistry implements ReactiveController {
             await handler(args);
           } finally {
             h.host.inert = isInert;
+            if (h.options.whenFocusWithin) {
+              h.host.focus();
+            }
           }
         } else {
           await handler(args);

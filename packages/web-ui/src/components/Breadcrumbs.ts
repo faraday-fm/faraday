@@ -1,8 +1,9 @@
 import { consume } from "@lit/context";
 import { css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
-import { map } from "lit/directives/map.js";
 import { join } from "lit/directives/join.js";
+import { map } from "lit/directives/map.js";
+import * as v from "../css";
 import { iconsCacheContext, type IconsCache } from "../lit-contexts/iconsCacheContext";
 import "./FileIcon";
 import { FrdyElement } from "./FrdyElement";
@@ -29,11 +30,14 @@ export class Breadcrumbs extends FrdyElement {
   accessor items: string[] | undefined;
 
   protected render() {
-    return html`${join(map(
-      this.items,
-      (item) =>
-        html`<span class="breadcrumb"><frdy-fileicon .filepath=${item} .isDir=${true} .isOpen=${true} .icons=${this.icons}></frdy-fileicon>${item}</span>`
-    ), () => html`\u203A`)}`;
+    return html`${join(
+      map(
+        this.items,
+        (item) =>
+          html`<span class="breadcrumb"><frdy-fileicon .filepath=${item} .isDir=${true} .isOpen=${true} .icons=${this.icons}></frdy-fileicon>${item}</span>`
+      ),
+      () => html`›`
+    )}`;
   }
 }
 

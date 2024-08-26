@@ -1,6 +1,7 @@
 import { css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { choose } from "lit/directives/choose.js";
+import * as v from "../../css";
 import type { TabLayout } from "../../types";
 import { FrdyElement } from "../FrdyElement";
 import "./FilePanelTab";
@@ -12,7 +13,9 @@ export class Tab extends FrdyElement {
   static shadowRootOptions: ShadowRootInit = { ...FrdyElement.shadowRootOptions, delegatesFocus: true };
   static styles = css`
     :host {
-      display: contents;
+      display: grid;
+      border: 1px solid ${v.tab_border};
+      border-block-start: none;
     }
   `;
   @property({ attribute: false })
