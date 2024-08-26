@@ -34,7 +34,7 @@ export class Breadcrumbs extends FrdyElement {
       map(
         this.items,
         (item) =>
-          html`<span class="breadcrumb"><frdy-fileicon .filepath=${item} .isDir=${true} .isOpen=${true} .icons=${this.icons}></frdy-fileicon>${item}</span>`
+          html`<span class="breadcrumb"><frdy-fileicon .size=${16} .filepath=${item} .isDir=${true} .isOpen=${true} .icons=${this.icons}></frdy-fileicon>${item}</span>`
       ),
       () => html`›`
     )}`;

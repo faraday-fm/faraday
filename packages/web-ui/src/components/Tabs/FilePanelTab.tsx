@@ -27,7 +27,7 @@ export class FilePanelTab extends FrdyElement {
   }
 
   protected render() {
-    return html`<frdy-file-panel .path=${this.path} .view=${this.view}></frdy-file-panel>`;
+    return html`<frdy-file-panel .targetPath=${this.path} .view=${this.view}></frdy-file-panel>`;
   }
 }
 

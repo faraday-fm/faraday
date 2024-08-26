@@ -9,7 +9,6 @@ export function createCssVarsProvider(host: ReactiveControllerHost & HTMLElement
 
   effect(() => {
     const themeDesc = themeSignal.value;
-    console.error(themeDesc)
     if (themeDesc && !("error" in themeDesc)) {
       const { theme } = themeDesc;
       let vars = Object.entries(theme.colors ?? {});

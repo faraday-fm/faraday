@@ -99,6 +99,9 @@ export class FilePanel extends FrdyElement {
   accessor settings!: SettingsContext;
 
   @property()
+  accessor targetPath: string | undefined;
+
+  @property()
   @context({ name: "filePanel.path", whenFocusWithin: true })
   accessor path: string | undefined;
 
@@ -131,9 +134,10 @@ export class FilePanel extends FrdyElement {
       if (this.activeItem) {
         if (isDir(this.activeItem)) {
           this.#positionsStack.push({ topmostName: this.topmostItemName, activeName: this.activeItemName });
-          this.path = combine((this.path ?? "") + "/", this.activeItemName ?? ".");
+          this.targetPath = combine((this.targetPath ?? "") + "/", this.activeItemName ?? ".");
           this.#task.run();
           await this.#task.taskComplete;
+          this.path = this.targetPath;
           this.selectedItemNames = createList();
           this.activeIndex = 0;
           this.#updateActiveItem();
@@ -145,9 +149,10 @@ export class FilePanel extends FrdyElement {
   @command({ whenFocusWithin: true, makeHostInert: true })
   async openHome() {
     this.#positionsStack = [];
-    this.path = ".";
+    this.targetPath = ".";
     this.#task.run();
     await this.#task.taskComplete;
+    this.path = this.targetPath;
     this.selectedItemNames = createList();
     this.activeIndex = 0;
     this.#updateActiveItem();
@@ -155,12 +160,13 @@ export class FilePanel extends FrdyElement {
 
   @command({ whenFocusWithin: true, makeHostInert: true })
   async dirUp() {
-    this.path = dir(this.path ?? "/");
-    if (this.path.endsWith("/")) {
-      this.path = this.path.substring(0, this.path.length - 1);
+    this.targetPath = dir(this.targetPath ?? "/");
+    if (this.targetPath.endsWith("/")) {
+      this.targetPath = this.targetPath.substring(0, this.targetPath.length - 1);
     }
     this.#task.run();
     await this.#task.taskComplete;
+    this.path = this.targetPath;
     this.selectedItemNames = createList();
     const pos = this.#positionsStack.pop();
     if (pos) {
@@ -184,18 +190,18 @@ export class FilePanel extends FrdyElement {
   #positionsStack: { topmostName: string; activeName: string }[] = [];
 
   #task = new Task(this, {
-    task: async ([path, showHidden], options) => {
-      if (!path) {
+    task: async ([targetPath, showHidden], options) => {
+      if (!targetPath) {
         return [];
       }
-      let files = await readDir(this.fs, path, options);
+      let files = await readDir(this.fs, targetPath, options);
       if (!showHidden) {
         files = files.filter((f) => !isHidden(f));
       }
       files.sort(fsCompare);
       this.items = createList(files);
     },
-    args: () => [this.path, this.settings.settings.showHiddenFiles] as const,
+    args: () => [this.targetPath, this.settings.settings.showHiddenFiles] as const,
   });
 
   #prevSelect: boolean | undefined;

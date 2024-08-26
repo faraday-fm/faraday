@@ -4,7 +4,7 @@
   "version": "1.36.1",
   "type": "module",
   "scripts": {
-    "dev": "npx cross-env BABEL_SHOW_CONFIG_FOR=/Users/mike/github/faraday-fm/faraday/packages/web-ui/dist/index.js vite",
+    "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview"
   },
