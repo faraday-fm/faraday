@@ -7,7 +7,7 @@ import { range } from "lit/directives/range.js";
 import { type Ref, createRef, ref } from "lit/directives/ref.js";
 import { repeat } from "lit/directives/repeat.js";
 import * as v from "../../../css";
-import { glyphSizeContext } from "../../../lit-contexts/GlyphSizeProvider";
+import { glyphSizeContext } from "../../../contexts/GlyphSizeProvider";
 import { clamp } from "../../../utils/number";
 import { FrdyElement } from "../../FrdyElement";
 import "./ScrollableContainer";

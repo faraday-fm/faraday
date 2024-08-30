@@ -1,6 +1,6 @@
 import { html } from "lit";
 import { customElement, property } from "lit/decorators.js";
-import "../../../../lit-contexts/GlyphSizeProvider";
+import "../../../../contexts/GlyphSizeProvider";
 import { TabFilesCondensedView } from "../../../../types";
 import "../ColumnCell";
 import "../FileName";
@@ -22,7 +22,7 @@ export class CondensedView extends View<TabFilesCondensedView> {
           .minColumnWidth=${250}
           .topmostIndex=${this.topmostIndex}
           .activeIndex=${this.activeIndex}
-          .renderItem=${(index: number, isActive:boolean) => this.renderItem(index, isActive, selectedNames)}
+          .renderItem=${(index: number, isActive: boolean) => this.renderItem(index, isActive, selectedNames)}
           .itemsCount=${this.items.size()}
           .lineHeight=${1.4}
           .far=${true}

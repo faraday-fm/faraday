@@ -3,7 +3,7 @@ import { css, html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { join } from "lit/directives/join.js";
 import { map } from "lit/directives/map.js";
-import { iconsCacheContext, type IconsCache } from "../lit-contexts/iconsCacheContext";
+import { iconsCacheContext, type IconsCache } from "../contexts/iconsCacheContext";
 import "./FileIcon";
 import { FrdyElement } from "./FrdyElement";
 

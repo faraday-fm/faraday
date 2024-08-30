@@ -1,4 +1,4 @@
-import { command, context } from "@frdy/commands";
+import { command, commandsContext, CommandsContext, context } from "@frdy/commands";
 import { Dirent, FileSystemProvider, isDir, isHidden, readDir } from "@frdy/sdk";
 import { consume } from "@lit/context";
 import { Task } from "@lit/task";
@@ -7,9 +7,9 @@ import { customElement, property } from "lit/decorators.js";
 import { choose } from "lit/directives/choose.js";
 import { range } from "lit/directives/range.js";
 import * as v from "../../../css";
-import { fsContext } from "../../../lit-contexts/fsContext";
-import "../../../lit-contexts/GlyphSizeProvider";
-import { SettingsContext, settingsContext } from "../../../lit-contexts/settingsContext";
+import { fsContext } from "../../../contexts/fsContext";
+import "../../../contexts/GlyphSizeProvider";
+import { SettingsContext, settingsContext } from "../../../contexts/settingsContext";
 import { TabFilesView } from "../../../types";
 import { createList } from "../../../utils/list/createList";
 import { combine, dir } from "../../../utils/path";
@@ -73,6 +73,9 @@ export class FilePanel extends FrdyElement {
 
   @consume({ context: fsContext })
   accessor fs!: FileSystemProvider;
+
+  @consume({ context: commandsContext })
+  accessor commands!: CommandsContext;
 
   @property({ attribute: false })
   accessor items = createList<Dirent>();
@@ -255,6 +258,9 @@ export class FilePanel extends FrdyElement {
   protected willUpdate(_changedProperties: PropertyValues): void {
     if (_changedProperties.has("items")) {
       this.#updateActiveItem();
+    }
+    if (_changedProperties.has("path")) {
+      this.commands.invokeCommand("setTerminalDir", { dir: this.path });
     }
     super.willUpdate(_changedProperties);
   }

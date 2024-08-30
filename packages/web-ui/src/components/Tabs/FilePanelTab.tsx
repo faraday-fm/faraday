@@ -1,6 +1,6 @@
 import { css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
-import "../../lit-contexts/GlyphSizeProvider";
+import "../../contexts/GlyphSizeProvider";
 import { TabFilesView } from "../../types";
 import { FrdyElement } from "../FrdyElement";
 import "../panels/FilePanel/FilePanel";

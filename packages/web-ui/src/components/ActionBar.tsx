@@ -4,7 +4,7 @@ import "./ActionButton";
 import { FrdyElement } from "./FrdyElement";
 import { command } from "@frdy/commands";
 import { consume } from "@lit/context";
-import { SettingsContext, settingsContext } from "../lit-contexts/settingsContext";
+import { SettingsContext, settingsContext } from "../contexts/settingsContext";
 
 const TAG = "frdy-action-bar";
 

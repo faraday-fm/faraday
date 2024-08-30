@@ -45,9 +45,3 @@ declare global {
     [TAG]: LayoutContainer;
   }
 }
-
-// export const LayoutContainerReact = createComponent({
-//   tagName: TAG,
-//   elementClass: LayoutContainer,
-//   react: React,
-// });

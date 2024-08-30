@@ -8,7 +8,7 @@ export function command(options?: CommandOptions) {
   return (originalMethod: Method, context: ClassMethodDecoratorContext<ReactiveElement>) => {
     const methodName = String(context.name);
     context.addInitializer(function () {
-      new CommandRegistration(this, originalMethod.bind(this), { name: methodName, whenFocusWithin: false, makeHostInert: false, ...options });
+      new CommandRegistration(this, originalMethod.bind(this), { name: methodName, makeHostInert: false, ...options });
     });
   };
 }
@@ -16,9 +16,9 @@ export function command(options?: CommandOptions) {
 class CommandRegistration<HostElement extends ReactiveControllerHost & HTMLElement> implements ReactiveController {
   #host: HostElement;
   #callback: Method;
-  #options: Required<CommandOptions>;
+  #options: CommandOptions;
 
-  constructor(host: HostElement, callback: Method, options: Required<CommandOptions>) {
+  constructor(host: HostElement, callback: Method, options: CommandOptions) {
     this.#host = host;
     this.#callback = callback;
     this.#options = options;

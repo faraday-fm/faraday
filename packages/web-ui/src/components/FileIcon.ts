@@ -2,7 +2,7 @@ import { Task } from "@lit/task";
 import { css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
-import { type IconsCache } from "../lit-contexts/iconsCacheContext";
+import { type IconsCache } from "../contexts/iconsCacheContext";
 import { FrdyElement } from "./FrdyElement";
 
 const TAG = "frdy-fileicon";

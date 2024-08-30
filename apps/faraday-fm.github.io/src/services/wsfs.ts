@@ -1,14 +1,16 @@
 import type { FileSystemProvider } from "@frdy/sdk";
+import { ws } from "./wsTransport";
 
-const ws = new WebSocket("ws://localhost:8000/ws");
-
-await new Promise<void>((res => ws.onopen = () => res()));
+let requestIdCounter = 1;
 
 const pool = new Map<number, PromiseWithResolvers<any>>();
 
 ws.addEventListener("message", (m) => {
   const msg = JSON.parse(m.data);
-  const { id, result, error } = msg;
+  const { scope, id, result, error } = msg;
+  if (scope !== "fs") {
+    return;
+  }
   const task = pool.get(id);
   if (task) {
     pool.delete(id);
@@ -19,8 +21,6 @@ ws.addEventListener("message", (m) => {
     }
   }
 });
-
-let requestIdCounter = 1;
 
 function invokeRequest(type: string, args: any, signal?: AbortSignal) {
   const requestId = requestIdCounter;
@@ -34,7 +34,7 @@ function invokeRequest(type: string, args: any, signal?: AbortSignal) {
   requestIdCounter++;
   const task = Promise.withResolvers<any>();
   pool.set(requestId, task);
-  ws.send(JSON.stringify({ type, requestId, ...args }));
+  ws.send(JSON.stringify({ scope: "fs", type, requestId, ...args }));
   return task.promise;
 }
 

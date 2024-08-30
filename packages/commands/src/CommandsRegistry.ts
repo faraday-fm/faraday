@@ -35,7 +35,7 @@ export class CommandsRegistry implements ReactiveController {
   hostDisconnected = this.#unsubscribe;
 
   #onRegisterCommand = (e: RegisterCommandEvent) => {
-    const { name } = e.options;
+    const { name } = e.options as Required<CommandOptions>;
     let handlers = this.#commands.get(name);
     if (!handlers) {
       handlers = new Map();

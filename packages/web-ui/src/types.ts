@@ -1,4 +1,4 @@
-import type { Dirent, FileSystemProvider } from "@frdy/sdk";
+import type { FileSystemProvider } from "@frdy/sdk";
 
 export type NodeLayout = RowLayout | TabLayout | TabSetLayout;
 
@@ -51,10 +51,10 @@ export interface FaradayConfig {
 export type TerminalSession = symbol;
 
 export interface Terminal {
-  createSession(command: string, cwd: string, onData: (data: Uint8Array) => void, initialTtySize: { rows: number; cols: number }): Promise<TerminalSession>;
+  createSession(command: string, cwd: string, onData: (data: string) => void, initialTtySize: { rows: number; cols: number }): Promise<TerminalSession>;
   destroySession(session: TerminalSession): Promise<void>;
   setTtySize(session: TerminalSession, size: { rows: number; cols: number }): Promise<void>;
-  sendData(session: TerminalSession, data: string | Uint8Array): Promise<void>;
+  sendData(session: TerminalSession, data: string): Promise<void>;
 }
 
 export interface FaradayHost {

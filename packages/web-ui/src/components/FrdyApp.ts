@@ -9,18 +9,19 @@ import { customElement, property, state } from "lit/decorators.js";
 import { when } from "lit/directives/when.js";
 import keybindings from "../assets/keybindings.json";
 import * as v from "../css";
-import { createCssVarsProvider } from "../lit-contexts/cssVarsProvider";
-import { createExtensionsProvider } from "../lit-contexts/extensionContext";
-import { createExtensionRepoProvider } from "../lit-contexts/extensionRepoContext";
-import { fsContext } from "../lit-contexts/fsContext";
-import { readFileString } from "../lit-contexts/fsUtils";
-import { createIconThemeProvider } from "../lit-contexts/iconThemeContext";
-import { createIconsCache } from "../lit-contexts/iconsCacheContext";
-import { IsTouchScreenContext } from "../lit-contexts/isTouchScreenContext";
-import { createSettingsContextProvider } from "../lit-contexts/settingsContext";
-import { createThemeProvider } from "../lit-contexts/themeContext";
+import { createCssVarsProvider } from "../contexts/cssVarsProvider";
+import { createExtensionsProvider } from "../contexts/extensionContext";
+import { createExtensionRepoProvider } from "../contexts/extensionRepoContext";
+import { fsContext } from "../contexts/fsContext";
+import { readFileString } from "../contexts/fsUtils";
+import { createIconThemeProvider } from "../contexts/iconThemeContext";
+import { createIconsCache } from "../contexts/iconsCacheContext";
+import { IsTouchScreenContext } from "../contexts/isTouchScreenContext";
+import { createSettingsContextProvider } from "../contexts/settingsContext";
+import { createThemeProvider } from "../contexts/themeContext";
 import { FaradayHost, NodeLayout } from "../types";
 import "./ActionBar";
+import "../terminal/terminal";
 import { FrdyElement } from "./FrdyElement";
 import "./Tabs/LayoutContainer";
 
@@ -62,21 +63,14 @@ export class FrdyApp extends FrdyElement {
       cursor: default;
     }
 
-    .mainDiv {
-      grid-row: 1;
+    .main {
+      display: grid;
+      grid-template-rows: 4fr 1fr;
       position: relative;
       overflow: hidden;
     }
-
-    .terminalContainer {
-      position: absolute;
-      inset: 0;
-      z-index: 0;
-      background-color: var(--terminal-background);
-    }
     .tabs {
       display: grid;
-      position: absolute;
       left: 0;
       right: 0;
       top: 0;
@@ -84,6 +78,13 @@ export class FrdyApp extends FrdyElement {
       grid-auto-flow: column;
       grid-auto-columns: 1fr;
       z-index: 0;
+    }
+    .terminal {
+      display: grid;
+      overflow: hidden;
+      inset: 0;
+      z-index: 0;
+      background-color: var(--terminal-background);
     }
     .footerDiv {
       grid-row: 2;
@@ -166,8 +167,7 @@ export class FrdyApp extends FrdyElement {
     return this.#layoutTask.render({
       complete: () => html`
         <div class="app">
-          <div class="mainDiv">
-            <div class="terminalContainer"></div>
+          <div class="main">
             <div class="tabs">
               ${when(
                 this.layout,
@@ -180,6 +180,9 @@ export class FrdyApp extends FrdyElement {
                     }}
                   ></frdy-layout-container>`
               )}
+            </div>
+            <div class="terminal">
+              <frdy-terminal .api=${this.host?.terminal}></frdy-terminal>
             </div>
           </div>
           <div class="footerDiv">

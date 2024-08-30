@@ -47,5 +47,6 @@
   { "key": "Alt+Digit8", "command": "setTab", "args": { "index": 8 } },
   { "key": "Alt+Digit9", "command": "setTab", "args": { "index": 9 } },
   { "key": "Alt+Digit0", "command": "setTab", "args": { "index": 10 } },
-  { "key": "Ctrl+Backquote", "command": "openHome" }
+  { "key": "Ctrl+Backquote", "command": "openHome" },
+  { "key": "Space", "command": "focusTerminal", "when": "filePanel.focus" }
 ]

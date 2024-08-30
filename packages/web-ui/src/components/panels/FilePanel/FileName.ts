@@ -1,7 +1,7 @@
 import { type Dirent, isDir, isHidden } from "@frdy/sdk";
 import { css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
-import { IconsCache } from "../../../lit-contexts/iconsCacheContext";
+import { IconsCache } from "../../../contexts/iconsCacheContext";
 import { FrdyElement } from "../../FrdyElement";
 import "../../FileIcon";
 

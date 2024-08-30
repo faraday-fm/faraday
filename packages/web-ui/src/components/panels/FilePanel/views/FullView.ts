@@ -3,7 +3,7 @@ import { customElement } from "lit/decorators.js";
 import { map } from "lit/directives/map.js";
 import { range } from "lit/directives/range.js";
 import * as v from "../../../../css";
-import "../../../../lit-contexts/GlyphSizeProvider";
+import "../../../../contexts/GlyphSizeProvider";
 import { TabFilesFullView } from "../../../../types";
 import "../ColumnCell";
 import "../FileName";
