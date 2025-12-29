@@ -17,13 +17,13 @@
   },
   "dependencies": {
     "@frdy/sdk": "workspace:*",
-    "comlink": "^4.4.1",
-    "eventemitter3": "^5.0.1"
+    "comlink": "catalog:",
+    "eventemitter3": "catalog:"
   },
   "devDependencies": {
-    "typescript": "^5.5.3",
-    "vite": "^5.4.0",
-    "vite-plugin-html": "^3.2.2",
-    "vite-plugin-singlefile": "^2.0.2"
+    "typescript": "catalog:",
+    "vite": "catalog:",
+    "vite-plugin-html": "catalog:",
+    "vite-plugin-singlefile": "catalog:"
   }
 }

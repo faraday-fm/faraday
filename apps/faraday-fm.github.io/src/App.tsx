@@ -1,14 +1,14 @@
 import { Faraday, type FaradayHost } from "@frdy/web-ui";
-// import { buildFaradayFs } from "./services/fs";
-import { wsfs } from "./services/wsfs";
+// import { wsfs } from "./services/wsfs";
+import { buildFaradayFs } from "./services/fs";
 
-// const faradayFs = await buildFaradayFs();
+const faradayFs = await buildFaradayFs();
 
 const host: FaradayHost = {
   config: {
     isDesktop: () => false,
   },
-  rootFs: wsfs,
+  rootFs: faradayFs,
 };
 
 function App() {

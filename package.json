@@ -10,12 +10,12 @@
     "release": "changeset publish"
   },
   "devDependencies": {
-    "@biomejs/biome": "^1.8.3",
-    "@changesets/cli": "^2.27.7",
-    "turbo": "^2.0.12",
-    "typescript": "^5.5.4"
+    "@biomejs/biome": "^2.3.10",
+    "@changesets/cli": "catalog:",
+    "turbo": "catalog:",
+    "typescript": "^5.9.3"
   },
-  "packageManager": "pnpm@9.4.0",
+  "packageManager": "pnpm@10.26.2",
   "engines": {
     "node": ">=18"
   }

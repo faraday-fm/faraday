@@ -1,4 +1,4 @@
-export async function streamToUint8Array(stream: ReadableStream<Uint8Array>): Promise<Uint8Array> {
+export async function streamToUint8Array(stream: ReadableStream<Uint8Array>): Promise<Uint8Array<ArrayBuffer>> {
   const reader = stream.getReader();
   const chunks: Uint8Array[] = [];
   let totalLength = 0;

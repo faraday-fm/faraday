@@ -46,7 +46,6 @@ const actions: WebViewActions = {
     }
   },
   async loadScript() {
-    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
     module = (await importModule()) as any;
   },
 };

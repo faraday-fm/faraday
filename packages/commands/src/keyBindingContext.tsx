@@ -1,6 +1,6 @@
 import JSON5 from "json5";
 import { alt, regexp, seq, string } from "parsimmon";
-import { type PropsWithChildren, createContext, useEffect } from "react";
+import { JSX, type PropsWithChildren, createContext, useEffect } from "react";
 import { parse } from "valibot";
 import keyBindingsContent from "./assets/keybindings.json5";
 import { KeyBindingsSchema } from "./schema";
