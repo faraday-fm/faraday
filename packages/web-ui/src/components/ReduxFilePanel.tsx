@@ -4,6 +4,7 @@ import { isDir } from "@frdy/sdk";
 import { memo, useCallback, useEffect, useLayoutEffect, useRef } from "react";
 import { FilePanel, type FilePanelActions } from "../components/panels/FilePanel/FilePanel";
 import { useDirListing } from "../features/fs/hooks";
+import { useError } from "../features/error";
 import { type CursorPosition, usePanelState, usePanels } from "../features/panels";
 import { css } from "../features/styles";
 import type { FilePanelLayout } from "../types";
@@ -29,7 +30,8 @@ function fsCompare(a: Dirent, b: Dirent) {
 export const ReduxFilePanel = memo(function ReduxFilePanel({ layout }: ReduxFilePanelProps) {
   const { id } = layout;
   const panelRef = useRef<FilePanelActions>(null);
-  const { activeFilePanel, initPanelState, setPanelItems, setPanelSelectedItems, setPanelCursorPos, setActivePanelId } = usePanels();
+  const { activeFilePanel, initPanelState, setPanelItems, clearPanelTarget, setPanelSelectedItems, setPanelCursorPos, setActivePanelId } = usePanels();
+  const { showError } = useError();
   const state = usePanelState(id);
   const updateState = useUpdateGlobalContext();
   const isActive = activeFilePanel?.id === id;
@@ -65,6 +67,13 @@ export const ReduxFilePanel = memo(function ReduxFilePanel({ layout }: ReduxFile
         setPanelItems(id, files);
       },
       [id, setPanelItems],
+    ),
+    useCallback(
+      (path, error) => {
+        clearPanelTarget(id);
+        showError(error, `Failed to read directory: ${path}`);
+      },
+      [id, clearPanelTarget, showError],
     ),
   );
 

@@ -1,5 +1,5 @@
 import { type PropsWithChildren, type ReactElement, useRef } from "react";
-import { useQuickNavigation } from "../contexts/quickNavigationContext";
+import { useQuickNavigation } from "@/features/quickNavigation";
 import { css } from "../features/styles";
 import { Highlight } from "./Highlight";
 

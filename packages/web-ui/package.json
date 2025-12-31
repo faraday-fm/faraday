@@ -9,14 +9,14 @@
       "frdy-src": "./src/index.tsx",
       "types": "./dist/index.d.ts",
       "import": "./dist/index.esm.js",
-      "require": "./dist/index.cjs.js"      
+      "require": "./dist/index.cjs.js"
     }
   },
   "scripts": {
     "dev": "rollup -c -w",
     "build": "rollup -c --silent",
     "test": "echo \"Error: no test specified\" && exit 0",
-    "lint": "biome check"
+    "lint": "eslint"
   },
   "files": [
     "dist",
@@ -52,7 +52,7 @@
     "react": ">=18"
   },
   "devDependencies": {
-    "@biomejs/biome": "^2.3.10",
+    "@frdy/eslint-config": "workspace:*",
     "@frdy/typescript-config": "workspace:*",
     "@rollup/plugin-alias": "catalog:",
     "@rollup/plugin-commonjs": "catalog:",
@@ -63,6 +63,7 @@
     "@rollup/pluginutils": "catalog:",
     "@types/parsimmon": "catalog:",
     "@types/react": "catalog:",
+    "eslint": "catalog:",
     "react": "catalog:",
     "rollup": "catalog:",
     "rollup-plugin-delete": "catalog:",
@@ -91,6 +92,7 @@
     "json5": "catalog:",
     "list": "catalog:",
     "parsimmon": "catalog:",
+    "usehooks-ts": "catalog:",
     "valibot": "catalog:"
   }
 }

@@ -231,11 +231,11 @@ export class MemoryFsProvider implements FileSystemProvider {
     return SynchronousPromise.resolve();
   }
 
-  async remove(filename: string): Promise<void> {
+  async remove(_filename: string): Promise<void> {
     throw new Error("Method not implemented.");
   }
 
-  async rename(oldpath: string, newpath: string, flags: RenameFlags): Promise<void> {
+  async rename(_oldpath: string, _newpath: string, _flags: RenameFlags): Promise<void> {
     throw new Error("Method not implemented.");
   }
 
@@ -263,24 +263,24 @@ export class MemoryFsProvider implements FileSystemProvider {
   }
 
   rmdir(path: string): Promise<void> {
-    const entry = this.#findEntry(path);
+    const _entry = this.#findEntry(path);
     return SynchronousPromise.resolve();
   }
 
-  stat(path: string, flags: AttrFlags): Promise<Attrs> {
+  stat(_path: string, _flags: AttrFlags): Promise<Attrs> {
     throw new Error("Method not implemented.");
   }
 
-  lstat(path: string, flags: AttrFlags): Promise<Attrs> {
+  lstat(_path: string, _flags: AttrFlags): Promise<Attrs> {
     throw new Error("Method not implemented.");
   }
 
-  fstat(handle: FileHandle, flags: AttrFlags): Promise<Attrs> {
+  fstat(handle: FileHandle, _flags: AttrFlags): Promise<Attrs> {
     const entry = this.#findHandle(handle);
     return SynchronousPromise.resolve(entry.attrs);
   }
 
-  setStat(path: string, attrs: Attrs): Promise<void> {
+  setStat(_path: string, _attrs: Attrs): Promise<void> {
     throw new Error("Method not implemented.");
   }
 
@@ -290,23 +290,23 @@ export class MemoryFsProvider implements FileSystemProvider {
     return SynchronousPromise.resolve();
   }
 
-  readLink(path: string): Promise<DirList> {
+  readLink(_path: string): Promise<DirList> {
     throw new Error("Method not implemented.");
   }
 
-  link(newLinkPath: string, existingPath: string, symLink: boolean): Promise<void> {
+  link(_newLinkPath: string, _existingPath: string, _symLink: boolean): Promise<void> {
     throw new Error("Method not implemented.");
   }
 
-  block(handle: FileHandle, offset: number, length: number, uLockMask: Flags): Promise<void> {
+  block(_handle: FileHandle, _offset: number, _length: number, _uLockMask: Flags): Promise<void> {
     throw new Error("Method not implemented.");
   }
 
-  unblock(handle: FileHandle, offset: number, length: number): Promise<void> {
+  unblock(_handle: FileHandle, _offset: number, _length: number): Promise<void> {
     throw new Error("Method not implemented.");
   }
 
-  realpath(originalPath: string, controlByte?: RealPathControlByte, composePath?: string[]): Promise<DirList> {
+  realpath(originalPath: string, _controlByte?: RealPathControlByte, composePath?: string[]): Promise<DirList> {
     const rp = realpath("/", originalPath, ...(composePath ?? []));
     return SynchronousPromise.resolve({
       files: [
@@ -320,8 +320,8 @@ export class MemoryFsProvider implements FileSystemProvider {
     });
   }
 
-  textSeek?(fileHandle: FileHandle, lineNumber: number): Promise<void> {
-    const entry = this.#findHandle(fileHandle);
+  textSeek?(fileHandle: FileHandle, _lineNumber: number): Promise<void> {
+    const _entry = this.#findHandle(fileHandle);
     return SynchronousPromise.resolve();
   }
 }

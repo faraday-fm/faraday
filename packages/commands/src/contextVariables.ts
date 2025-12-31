@@ -1,4 +1,3 @@
-import equal from "fast-deep-equal";
 import { produce } from "immer";
 import { atom, useAtom } from "jotai";
 import { useCallback, useMemo } from "react";
@@ -33,9 +32,9 @@ export function useContextVariables(): UseContextVariables {
       setVariables(
         produce((draft) => {
           (draft[id] ??= {})[variable] = value;
-        }),
+        })
       ),
-    [setVariables],
+    [setVariables]
   );
 
   const deleteVariable = useCallback(
@@ -45,9 +44,9 @@ export function useContextVariables(): UseContextVariables {
           if (draft[id]) {
             delete draft[id][variable];
           }
-        }),
+        })
       ),
-    [setVariables],
+    [setVariables]
   );
 
   return useMemo(
@@ -56,6 +55,6 @@ export function useContextVariables(): UseContextVariables {
       setVariable,
       deleteVariable,
     }),
-    [variables, setVariable, deleteVariable],
+    [variables, setVariable, deleteVariable]
   );
 }

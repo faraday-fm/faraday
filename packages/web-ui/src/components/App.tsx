@@ -4,12 +4,14 @@ import { useEffect, useRef, useState } from "react";
 import defaultLayout from "../assets/layout.json5";
 import { ActionsBar } from "../components/ActionsBar";
 import { LayoutContainer } from "../components/LayoutContainer";
+import { ErrorDialog } from "../components/ErrorDialog";
 import { useFaradayHost } from "../contexts/faradayHostContext";
-import { useGlyphSize } from "../contexts/glyphSizeContext";
 import { useFileContent } from "../features/fs/hooks";
+import { useGlyphSize } from "../features/glyphSize";
 import { useInert } from "../features/inert/hooks";
 import { usePanels } from "../features/panels";
 import { css } from "../features/styles";
+import { useError } from "../features/error";
 import type { PanelsLayout } from "../types";
 import CopyDialog from "./CopyDialog";
 import DeleteDialog from "./DeleteDialog";
@@ -26,10 +28,11 @@ export function App() {
   const [panelsOpen, setPanelsOpen] = useState(true);
   const [executing] = useState(false);
   const { layout, setPanelsLayout, focusNextPanel, enterDir } = usePanels();
+  const { error, clearError } = useError();
   const host = useFaradayHost();
   const [devMode, setDevMode] = useState(false);
 
-  const { content: layoutContent, error: layoutLoadingError } = useFileContent(".faraday/layout.json5");
+  const { content: layoutContent, error: layoutLoadingError } = useFileContent("~/.faraday/layout.json5");
   useEffect(() => {
     if (layoutContent) {
       try {
@@ -89,6 +92,7 @@ export function App() {
       </div>
       <CopyDialog open={copyDialogOpen} onClose={() => setCopyDialogOpen(false)} />
       <DeleteDialog open={deleteDialogOpen} onClose={() => setDeleteDialogOpen(false)} />
+      <ErrorDialog open={!!error} error={error?.message} onClose={clearError} />
       {/* <TopMenu /> */}
     </div>
   );

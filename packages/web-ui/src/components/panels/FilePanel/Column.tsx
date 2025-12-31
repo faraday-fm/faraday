@@ -1,11 +1,11 @@
+import { Border } from "@/components/Border";
+import { useGlyphSize } from "@/features/glyphSize";
+import { css } from "@/features/styles";
+import { useElementSize } from "@/hooks/useElementSize";
+import type { List } from "@/utils/immutableList";
+import { clamp } from "@/utils/number";
 import type { Dirent } from "@frdy/sdk";
 import { useEffect, useRef, useState } from "react";
-import { useGlyphSize } from "../../../contexts/glyphSizeContext";
-import { css } from "../../../features/styles";
-import { useElementSize } from "../../../hooks/useElementSize";
-import type { List } from "../../../utils/immutableList";
-import { clamp } from "../../../utils/number";
-import { Border } from "../../Border";
 import { Cell } from "./Cell";
 import { CellText } from "./CellText";
 import { FullFileName } from "./FullFileName";

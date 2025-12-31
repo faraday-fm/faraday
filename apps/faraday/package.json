@@ -1,0 +1,42 @@
+{
+  "name": "faraday",
+  "version": "1.0.0",
+  "description": "Faraday file manager",
+  "main": "./out/main/index.js",
+  "author": "Faraday Team",
+  "homepage": "https://github.com/faraday-fm/faraday",
+  "scripts": {
+    "format": "prettier --write .",
+    "lint": "eslint --cache .",
+    "typecheck:node": "tsc --noEmit -p tsconfig.node.json --composite false",
+    "typecheck:web": "tsc --noEmit -p tsconfig.web.json --composite false",
+    "typecheck": "pnpm typecheck:node && pnpm typecheck:web",
+    "start": "electron-vite preview",
+    "dev": "electron-vite dev",
+    "build": "pnpm typecheck && electron-vite build",
+    "postinstall": "electron-builder install-app-deps",
+    "build:unpack": "pnpm build && electron-builder --dir",
+    "build:win": "pnpm build && electron-builder --win",
+    "build:mac": "pnpm build && electron-builder --mac",
+    "build:linux": "pnpm build && electron-builder --linux"
+  },
+  "dependencies": {
+    "@electron-toolkit/preload": "catalog:",
+    "@electron-toolkit/utils": "catalog:",
+    "@frdy/web-ui": "workspace:^",
+    "chokidar": "catalog:",
+    "electron-updater": "^6.6.2"
+  },
+  "devDependencies": {
+    "@electron-toolkit/tsconfig": "catalog:",
+    "@types/node": "catalog:",
+    "@vitejs/plugin-react": "catalog:",
+    "electron": "catalog:",
+    "electron-builder": "catalog:",
+    "electron-vite": "catalog:",
+    "eslint": "catalog:",
+    "prettier": "catalog:",
+    "typescript": "catalog:",
+    "vite": "catalog:"
+  }
+}

@@ -75,6 +75,22 @@ export function usePanels() {
           state.items = items;
           state.pos = state.targetPos;
           state.stack.push(state.pos);
+          state.targetPos = undefined; // Clear targetPos after successful navigation
+        }),
+      ),
+    [setStates],
+  );
+
+  const clearPanelTarget = useCallback(
+    (id: string) =>
+      setStates(
+        produce((s) => {
+          const state = s[id];
+          if (!state) {
+            return;
+          }
+          // Clear targetPos so the same directory can be attempted again
+          state.targetPos = undefined;
         }),
       ),
     [setStates],
@@ -187,6 +203,7 @@ export function usePanels() {
     setActivePanelId,
     initPanelState,
     setPanelItems,
+    clearPanelTarget,
     setPanelSelectedItems,
     setPanelCursorPos,
     focusNextPanel,

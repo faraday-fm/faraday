@@ -1,9 +1,9 @@
+import { useFileIconResolver } from "@/features/fileIcons";
+import { useGlyphSize } from "@/features/glyphSize";
+import { css } from "@/features/styles";
 import { AttribBits, isDir, type Dirent } from "@frdy/sdk";
 import isPromise from "is-promise";
 import { memo, useEffect, useMemo, useState } from "react";
-import { useFileIconResolver } from "../../../contexts/fileIconsContext";
-import { useGlyphSize } from "../../../contexts/glyphSizeContext";
-import { css } from "../../../features/styles";
 import { CellText } from "./CellText";
 import type { CursorStyle } from "./types";
 

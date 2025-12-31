@@ -1,7 +1,7 @@
+import type { CursorPosition } from "@/features/panels";
+import { css } from "@/features/styles";
+import type { List } from "@/utils/immutableList";
 import type { Dirent } from "@frdy/sdk";
-import type { CursorPosition } from "../../../../features/panels";
-import { css } from "../../../../features/styles";
-import type { List } from "../../../../utils/immutableList";
 import { Column } from "../Column";
 import type { ColumnDef, CursorStyle } from "../types";
 

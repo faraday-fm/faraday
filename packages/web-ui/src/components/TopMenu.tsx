@@ -1,4 +1,4 @@
-import { QuickNavigationProvider } from "../contexts/quickNavigationContext";
+import { QuickNavigationProvider } from "../features/quickNavigation/QuickNavigationProvider";
 import { css } from "../features/styles";
 import { TopMenuItem } from "./TopMenuItem";
 

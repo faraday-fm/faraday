@@ -1,6 +1,6 @@
 import { type RefObject, useEffect, useState } from "react";
 
-export function useFocused(ref: RefObject<HTMLElement> | HTMLElement | null | undefined) {
+export function useFocused(ref: RefObject<HTMLElement | null> | HTMLElement | null | undefined) {
   const [focused, setFocused] = useState(false);
   useEffect(() => {
     if (!ref) {

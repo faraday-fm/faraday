@@ -1,6 +1,11 @@
-import { type PropsWithChildren, useLayoutEffect, useRef, useState } from "react";
+import {
+  type PropsWithChildren,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from "react";
 import { css } from "../features/styles";
-import { useResizeObserver } from "../hooks/useResizeObserver";
+import { useResizeObserver } from "usehooks-ts";
 
 export function BreadcrumbItem({ children }: PropsWithChildren) {
   const ref = useRef<HTMLDivElement>(null);
@@ -8,15 +13,26 @@ export function BreadcrumbItem({ children }: PropsWithChildren) {
 
   const updateOverflowAdornerVisibility = () => {
     if (ref.current) {
-      setShowOverflowAdorner(ref.current.scrollWidth - ref.current.clientWidth > 0);
+      setShowOverflowAdorner(
+        ref.current.scrollWidth - ref.current.clientWidth > 0
+      );
     }
   };
 
   useLayoutEffect(updateOverflowAdornerVisibility, []);
-  useResizeObserver({ ref, onResize: updateOverflowAdornerVisibility });
+  useResizeObserver({
+    ref: ref as React.RefObject<HTMLDivElement>,
+    onResize: updateOverflowAdornerVisibility,
+  });
 
   return (
-    <div className={css("breadcrumb-item", showOverflowAdorner ? "-showOverflow" : "")} ref={ref}>
+    <div
+      className={css(
+        "breadcrumb-item",
+        showOverflowAdorner ? "-showOverflow" : ""
+      )}
+      ref={ref}
+    >
       {children}
     </div>
   );

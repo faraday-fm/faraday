@@ -1,29 +1,5 @@
-import { type PropsWithChildren, type RefObject, createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
-
-const QuickNavigationContext = createContext(new Map<string, RefObject<HTMLElement>>());
-
-export function useQuickNavigation(ref: RefObject<HTMLElement>, text: string) {
-  const context = useContext(QuickNavigationContext);
-  const [hotKey, setHotKey] = useState<string>();
-
-  useEffect(() => {
-    let key: string | undefined;
-    for (const c of text) {
-      const l = c.toLowerCase();
-      if (!context.has(l)) {
-        context.set(l, ref);
-        key = l;
-        break;
-      }
-    }
-    setHotKey(key);
-    return () => {
-      if (key) context.delete(key);
-    };
-  }, [context, ref, text]);
-
-  return hotKey;
-}
+import { type PropsWithChildren, type RefObject, useCallback, useMemo, useRef } from "react";
+import { QuickNavigationContext } from "./QuickNavigationContext";
 
 export function QuickNavigationProvider({ children }: PropsWithChildren) {
   const containerRef = useRef<HTMLDivElement>(null);

@@ -1,8 +1,9 @@
 {
   "extends": "@frdy/typescript-config/react-library.json",
   "compilerOptions": {
-    "outDir": "dist"
+    "outDir": "dist",
+    "paths": { "@/*": ["./src/*"] }
   },
-  "include": ["src", "scripts", "rollup.config.mjs", "../sdk/src/FileSystemError.ts", "../sdk/src/utils/utils.ts"],
+  "include": ["src", "scripts", "rollup.config.mjs"],
   "exclude": ["node_modules", "dist"]
 }

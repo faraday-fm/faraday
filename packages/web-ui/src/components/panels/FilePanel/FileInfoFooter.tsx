@@ -1,10 +1,9 @@
-import { type Dirent, FileType } from "@frdy/sdk";
-import { isDir } from "@frdy/sdk";
+import { useGlyphSize } from "@/features/glyphSize";
+import { css } from "@/features/styles";
+import { formatDateTime } from "@/utils/date";
+import { bytesToSize } from "@/utils/number";
+import { type Dirent, FileType, isDir } from "@frdy/sdk";
 import { memo } from "react";
-import { useGlyphSize } from "../../../contexts/glyphSizeContext";
-import { css } from "../../../features/styles";
-import { formatDateTime } from "../../../utils/date";
-import { bytesToSize } from "../../../utils/number";
 
 interface FileInfoFooterProps {
   file?: Dirent;

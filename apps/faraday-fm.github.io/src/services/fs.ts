@@ -20,7 +20,7 @@ async function file(
     name,
     AceMask.WRITE_DATA,
     Flags.CREATE_TRUNCATE,
-    { type: FileType.Regular, mtime: Math.round(lastModDate.getTime() / 1000), }
+    { type: FileType.Regular, mtime: Math.round(lastModDate.getTime() / 1000) }
   );
   fs.write(handle, 0, new Uint8Array(content));
 }

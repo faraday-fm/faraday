@@ -1,16 +1,14 @@
 import { readFile } from "@frdy/sdk";
 import isPromise from "is-promise";
-import { type PropsWithChildren, type ReactNode, createContext, useCallback, useContext, useMemo } from "react";
-import { useIconThemes } from "../features/extensions/hooks";
-import { useFs } from "../features/fs/hooks";
-import { useSettings } from "../features/settings/settings";
-import { css } from "../features/styles";
-import { type IconTheme, isSvgIcon } from "../schemas/iconTheme";
-import { combine, filename } from "../utils/path";
-
-export type IconResolver = (path: string, isDir: boolean, isOpen: boolean) => ReactNode | PromiseLike<ReactNode>;
-
-const FileIconsContext = createContext<IconResolver>(() => undefined);
+import { type PropsWithChildren, useCallback, useMemo } from "react";
+import { type IconTheme, isSvgIcon } from "../../schemas/iconTheme";
+import { combine, filename } from "../../utils/path";
+import { useIconThemes } from "../extensions/hooks";
+import { useFs } from "../fs/hooks";
+import { useSettings } from "../settings/settings";
+import { css } from "../styles";
+import { FileIconsContext } from "./FileIconsContext";
+import { IconResolver } from "./types";
 
 const decoder = new TextDecoder();
 const parseSvg = (u: Uint8Array) => decoder.decode(u);
@@ -23,10 +21,6 @@ const defaultDirOpenIcon = btoa(
 const defaultFileIcon = btoa(
   '<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M13 9h5.5L13 3.5V9M6 2h8l6 6v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4c0-1.11.89-2 2-2m5 2H6v16h12v-9h-7V4z" fill="#90a4ae" /></svg>',
 );
-
-export function useFileIconResolver() {
-  return useContext(FileIconsContext);
-}
 
 function resolveIconDefinitionName(iconTheme: IconTheme, path: string, isDir: boolean, isOpen: boolean, languageId?: string): string {
   const defaultDef = isDir ? (isOpen ? iconTheme.folderExpanded ?? iconTheme.folder : iconTheme.folder) : iconTheme.file;

@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "lint": "eslint"
   },
   "dependencies": {
     "@frdy/memory-fs": "workspace:*",
@@ -20,11 +21,13 @@
     "unzipit": "catalog:"
   },
   "devDependencies": {
+    "@frdy/eslint-config": "workspace:*",
     "@types/node": "catalog:",
     "@types/react": "catalog:",
     "@types/react-dom": "catalog:",
     "@vitejs/plugin-react": "catalog:",
     "cross-env": "catalog:",
+    "eslint": "catalog:",
     "jszip": "catalog:",
     "typescript": "catalog:",
     "vite": "catalog:"

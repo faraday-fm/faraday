@@ -1,0 +1,18 @@
+{
+  "name": "@frdy/eslint-config",
+  "version": "0.0.0",
+  "private": true,
+  "exports": {
+    "./vanilla": "./vanilla.ts",
+    "./react": "./react.ts"
+  },
+  "devDependencies": {
+    "@eslint/js": "catalog:",
+    "eslint": "catalog:",
+    "eslint-plugin-react-hooks": "catalog:",
+    "eslint-plugin-react-refresh": "catalog:",
+    "globals": "catalog:",
+    "jiti": "catalog:",
+    "typescript-eslint": "catalog:"
+  }
+}

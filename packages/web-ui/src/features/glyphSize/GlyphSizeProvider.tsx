@@ -1,15 +1,10 @@
-import { type PropsWithChildren, createContext, useContext, useRef } from "react";
-import { useElementSize } from "../hooks/useElementSize";
-
-const GlyphSizeContext = createContext({ width: 8, height: 16 });
-
-export function useGlyphSize() {
-  return useContext(GlyphSizeContext);
-}
+import { type PropsWithChildren, useRef } from "react";
+import { useElementSize } from "../../hooks/useElementSize";
+import { GlyphSizeContext } from "./GlyphSizeContext";
 
 export function GlyphSizeProvider({ children }: PropsWithChildren) {
   const ref = useRef<HTMLDivElement>(null);
-  const size = useElementSize(ref, { width: 8, height: 16 });
+  const size = useElementSize(ref as React.RefObject<HTMLDivElement>, { width: 8, height: 16 });
 
   return (
     <GlyphSizeContext.Provider value={size}>

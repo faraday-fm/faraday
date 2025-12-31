@@ -12,12 +12,16 @@
   },
   "scripts": {
     "dev": "tsup --watch",
-    "build": "tsup"
+    "build": "tsup",
+    "lint": "eslint"
   },
   "keywords": [],
   "author": "Mikhail Isupov",
   "license": "ISC",
   "devDependencies": {
+    "@frdy/eslint-config": "workspace:*",
+    "@frdy/typescript-config": "workspace:*",
+    "eslint": "catalog:",
     "tsup": "catalog:"
   }
 }

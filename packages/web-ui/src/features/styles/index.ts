@@ -29,7 +29,9 @@ export function useStyles(theme: Theme): boolean {
       .map(([key, val]) => `--${key.replaceAll(/[.:]/g, "-")}:${val};`)
       .join("\n");
     const frdyColors = `.frdy{${colorVariables}}`;
+    // eslint-disable-next-line react-hooks/immutability
     colorsEl.innerHTML = frdyColors;
+    // eslint-disable-next-line react-hooks/immutability
     stylesEl.innerHTML = frdyStyles;
   }, [colorsEl, stylesEl, theme]);
 

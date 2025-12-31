@@ -1,7 +1,7 @@
+import { useGlyphSize } from "@/features/glyphSize";
+import type { List } from "@/utils/immutableList";
 import type { Dirent } from "@frdy/sdk";
 import { memo, useCallback } from "react";
-import { useGlyphSize } from "../../../../contexts/glyphSizeContext";
-import type { List } from "../../../../utils/immutableList";
 import { Cell } from "../Cell";
 import { ColumnsScroller, type ColumnsScrollerProps } from "../ColumnsScroller";
 import { FullFileName } from "../FullFileName";
